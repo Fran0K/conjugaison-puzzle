@@ -17,3 +17,6 @@
 *   **后端/数据库**: Supabase (PostgreSQL + JSONB)
 *   **数据管道**: Node.js + Google Gemini API (用于自动生成数据集)
 *   **部署**: Cloudflare Pages
+
+## 数据库与数据生成
+本项目不使用硬编码的数据，而是通过 AI 生成并通过 Supabase 提供服务。
