@@ -12,6 +12,14 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     color: "bg-gray-100 border-gray-500 text-gray-900"
   },
   {
+    id: "Passé Simple",
+    title: "Le Passé Simple",
+    formula: "Base: Radical Spécial + Terminaisons Spécifiques",
+    description: "Temps littéraire. Terminaisons en -ai, -is, ou -us selon le groupe. Souvent irrégulier.",
+    example: "Il mangea, Il finit",
+    color: "bg-stone-100 border-stone-500 text-stone-900"
+  },
+  {
     id: "Imparfait",
     title: "L'Imparfait",
     formula: "Base: Présent 'Nous' + Terminaisons Imparfait",
@@ -26,14 +34,6 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     description: "Le radical est l'infinitif complet (ex: Manger-). Les terminaisons sont celles du verbe Avoir au présent : -ai, -as, -a, -ons, -ez, -ont.",
     example: "Je mangerai (Manger- + -ai)",
     color: "bg-blue-100 border-blue-500 text-blue-900"
-  },
-  {
-    id: "Passé Simple",
-    title: "Le Passé Simple",
-    formula: "Base: Radical Spécial + Terminaisons Spécifiques",
-    description: "Temps littéraire. Terminaisons en -ai, -is, ou -us selon le groupe. Souvent irrégulier.",
-    example: "Il mangea, Il finit",
-    color: "bg-stone-100 border-stone-500 text-stone-900"
   },
   {
     id: "Conditionnel Présent",
@@ -52,24 +52,6 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     color: "bg-emerald-100 border-emerald-500 text-emerald-900"
   },
   {
-    id: "Subjonctif Imparfait",
-    title: "Le Subjonctif Imparfait",
-    formula: "Base: Passé Simple + Terminaisons (Lit.)",
-    description: "Temps littéraire (soutenu). Formé sur la 2ème pers. du singulier du Passé Simple + -sse, -sses, -^t, -ssions, -ssiez, -ssent.",
-    example: "Que je parlasse, Qu'il fût",
-    color: "bg-teal-100 border-teal-500 text-teal-900"
-  },
-  
-  // --- Compound Tenses ---
-  {
-    id: "Passé Composé",
-    title: "Le Passé Composé",
-    formula: "Auxiliaire (Présent) + Participe Passé",
-    description: "L'auxiliaire Avoir ou Être conjugué au Présent, suivi du Participe Passé du verbe.",
-    example: "J'ai mangé",
-    color: "bg-red-100 border-red-500 text-red-900"
-  },
-  {
     id: "Plus-que-parfait",
     title: "Le Plus-que-parfait",
     formula: "Auxiliaire (Imparfait) + Participe Passé",
@@ -84,14 +66,6 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     description: "L'auxiliaire conjugué au Futur Simple + Participe Passé.",
     example: "J'aurai fini",
     color: "bg-cyan-100 border-cyan-500 text-cyan-900"
-  },
-  {
-    id: "Passé Antérieur",
-    title: "Le Passé Antérieur",
-    formula: "Auxiliaire (Passé Simple) + Participe Passé",
-    description: "L'auxiliaire conjugué au Passé Simple + Participe Passé. Rare, littéraire.",
-    example: "J'eus fini",
-    color: "bg-zinc-100 border-zinc-500 text-zinc-900"
   },
   {
     id: "Conditionnel Passé",
@@ -110,13 +84,29 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     color: "bg-green-100 border-green-500 text-green-900"
   },
   {
+    id: "Passé Antérieur",
+    title: "Le Passé Antérieur",
+    formula: "Auxiliaire (Passé Simple) + Participe Passé",
+    description: "L'auxiliaire conjugué au Passé Simple + Participe Passé. Rare, littéraire.",
+    example: "J'eus fini",
+    color: "bg-zinc-100 border-zinc-500 text-zinc-900"
+  },
+  {
     id: "Subjonctif Plus-que-parfait",
     title: "Le Subjonctif P.Q.P.",
     formula: "Aux (Subj. Imparfait) + Participe Passé",
     description: "Temps littéraire. L'auxiliaire conjugué au Subjonctif Imparfait + Participe Passé.",
     example: "Que j'eusse fini",
     color: "bg-lime-100 border-lime-500 text-lime-900"
-  }
+  },
+  {
+    id: "Subjonctif Imparfait",
+    title: "Le Subjonctif Imparfait",
+    formula: "Base: Passé Simple + Terminaisons (Lit.)",
+    description: "Temps littéraire (soutenu). Formé sur la 2ème pers. du singulier du Passé Simple + -sse, -sses, -^t, -ssions, -ssiez, -ssent.",
+    example: "Que je parlasse, Qu'il fût",
+    color: "bg-teal-100 border-teal-500 text-teal-900"
+  },
 ];
 
 export const ALL_TENSES = GRAMMAR_RULES.map(rule => rule.id);

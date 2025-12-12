@@ -4,6 +4,8 @@
  * 
  * Exports only 2 CSV files now!
  */
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const fs = require('fs');
 const crypto = require('crypto');
