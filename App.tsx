@@ -1,14 +1,13 @@
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchRandomPuzzleFromDB } from './services/supabase';
-import { PuzzleData, GameState } from './types';
+import { PuzzleData, GameState, SlotType } from './types';
 import { PuzzlePiece } from './components/PuzzlePiece';
 import { DropZone } from './components/DropZone';
 import { GrammarModal } from './components/GrammarModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { ALL_TENSES, SHIMMER_CLASS } from './constants';
-import { BookOpen, RefreshCw, Trophy, ArrowRight, BrainCircuit, Database, Settings, Lightbulb, Globe, Plus, ChevronDown, Info } from 'lucide-react';
+import { BookOpen, RefreshCw, ArrowRight, BrainCircuit, Database, Settings, Lightbulb, ChevronDown, Info, Plus } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { Language } from './locales';
 
@@ -48,7 +47,6 @@ const App: React.FC = () => {
 
   const [gameState, setGameState] = useState<GameState>(GameState.LOADING);
   const [puzzle, setPuzzle] = useState<PuzzleData | null>(null);
-  const [score, setScore] = useState(0);
   
   // Settings State
   const [showSettings, setShowSettings] = useState(false);
@@ -167,7 +165,6 @@ const App: React.FC = () => {
 
     if (isStemCorrect && isEndingCorrect && isAuxCorrect) {
       setGameState(GameState.SUCCESS);
-      setScore(s => s + 1);
       setFeedback(t('correct'));
     } else {
       setFeedback(t('wrong'));
@@ -217,34 +214,118 @@ const App: React.FC = () => {
   const showAuxConnectors = puzzle ? (puzzle.auxEnding !== null) : false;
   const showVerbConnectors = puzzle ? (puzzle.correctEnding !== null) : false;
 
-  // Define layout classes based on tense type
-  // Default (Compound): Vertical lists for each part
-  let verbStemContainerClass = "flex flex-col gap-3 w-full items-center";
-  let verbEndingContainerClass = "flex flex-col gap-3 w-full items-center";
-  
-  if (puzzle && !isCompound) {
-    if (puzzle.correctEnding === null) {
-      // 2.1 SIMPLE IRREGULAR: 1 row x 4 cols (or flexible grid)
-      // Use grid-cols-2 on mobile, grid-cols-4 on desktop for a single row effect
-      verbStemContainerClass = "grid grid-cols-2 sm:grid-cols-4 gap-3 w-full justify-items-center";
-    } else {
-      // 2.2 SIMPLE REGULAR: 2x2 grid inside the group
-      // Each group (Stems, Endings) uses a 2x2 grid
-      verbStemContainerClass = "grid grid-cols-2 gap-3 w-full justify-items-center";
-      verbEndingContainerClass = "grid grid-cols-2 gap-3 w-full justify-items-center";
-    }
-  }
+  // Flags for available trays
+  const hasAuxStem = isCompound && availableAuxStems.length > 0;
+  const hasAuxEnd = isCompound && availableAuxEndings.length > 0;
+  const hasVerbStem = availableStems.length > 0;
+  const hasVerbEnd = availableEndings.length > 0;
 
-  // Helper to determine tray container width
-  const getTrayContainerWidth = () => {
-    if (!puzzle) return "";
-    if (isCompound) return "min-w-[150px]";
-    if (puzzle.correctEnding === null) return "w-full max-w-2xl"; // Wide for 1x4 layout
-    return "min-w-[200px]"; // Wider for 2x2 layout
+  const trayCount = (hasAuxStem ? 1 : 0) + (hasAuxEnd ? 1 : 0) + (hasVerbStem ? 1 : 0) + (hasVerbEnd ? 1 : 0);
+
+  // Reusable Tray Block Component
+  const TrayBlock = ({ 
+    items, 
+    type, 
+    selected, 
+    onSelect, 
+    title, 
+    color, 
+    gridClass, // Passed directly now for maximum flexibility
+    containerClass = "w-full", // The outer wrapper width (default full, overridable)
+    showConnectors 
+  }: { 
+    items: string[], 
+    type: SlotType, 
+    selected: string | null, 
+    onSelect: (s: string) => void, 
+    title: string, 
+    color: 'amber' | 'blue' | 'red',
+    gridClass: string,
+    containerClass?: string,
+    showConnectors?: boolean
+  }) => {
+    const borderColor = color === 'amber' ? 'border-amber-100' : (color === 'blue' ? 'border-blue-100' : 'border-red-100');
+    const titleColor = color === 'amber' ? 'text-amber-500' : (color === 'blue' ? 'text-french-blue' : 'text-french-red');
+    
+    return (
+      <div className={`bg-white p-3 sm:p-4 rounded-xl border ${borderColor} shadow-sm flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500 ${containerClass}`}>
+        <div className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-2 border-b ${borderColor} pb-1 w-full text-center truncate ${titleColor}`}>
+          {title}
+        </div>
+        <div className={gridClass}>
+          {items.map((item, i) => (
+            <PuzzlePiece 
+              key={`${type}-${i}`} 
+              text={item} 
+              type={type} 
+              isSelected={selected === item} 
+              onClick={() => onSelect(item)} 
+              showConnectors={showConnectors}
+            />
+          ))}
+        </div>
+      </div>
+    );
   };
 
+  // --- HELPER FOR RENDERING TRAYS ---
+  // Updated to pass containerClass to TrayBlock
+  const AuxStemTray = ({ gridClass, containerClass }: { gridClass: string, containerClass?: string }) => (
+    <TrayBlock 
+      items={availableAuxStems}
+      type="aux-stem"
+      selected={selectedAuxStem}
+      onSelect={setSelectedAuxStem}
+      title={`Aux · ${t('stems_tray')}`}
+      color="amber"
+      gridClass={gridClass}
+      containerClass={containerClass}
+      showConnectors={showAuxConnectors}
+    />
+  );
+
+  const AuxEndTray = ({ gridClass, containerClass }: { gridClass: string, containerClass?: string }) => (
+    <TrayBlock 
+      items={availableAuxEndings}
+      type="aux-ending"
+      selected={selectedAuxEnding}
+      onSelect={setSelectedAuxEnding}
+      title={`Aux · ${t('endings_tray')}`}
+      color="amber"
+      gridClass={gridClass}
+      containerClass={containerClass}
+    />
+  );
+
+  const VerbStemTray = ({ gridClass, containerClass }: { gridClass: string, containerClass?: string }) => (
+    <TrayBlock 
+      items={availableStems}
+      type="stem"
+      selected={selectedStem}
+      onSelect={setSelectedStem}
+      title={`Verb · ${t('stems_tray')}`}
+      color="blue"
+      gridClass={gridClass}
+      containerClass={containerClass}
+      showConnectors={showVerbConnectors}
+    />
+  );
+
+  const VerbEndTray = ({ gridClass, containerClass }: { gridClass: string, containerClass?: string }) => (
+    <TrayBlock 
+      items={availableEndings}
+      type="ending"
+      selected={selectedEnding}
+      onSelect={setSelectedEnding}
+      title={`Verb · ${t('endings_tray')}`}
+      color="blue"
+      gridClass={gridClass}
+      containerClass={containerClass}
+    />
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20">
+    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-32 sm:pb-20">
       
       {/* Click outside handler for language menu */}
       {isLangMenuOpen && (
@@ -256,7 +337,7 @@ const App: React.FC = () => {
 
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-french-blue rounded-lg flex items-center justify-center text-white font-bold font-display shadow-sm">
               C
@@ -301,11 +382,6 @@ const App: React.FC = () => {
                 )}
              </div>
 
-            <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-sm font-bold border border-amber-100 mr-2">
-              <Trophy className="w-4 h-4" />
-              <span>{score}</span>
-            </div>
-            
             <button onClick={() => setShowSettings(true)} className="p-2 hover:bg-blue-50 rounded-full transition-colors text-gray-400">
               <Settings className="w-6 h-6" />
             </button>
@@ -322,7 +398,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-4 py-4 sm:py-8 flex flex-col items-center">
         
         {/* Loading State */}
         {gameState === GameState.LOADING && (
@@ -341,9 +418,6 @@ const App: React.FC = () => {
              </div>
              <h2 className="text-xl font-bold text-gray-800 mb-2">{t('error_title')}</h2>
              <p className="text-gray-500 mb-6 text-sm">{t('error_desc')}</p>
-             <div className="text-xs text-left bg-gray-100 p-3 rounded mb-4 overflow-x-auto text-gray-500">
-                Tip: Have you run the SQL init script in Supabase?
-             </div>
              <button onClick={loadNewPuzzle} className="px-6 py-3 bg-french-blue text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
                {t('retry')}
              </button>
@@ -352,28 +426,59 @@ const App: React.FC = () => {
 
         {(gameState === GameState.PLAYING || gameState === GameState.SUCCESS) && puzzle && (
           <>
-            {/* The Challenge */}
-            <div className="w-full text-center mb-10">
-              <div className="inline-block bg-white px-8 py-6 rounded-3xl shadow-lg shadow-blue-100/50 border border-blue-50 mb-6 transform transition-all hover:scale-105">
-                <span className="block text-xs text-gray-400 font-bold tracking-[0.2em] uppercase mb-2">
-                  {t('objective')}
-                </span>
-                <div className="text-4xl sm:text-5xl font-display font-black text-french-dark tracking-tight">
-                  <span className="text-french-blue">{puzzle.pronoun}</span> 
-                  <span className="mx-2 text-gray-300">·</span>
-                  <span className="text-french-red relative inline-block">
-                    {puzzle.verb}
-                    <svg className="absolute w-full h-2 bottom-1 left-0 text-red-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
-                      <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                    </svg>
+            {/* The Challenge - Card Area */}
+            <div className="w-full text-center mb-6 sm:mb-8 px-1">
+              <div className="relative inline-block w-full max-w-lg">
+                
+                {/* Card Background & Content */}
+                <div className="bg-white px-4 py-5 sm:px-12 sm:py-6 rounded-3xl shadow-lg shadow-blue-100/50 border border-blue-50 relative overflow-hidden transition-all duration-300">
+                  <span className="block text-[10px] sm:text-xs text-gray-400 font-bold tracking-[0.2em] uppercase mb-2">
+                    {t('objective')}
                   </span>
+                  <div className="text-3xl sm:text-5xl font-display font-black text-french-dark tracking-tight">
+                    <span className="text-french-blue">{puzzle.pronoun}</span> 
+                    <span className="mx-1 sm:mx-2 text-gray-300">·</span>
+                    <span className="text-french-red relative inline-block">
+                      {puzzle.verb}
+                      <svg className="absolute w-full h-2 bottom-0 sm:bottom-1 left-0 text-red-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="text-sm sm:text-lg font-medium text-gray-400 mt-1 sm:mt-2">
+                    {tTense(puzzle.tense)}
+                  </div>
+
+                  {/* MOBILE ONLY: Hint Button */}
+                  <button
+                      onClick={() => setShowHint(!showHint)}
+                      className={`sm:hidden absolute bottom-2 right-2 p-2.5 rounded-full shadow-sm border transition-all z-20 ${
+                        showHint 
+                          ? 'bg-blue-600 text-white border-blue-600 rotate-12' 
+                          : 'bg-white/50 hover:bg-white backdrop-blur-sm text-gray-400 border-transparent hover:border-gray-100 hover:text-french-blue'
+                      }`}
+                      aria-label={t('hint')}
+                  >
+                      {showHint ? <BrainCircuit className="w-5 h-5" /> : <Lightbulb className="w-5 h-5" />}
+                  </button>
                 </div>
-                <div className="text-lg font-medium text-gray-400 mt-2">
-                  {tTense(puzzle.tense)}
-                </div>
+
+                {/* MOBILE ONLY: Rule Bubble */}
+                {showHint && (
+                   <div className="sm:hidden w-full mt-3 animate-in slide-in-from-top-2 fade-in duration-300">
+                      <div className="mx-auto bg-blue-600 text-white text-xs px-4 py-3 rounded-2xl shadow-md border border-blue-400/50 text-center relative z-10">
+                        <div className="flex items-center justify-center gap-2 mb-1 opacity-80">
+                          <BookOpen className="w-3 h-3" />
+                          <span className="uppercase font-bold tracking-widest text-[10px]">{t('rules')}</span>
+                        </div>
+                        {translatedRuleSummary}
+                      </div>
+                   </div>
+                )}
               </div>
-              
-              <div className="flex justify-center h-10">
+
+              {/* DESKTOP ONLY: Original Centered Hint Row */}
+              <div className="hidden sm:flex justify-center mt-6 h-10">
                 {!showHint ? (
                   <button onClick={() => setShowHint(true)} className="flex items-center gap-2 text-sm bg-white text-french-blue hover:bg-blue-50 px-4 py-2 rounded-full border border-blue-100 shadow-sm transition-all">
                     <Lightbulb className="w-4 h-4" />
@@ -389,15 +494,16 @@ const App: React.FC = () => {
             </div>
 
             {/* --- DROP ZONES (PUZZLE AREA) --- */}
-            <div className="flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 mb-12 min-h-[120px]">
+            {/* Force single row on Desktop (sm:flex-row) regardless of Aux */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-10 w-full transition-all duration-300">
               
               {/* GROUP 1: AUXILIARY (Optional) */}
               {isCompound && (
-                <div className="flex items-center justify-center bg-amber-50 p-1.5 rounded-2xl shadow-sm border border-amber-100">
+                <div className="flex items-center justify-center bg-amber-50 p-1 sm:p-1.5 rounded-2xl shadow-sm border border-amber-100">
                   <DropZone 
                     type="aux-stem" 
                     content={selectedAuxStem} 
-                    placeholder="Aux Rad." 
+                    placeholder="Aux" 
                     onClear={() => setSelectedAuxStem(null)}
                     onDrop={(text) => setSelectedAuxStem(text)}
                     isCorrect={gameState === GameState.SUCCESS ? true : null}
@@ -407,7 +513,7 @@ const App: React.FC = () => {
                     <DropZone 
                       type="aux-ending" 
                       content={selectedAuxEnding} 
-                      placeholder="Aux Fin" 
+                      placeholder={t('ending_zone')} 
                       onClear={() => setSelectedAuxEnding(null)}
                       onDrop={(text) => setSelectedAuxEnding(text)}
                       isCorrect={gameState === GameState.SUCCESS ? true : null}
@@ -417,12 +523,13 @@ const App: React.FC = () => {
                 </div>
               )}
 
+              {/* Connecting Icon between Aux and Verb */}
               {isCompound && (
-                <Plus className="text-gray-300 w-8 h-8 shrink-0" />
+                 <Plus className="text-gray-300 w-4 h-4 sm:w-5 sm:h-5 rotate-90 sm:rotate-0" />
               )}
 
               {/* GROUP 2: MAIN VERB */}
-              <div className="flex items-center justify-center bg-blue-50 p-1.5 rounded-2xl shadow-sm border border-blue-100">
+              <div className="flex items-center justify-center bg-blue-50 p-1 sm:p-1.5 rounded-2xl shadow-sm border border-blue-100">
                 <DropZone 
                   type="stem" 
                   content={selectedStem} 
@@ -449,109 +556,137 @@ const App: React.FC = () => {
             </div>
 
             {/* --- PIECES TRAY (CANDIDATES) --- */}
-            <div className="w-full max-w-6xl mt-8">
+            {/* LAYOUT LOGIC BASED ON TRAY COUNT */}
+            <div className="w-full max-w-4xl mt-0">
               {gameState !== GameState.SUCCESS && (
-                <div className="flex flex-wrap justify-center items-start gap-6">
-
-                  {/* 1. AUX STEMS (Optional) */}
-                  {isCompound && availableAuxStems.length > 0 && (
-                    <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center min-w-[150px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-                      <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4 border-b border-amber-100 pb-2 w-full text-center">
-                        Aux · {t('stems_tray')}
-                      </div>
-                      <div className="flex flex-col gap-3 w-full items-center">
-                        {availableAuxStems.map((stem, i) => (
-                          <PuzzlePiece 
-                            key={`aux-s-${i}`} 
-                            text={stem} 
-                            type="aux-stem" 
-                            isSelected={selectedAuxStem === stem} 
-                            onClick={() => setSelectedAuxStem(stem)} 
-                            showConnectors={showAuxConnectors}
-                          />
-                        ))}
-                      </div>
+                <>
+                
+                  {/* CASE 1: ALL 4 TRAYS (Compound + Split Aux + Split Verb) */}
+                  {trayCount === 4 && (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+                       {/* Mobile: 2 rows (2 cols each). Desktop: 1 row (4 cols). */}
+                       {/* Internal Grid: Mobile=2x2 (grid-cols-2). Desktop=1x4 (sm:grid-cols-1) vertical stack. */}
+                       <AuxStemTray gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center" />
+                       <AuxEndTray gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center" />
+                       <VerbStemTray gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center" />
+                       <VerbEndTray gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center" />
                     </div>
                   )}
 
-                  {/* 2. AUX ENDINGS (Optional) */}
-                  {isCompound && availableAuxEndings.length > 0 && (
-                    <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center min-w-[150px] animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
-                      <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4 border-b border-amber-100 pb-2 w-full text-center">
-                        Aux · {t('endings_tray')}
-                      </div>
-                      <div className="flex flex-col gap-3 w-full items-center">
-                        {availableAuxEndings.map((ending, i) => (
-                          <PuzzlePiece 
-                            key={`aux-e-${i}`} 
-                            text={ending} 
-                            type="aux-ending" 
-                            isSelected={selectedAuxEnding === ending} 
-                            onClick={() => setSelectedAuxEnding(ending)} 
+                  {/* CASE 2: 3 TRAYS (e.g. Aux(single) + Verb(split)) */}
+                  {trayCount === 3 && (
+                     <div className="flex flex-col gap-3 w-full sm:flex-row sm:justify-center">
+                        {/* 1 Row on Desktop. Trays themselves auto-sized. */}
+                        
+                        {!hasAuxEnd ? (
+                           // Lonely Aux Stem
+                           <AuxStemTray 
+                             gridClass="grid grid-cols-4 sm:grid-cols-1 gap-2 w-full justify-items-center" 
+                             containerClass="w-full sm:w-fit"
+                           />
+                        ) : (
+                          // Lonely Verb Stem
+                          <VerbStemTray 
+                             gridClass="grid grid-cols-4 sm:grid-cols-1 gap-2 w-full justify-items-center"
+                             containerClass="w-full sm:w-fit"
                           />
-                        ))}
-                      </div>
+                        )}
+                        
+                        {/* The 'Pair' - Wrapped for Mobile 2-col, Desktop Flex */}
+                        <div className="grid grid-cols-2 gap-3 w-full sm:flex sm:w-auto sm:gap-3">
+                            {!hasAuxEnd ? (
+                               <>
+                                 <VerbStemTray 
+                                   gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center"
+                                   containerClass="w-full sm:w-fit"
+                                 />
+                                 <VerbEndTray 
+                                   gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center"
+                                   containerClass="w-full sm:w-fit"
+                                 />
+                               </>
+                            ) : (
+                               <>
+                                 <AuxStemTray 
+                                   gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center"
+                                   containerClass="w-full sm:w-fit"
+                                 />
+                                 <AuxEndTray 
+                                   gridClass="grid grid-cols-2 sm:grid-cols-1 gap-2 w-full justify-items-center"
+                                   containerClass="w-full sm:w-fit"
+                                 />
+                               </>
+                            )}
+                        </div>
+                     </div>
+                  )}
+
+                  {/* CASE 3: 2 TRAYS (Standard Regular Verb) */}
+                  {trayCount === 2 && (
+                    <div className="grid grid-cols-2 sm:flex sm:flex-row justify-center gap-3 w-full">
+                        {/* Side by Side on Desktop (centered flex) and Mobile (grid). 2x2 grid inside. */}
+                        {/* ADDED sm:gap-4 to gridClass for internal spacing */}
+                        {hasAuxStem ? (
+                          <>
+                            <AuxStemTray 
+                              gridClass="grid grid-cols-2 gap-2 sm:gap-4 w-full justify-items-center" 
+                              containerClass="w-full sm:w-fit"
+                            />
+                            {hasAuxEnd ? (
+                              <AuxEndTray 
+                                gridClass="grid grid-cols-2 gap-2 sm:gap-4 w-full justify-items-center"
+                                containerClass="w-full sm:w-fit"
+                              />
+                            ) : (
+                              <VerbStemTray 
+                                gridClass="grid grid-cols-2 gap-2 sm:gap-4 w-full justify-items-center"
+                                containerClass="w-full sm:w-fit"
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <VerbStemTray 
+                              gridClass="grid grid-cols-2 gap-2 sm:gap-4 w-full justify-items-center"
+                              containerClass="w-full sm:w-fit"
+                            />
+                            <VerbEndTray 
+                              gridClass="grid grid-cols-2 gap-2 sm:gap-4 w-full justify-items-center"
+                              containerClass="w-full sm:w-fit"
+                            />
+                          </>
+                        )}
                     </div>
                   )}
 
-                  {/* 3. VERB STEMS (Always Present) */}
-                  {availableStems.length > 0 && (
-                    <div className={`bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 ${getTrayContainerWidth()}`}>
-                      <div className="text-xs font-bold text-french-blue uppercase tracking-widest mb-4 border-b border-blue-100 pb-2 w-full text-center">
-                        Verbe · {t('stems_tray')}
-                      </div>
-                      <div className={verbStemContainerClass}>
-                        {availableStems.map((stem, i) => (
-                          <PuzzlePiece 
-                            key={`stem-${i}`} 
-                            text={stem} 
-                            type="stem" 
-                            isSelected={selectedStem === stem} 
-                            onClick={() => setSelectedStem(stem)}
-                            showConnectors={showVerbConnectors}
-                          />
-                        ))}
-                      </div>
+                  {/* CASE 4: 1 TRAY (Simple Irregular Verb) */}
+                  {trayCount === 1 && (
+                    <div className="w-full flex justify-center">
+                       {/* Desktop: Centered, w-fit ensures border shrinks. w-full removed from inner container on desktop. */}
+                       <VerbStemTray 
+                         gridClass="grid grid-cols-4 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-3 w-full sm:px-8 justify-items-center" 
+                         containerClass="w-full sm:w-fit sm:max-w-5xl"
+                       />
                     </div>
                   )}
 
-                  {/* 4. VERB ENDINGS (Optional) */}
-                  {availableEndings.length > 0 && (
-                    <div className={`bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 ${getTrayContainerWidth()}`}>
-                      <div className="text-xs font-bold text-french-red uppercase tracking-widest mb-4 border-b border-red-100 pb-2 w-full text-center">
-                        Verbe · {t('endings_tray')}
-                      </div>
-                      <div className={verbEndingContainerClass}>
-                        {availableEndings.map((ending, i) => (
-                          <PuzzlePiece 
-                            key={`ending-${i}`} 
-                            text={ending} 
-                            type="ending" 
-                            isSelected={selectedEnding === ending} 
-                            onClick={() => setSelectedEnding(ending)} 
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                </div>
+                </>
               )}
             </div>
 
             {/* Feedback & Result */}
             {feedback && (
-              <div className={`mt-8 p-6 rounded-2xl border-2 text-center animate-in zoom-in-95 duration-300 ${
+              <div className={`mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl border-2 text-center animate-in zoom-in-95 duration-300 ${
                 gameState === GameState.SUCCESS ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
               }`}>
-                <h3 className={`text-2xl font-display font-bold mb-2 ${
+                <h3 className={`text-xl sm:text-2xl font-display font-bold mb-2 ${
                    gameState === GameState.SUCCESS ? 'text-green-700' : 'text-red-700'
                 }`}>
                   {feedback}
                 </h3>
                 {gameState === GameState.SUCCESS && (
                   <div className="space-y-4 mt-4">
-                    <div className="text-lg text-green-900 bg-white/60 inline-block px-6 py-2 rounded-xl">
+                    <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
                       {puzzle.pronoun} 
                       <span className="font-bold ml-2">
                         {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
@@ -571,13 +706,13 @@ const App: React.FC = () => {
                 )}
               </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="mt-8 flex justify-center gap-4">
+            
+            {/* Sticky Action Footer */}
+            <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 flex justify-center gap-3 sm:gap-4 sm:static sm:bg-transparent sm:border-0 sm:shadow-none sm:mt-8 sm:backdrop-blur-none">
               {gameState === GameState.SUCCESS ? (
                  <button 
                  onClick={loadNewPuzzle}
-                 className="flex items-center gap-2 bg-french-dark text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:bg-gray-800 hover:scale-105 transition-all active:scale-95 ring-4 ring-gray-100"
+                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-french-dark text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl sm:rounded-2xl font-bold shadow-xl hover:bg-gray-800 hover:scale-105 transition-all active:scale-95 ring-4 ring-gray-100"
                >
                  <span>{t('next')}</span>
                  <ArrowRight className="w-5 h-5" />
@@ -586,7 +721,7 @@ const App: React.FC = () => {
                 <>
                    <button 
                     onClick={handleSkip}
-                    className="flex items-center gap-2 text-gray-400 hover:text-gray-600 px-6 py-3 rounded-xl font-semibold transition-colors hover:bg-gray-100"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 px-4 py-3 sm:px-6 rounded-xl font-semibold transition-colors hover:bg-gray-100 bg-gray-50 sm:bg-transparent"
                   >
                     <RefreshCw className="w-5 h-5" />
                     <span>{t('skip')}</span>
@@ -594,7 +729,7 @@ const App: React.FC = () => {
                   <button 
                     onClick={handleCheck}
                     disabled={!isComplete}
-                    className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold shadow-lg transition-all ${
+                    className={`flex-[2] sm:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold shadow-lg transition-all ${
                       isComplete 
                       ? 'bg-french-blue text-white shadow-blue-200 hover:scale-105 active:scale-95' 
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -605,6 +740,7 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
+
           </>
         )}
       </main>

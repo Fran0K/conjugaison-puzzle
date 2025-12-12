@@ -22,57 +22,90 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
   showConnectors = true // Default to true for backward compatibility
 }) => {
   
-  let baseClasses = "relative transition-all duration-200 select-none flex items-center justify-center font-display font-bold text-lg sm:text-xl transform hover:-translate-y-1 active:translate-y-0";
-  
   const isStem = type.includes('stem');
   const isAux = type.includes('aux');
 
-  // Specific styling for Stem vs Ending vs Standalone
-  let shapeClass = "";
-
-  if (isStem) {
-    if (showConnectors) {
-      // Classic Puzzle Piece (Left part)
-      shapeClass = "rounded-l-lg rounded-r-none border-r-2 border-dashed pr-6 pl-4 py-3 sm:py-4 min-w-[80px] sm:min-w-[100px] shadow-md border";
-    } else {
-      // Standalone Block (No connectors)
-      // Thicker border (border-2) to match DropZone 'single' style and look like a tile
-      shapeClass = "rounded-xl border-2 px-6 py-3 sm:py-4 min-w-[100px] w-full shadow-sm"; 
-    }
-  } else {
-    // Ending Piece (Right part) - Always has connector receiver shape imply on left
-    shapeClass = "rounded-r-lg rounded-l-none pl-6 pr-4 py-3 sm:py-4 min-w-[60px] sm:min-w-[80px] w-full shadow-md border";
-  }
-
   // --- Theme Color Logic ---
-  let colorClass = "";
-  let borderColor = "";
+  // We construct specific class strings to share between the Parent and the Connector children (Knob/Bridge)
+  // ensuring they always match perfectly in color and hover state.
+  
+  let bgClass = "";
+  let textClass = "";
+  let borderClass = "";
+  let ringClass = "";
 
-  // 1. Auxiliary Style
+  // 1. Auxiliary Style (Amber)
   if (isAux) {
-     colorClass = "bg-amber-50 text-amber-900 hover:bg-amber-100";
-     borderColor = "border-amber-300";
+     bgClass = "bg-amber-50";
+     textClass = "text-amber-900";
+     borderClass = "border-amber-300";
   } 
-  // 2. Main Verb Style
+  // 2. Main Verb Style (Blue) - Updated from White/Gray
   else {
-     colorClass = "bg-white text-french-dark hover:bg-blue-50";
-     borderColor = "border-gray-200";
+     bgClass = "bg-blue-50";
+     textClass = "text-blue-900";
+     borderClass = "border-blue-300";
   }
 
   // 3. Selection Override
   if (isSelected) {
-    colorClass = "bg-french-blue text-white ring-4 ring-blue-200";
-    borderColor = "border-blue-600";
+    bgClass = "bg-french-blue";
+    textClass = "text-white";
+    borderClass = "border-blue-600";
+    ringClass = "ring-2 sm:ring-4 ring-blue-200";
   }
 
   // 4. Validation Override
   if (isCorrect === true) {
-    colorClass = "bg-green-500 text-white ring-4 ring-green-200";
-    borderColor = "border-green-600";
+    bgClass = "bg-green-500";
+    textClass = "text-white";
+    borderClass = "border-green-600";
+    ringClass = "ring-2 sm:ring-4 ring-green-200";
   } else if (isCorrect === false) {
-    colorClass = "bg-french-red text-white ring-4 ring-red-200";
-    borderColor = "border-red-600";
+    bgClass = "bg-french-red";
+    textClass = "text-white";
+    borderClass = "border-red-600";
+    ringClass = "ring-2 sm:ring-4 ring-red-200";
   }
+
+  // --- Style Logic Updates ---
+  // 1. Shadow: Use drop-shadow-sm for a lighter, unified shadow effect across all shapes.
+  // 2. Border Style: Base/Stem gets 'border-dashed' ONLY if it has connectors. Standalone = Solid.
+  const shadowClass = "drop-shadow-sm";
+  const borderStyle = (isStem && showConnectors) ? "border-dashed" : "border-solid";
+
+  // --- Base Classes ---
+  // 1. "group": Allows children to react to parent hover.
+  // 2. "overflow-visible": Essential so the Knob can stick out.
+  const baseClasses = `relative group transition-all duration-200 select-none flex items-center justify-center font-display font-bold text-sm sm:text-xl transform hover:-translate-y-1 active:translate-y-0 overflow-visible ${shadowClass} border-2 ${borderStyle} ${bgClass} ${textClass} ${borderClass} ${ringClass}`;
+
+  // --- Shape Logic ---
+  let shapeClass = "";
+
+  // Note: 'w-full' removed from both shapes to prevent stretching in grid, relying on min-w instead.
+  if (isStem) {
+    if (showConnectors) {
+      // Base Piece (Knob on Right)
+      // Standard rounded-left, square-right to attach knob
+      shapeClass = "rounded-l-lg rounded-r-none pr-3 pl-2 py-2 sm:pr-6 sm:pl-4 sm:py-4 min-w-[60px] sm:min-w-[100px]";
+    } else {
+      // Standalone (Tray) - Fully rounded, solid block
+      shapeClass = "rounded-xl px-1 py-2 sm:px-6 sm:py-4 min-w-[65px] sm:min-w-[100px]"; 
+    }
+  } else {
+    // Ending Piece (Socket on Left)
+    // Standard rounded-right, square-left for socket
+    shapeClass = "rounded-r-lg rounded-l-none pl-3 pr-2 py-2 sm:pl-6 sm:pr-4 sm:py-4 min-w-[60px] sm:min-w-[100px]";
+  }
+
+  // --- Masks & Connectors ---
+  // We use inline styles for the mask because Tailwind doesn't support complex gradients easily
+  // Mask radius: 6px -> Diameter 12px.
+  // Only apply mask if not stem AND connectors are enabled
+  const maskStyle: React.CSSProperties = (!isStem && showConnectors) ? {
+    WebkitMaskImage: 'radial-gradient(circle 6px at 0 50%, transparent 6px, black 6.5px)',
+    maskImage: 'radial-gradient(circle 6px at 0 50%, transparent 6px, black 6.5px)'
+  } : {};
 
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) {
@@ -90,22 +123,38 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       draggable={!disabled}
       onDragStart={handleDragStart}
       disabled={disabled}
-      className={`${baseClasses} ${shapeClass} ${colorClass} ${borderColor} ${disabled ? 'opacity-50 cursor-not-allowed transform-none' : 'cursor-grab active:cursor-grabbing'}`}
+      style={maskStyle}
+      className={`${baseClasses} ${shapeClass} ${disabled ? 'opacity-50 cursor-not-allowed transform-none' : 'cursor-grab active:cursor-grabbing'}`}
     >
-      {/* Visual connector notch representation - Only for Stems when connectors are enabled */}
+      
+      {/* ---------------- STEM (Base) CONNECTOR LOGIC ---------------- */}
+      {/* Creates a convex knob on the right side */}
       {isStem && showConnectors && (
-        <div className={`absolute right-[-10px] top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full shadow-inner z-10 ${
-          isSelected ? 'bg-french-blue' : (
-            isCorrect === true ? 'bg-green-500' : (
-              isCorrect === false ? 'bg-french-red' : (
-                isAux ? 'bg-amber-100 border-amber-300' : 'bg-white border-gray-300'
-              )
-            )
-          )
-        } border border-inherit`}></div>
+        <>
+          {/* 1. The Knob (Circle) */}
+          {/* Sits outside the parent to the right. Always dashed to match the new parent style. */}
+          <div className={`absolute right-[-10px] sm:right-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 border-dashed z-10 ${bgClass} ${borderClass}`}></div>
+          
+          {/* 2. The Bridge (Rectangle) */}
+          {/* Sits over the seam. Hides the parent's right border and the knob's left border. */}
+          {/* Matches background color exactly. High z-index. */}
+          <div className={`absolute right-[-2px] top-1/2 transform -translate-y-1/2 w-[6px] h-[8px] sm:h-[12px] z-20 ${bgClass}`}></div>
+        </>
+      )}
+
+      {/* ---------------- ENDING (Fin) CONNECTOR LOGIC ---------------- */}
+      {/* Creates a visual border for the concave socket on the left side */}
+      {!isStem && showConnectors && (
+         /* The Socket Contour (Border Arc) */
+         /* Positioned exactly at the mask hole. Kept dashed to visually accept the dashed knob. */
+         /* Clip-path ensures we only see the inner arc (right half of the circle). */
+         <div 
+           className={`absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-[12px] h-[12px] rounded-full border-2 border-dashed bg-transparent z-10 pointer-events-none ${borderClass}`}
+           style={{ clipPath: 'inset(0 0 0 50%)' }}
+         ></div>
       )}
       
-      {text}
+      <span className="relative z-30">{text}</span>
     </button>
   );
 };

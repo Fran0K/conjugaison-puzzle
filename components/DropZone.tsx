@@ -62,9 +62,9 @@ export const DropZone: React.FC<DropZoneProps> = ({
 
   // Filled State (Pending Check)
   if (content) {
-    textColor = isAux ? "text-amber-900" : "text-french-dark";
-    bgColor = isAux ? "bg-amber-50" : "bg-white";
-    borderColor = isAux ? "border-amber-500" : "border-french-blue";
+    textColor = isAux ? "text-amber-900" : "text-blue-900";
+    bgColor = isAux ? "bg-amber-50" : "bg-blue-50";
+    borderColor = isAux ? "border-amber-500" : "border-blue-500";
   }
 
   // Validated State (Correct/Incorrect)
@@ -86,22 +86,24 @@ export const DropZone: React.FC<DropZoneProps> = ({
   }
 
   // --- Shape Logic ---
-  // If position is explicitly provided, it overrides the default type-based shape
+  // Mobile optimized shapes (padding reduced)
   let shapeClass = "";
   
   if (position) {
     if (position === 'single') {
-      shapeClass = "rounded-xl border-2 px-6";
+      // Solid border for standalone pieces
+      shapeClass = "rounded-xl border-2 px-3 sm:px-6";
     } else if (position === 'left') {
-      shapeClass = "rounded-l-xl rounded-r-none border-r-2 border-dashed pr-8 pl-6";
+      // Dashed border on the right seam ONLY
+      shapeClass = "rounded-l-xl rounded-r-none border-r-2 border-dashed pr-4 pl-3 sm:pr-8 sm:pl-6";
     } else if (position === 'right') {
-      shapeClass = "rounded-r-xl rounded-l-none pl-8 pr-6";
+      shapeClass = "rounded-r-xl rounded-l-none pl-4 pr-3 sm:pl-8 sm:pr-6";
     }
   } else {
     // Default Fallback
     shapeClass = isStem
-      ? "rounded-l-xl rounded-r-none border-r-2 border-dashed pr-8 pl-6"
-      : "rounded-r-xl rounded-l-none pl-8 pr-6";
+      ? "rounded-l-xl rounded-r-none border-r-2 border-dashed pr-4 pl-3 sm:pr-8 sm:pl-6"
+      : "rounded-r-xl rounded-l-none pl-4 pr-3 sm:pl-8 sm:pr-6";
   }
 
   // Determine if notch should be shown
@@ -115,7 +117,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={`
-        relative h-24 min-w-[120px] sm:min-w-[140px] flex items-center justify-center 
+        relative h-14 sm:h-24 min-w-[80px] sm:min-w-[140px] flex items-center justify-center 
         border-2 ${borderColor} ${bgColor} ${shapeClass}
         transition-all duration-300
         ${content && isCorrect === null ? 'cursor-pointer hover:opacity-80 group' : ''}
@@ -124,26 +126,26 @@ export const DropZone: React.FC<DropZoneProps> = ({
     >
        {/* Notch representation for dropzone */}
        {showNotch && (
-        <div className={`absolute right-[-12px] top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border-2 z-10 ${
+        <div className={`absolute right-[-8px] sm:right-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 z-10 ${
              isOver ? 'bg-blue-50 border-blue-500' :
              content ? (
                isCorrect === true ? 'bg-green-50 border-green-500' : 
                (isCorrect === false ? 'bg-red-50 border-red-500' : 
-               (isAux ? 'bg-amber-50 border-amber-500' : 'bg-white border-french-blue'))
+               (isAux ? 'bg-amber-50 border-amber-500' : 'bg-blue-50 border-blue-500'))
              ) : (isAux ? 'bg-white border-amber-200' : 'bg-white border-blue-200')
         }`}></div>
       )}
 
       {content ? (
-        <span className="text-xl sm:text-2xl font-display font-bold">{content}</span>
+        <span className="text-lg sm:text-2xl font-display font-bold">{content}</span>
       ) : (
-        <span className={`font-display font-semibold text-xs sm:text-sm uppercase tracking-wider select-none pointer-events-none text-center ${textColor}`}>
+        <span className={`font-display font-semibold text-[10px] sm:text-sm uppercase tracking-wider select-none pointer-events-none text-center ${textColor}`}>
           {placeholder}
         </span>
       )}
       
       {/* Label for Aux/Verb distinction */}
-      <span className={`absolute -top-3 left-2 text-[10px] font-bold uppercase px-1.5 rounded-full border ${
+      <span className={`absolute -top-2 sm:-top-3 left-2 text-[8px] sm:text-[10px] font-bold uppercase px-1 rounded-full border ${
         isAux 
         ? 'bg-amber-50 text-amber-500 border-amber-100' 
         : 'bg-blue-50 text-blue-400 border-blue-100'
@@ -154,7 +156,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
       {/* Hover to remove indicator (only if filled, not validated, and not dragging) */}
       {content && isCorrect === null && !isOver && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-100/80 opacity-0 group-hover:opacity-100 transition-opacity rounded-[inherit] backdrop-blur-[1px]">
-          <span className="text-xs font-bold text-red-600 uppercase">Retirer</span>
+          <span className="text-[10px] sm:text-xs font-bold text-red-600 uppercase">Retirer</span>
         </div>
       )}
     </div>
