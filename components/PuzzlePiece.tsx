@@ -98,15 +98,6 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
     shapeClass = "rounded-r-lg rounded-l-none pl-3 pr-2 py-2 sm:pl-6 sm:pr-4 sm:py-4 min-w-[60px] sm:min-w-[100px]";
   }
 
-  // --- Masks & Connectors ---
-  // We use inline styles for the mask because Tailwind doesn't support complex gradients easily
-  // Mask radius: 6px -> Diameter 12px.
-  // Only apply mask if not stem AND connectors are enabled
-  const maskStyle: React.CSSProperties = (!isStem && showConnectors) ? {
-    WebkitMaskImage: 'radial-gradient(circle 6px at 0 50%, transparent 6px, black 6.5px)',
-    maskImage: 'radial-gradient(circle 6px at 0 50%, transparent 6px, black 6.5px)'
-  } : {};
-
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) {
       e.preventDefault();
@@ -123,7 +114,7 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       draggable={!disabled}
       onDragStart={handleDragStart}
       disabled={disabled}
-      style={maskStyle}
+      // Removed maskStyle to fix black drag ghost
       className={`${baseClasses} ${shapeClass} ${disabled ? 'opacity-50 cursor-not-allowed transform-none' : 'cursor-grab active:cursor-grabbing'}`}
     >
       
@@ -143,15 +134,21 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       )}
 
       {/* ---------------- ENDING (Fin) CONNECTOR LOGIC ---------------- */}
-      {/* Creates a visual border for the concave socket on the left side */}
+      {/* Creates a visual concave socket on the left side */}
       {!isStem && showConnectors && (
-         /* The Socket Contour (Border Arc) */
-         /* Positioned exactly at the mask hole. Kept dashed to visually accept the dashed knob. */
-         /* Clip-path ensures we only see the inner arc (right half of the circle). */
-         <div 
-           className={`absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-[12px] h-[12px] rounded-full border-2 border-dashed bg-transparent z-10 pointer-events-none ${borderClass}`}
-           style={{ clipPath: 'inset(0 0 0 50%)' }}
-         ></div>
+         <>
+           {/* 1. The Hole Simulator (White Circle Overlay) */}
+           {/* Replaces the CSS Mask. Simulates transparency by matching the TRAY background (white). 
+               This fixes the black box issue during drag. */}
+           <div className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-[12px] h-[12px] rounded-full bg-white z-20"></div>
+
+           {/* 2. The Socket Contour (Border Arc) */}
+           {/* Positioned exactly over the white circle to draw the dashed border. */}
+           <div 
+             className={`absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-[12px] h-[12px] rounded-full border-2 border-dashed bg-transparent z-30 pointer-events-none ${borderClass}`}
+             style={{ clipPath: 'inset(0 0 0 50%)' }}
+           ></div>
+         </>
       )}
       
       <span className="relative z-30">{text}</span>

@@ -80,9 +80,10 @@ export const DropZone: React.FC<DropZoneProps> = ({
 
   // Drag Over Feedback
   if (isOver) {
-    borderColor = "border-blue-500";
-    bgColor = "bg-blue-50";
-    additionalClasses = "ring-4 ring-blue-200 scale-105 z-10";
+    borderColor = isAux ? "border-amber-500" : "border-blue-500";
+    bgColor = isAux ? "bg-amber-50" : "bg-blue-50";
+    const ringColor = isAux ? "ring-amber-200" : "ring-blue-200";
+    additionalClasses = `ring-4 ${ringColor} scale-105 z-10`;
   }
 
   // --- Shape Logic ---
@@ -127,7 +128,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
        {/* Notch representation for dropzone */}
        {showNotch && (
         <div className={`absolute right-[-8px] sm:right-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 z-10 ${
-             isOver ? 'bg-blue-50 border-blue-500' :
+             isOver ? (isAux ? 'bg-amber-50 border-amber-500' : 'bg-blue-50 border-blue-500') :
              content ? (
                isCorrect === true ? 'bg-green-50 border-green-500' : 
                (isCorrect === false ? 'bg-red-50 border-red-500' : 
