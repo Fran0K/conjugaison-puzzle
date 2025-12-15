@@ -13,9 +13,10 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+    // <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
           <h2 className="text-2xl font-display font-bold text-french-dark">
             {t('rules')}
           </h2>
@@ -27,7 +28,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
           </button>
         </div>
         
-        <div className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <p className="text-gray-600">
             Logique des temps / Tense Logic:
           </p>
@@ -52,10 +53,10 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
           </div>
         </div>
         
-        <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+        <div className="px-4 py-3 md:px-6 md:py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
           <button
             onClick={onClose}
-            className="w-full py-3 bg-french-dark text-white rounded-xl font-bold hover:bg-gray-800 transition-colors"
+            className="w-full py-2.5 md:py-3 bg-french-dark text-white rounded-xl font-bold hover:bg-gray-800 transition-colors"
           >
             OK
           </button>

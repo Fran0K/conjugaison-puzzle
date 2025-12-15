@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle} from 'lucide-react';
+import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, CircleFadingPlus, Puzzle } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 interface AboutModalProps {
@@ -13,10 +13,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header - Fixed */}
-        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+        <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
           <h2 className="text-xl font-display font-bold text-french-dark">
             {t('about')}
           </h2>
@@ -63,7 +63,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                {/* Step 2 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <Plus className="w-4 h-4" />
+                   <CircleFadingPlus className="w-4 h-4" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_2_title')}</h4>

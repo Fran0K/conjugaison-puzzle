@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { GRAMMAR_RULES } from '../constants';
 import { X, Check, Filter } from 'lucide-react';
@@ -49,14 +50,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+        <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-french-blue/10 rounded-lg text-french-blue">
-                <Filter className="w-5 h-5" />
-            </div>
+            
             <h2 className="text-xl font-display font-bold text-french-dark">
               {t('filter_title')}
             </h2>
@@ -132,16 +131,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
         </div>
         
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
+        <div className="px-4 py-3 md:px-6 md:py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
            <button
             onClick={onClose}
-            className="px-6 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
+            className="px-6 py-2.5 md:py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
           >
             {t('cancel')}
           </button>
           <button
             onClick={handleSave}
-            className="px-8 py-3 bg-french-dark text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg"
+            className="px-8 py-2.5 md:py-3 bg-french-dark text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg"
           >
             {t('validate')} ({tempSelected.length})
           </button>
