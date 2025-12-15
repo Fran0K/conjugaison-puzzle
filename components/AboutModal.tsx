@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, CircleFadingPlus, Puzzle } from 'lucide-react';
+import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, CircleFadingPlus, Puzzle, AudioWaveform } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 interface AboutModalProps {
