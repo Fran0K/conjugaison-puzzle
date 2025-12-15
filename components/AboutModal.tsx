@@ -63,7 +63,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                {/* Step 2 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <CircleFadingPlus className="w-4 h-4" />
+                   <Plus className="w-4 h-4" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_2_title')}</h4>
