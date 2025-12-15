@@ -39,7 +39,7 @@ export const GRAMMAR_RULES: GrammarRule[] = [
     id: "Conditionnel Présent",
     title: "Le Conditionnel Présent",
     formula: "Base: Radical du Futur + Terminaisons Imparfait",
-    description: "Utilise le radical du Futur Simple (l'infinitif) avec les terminaisons de l'Imparfait (-ais, -ais, -ait...).",
+    description: "Utilise le radical du Futur Simple (l'infinitif) avec les terminaisons de l'Imparfait (-ais, -ais, -ait, -ions, -iez, -aient).",
     example: "Je mangerais (Manger- + -ais)",
     color: "bg-purple-100 border-purple-500 text-purple-900"
   },

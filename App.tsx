@@ -42,15 +42,32 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
   { code: 'ja', label: '日本語', flag: '🇯🇵' },
 ];
 
+const TENSES_STORAGE_KEY = 'app_tenses_pref';
+
 const App: React.FC = () => {
   const { t, tTense, tRule, language, setLanguage } = useLanguage();
 
   const [gameState, setGameState] = useState<GameState>(GameState.LOADING);
   const [puzzle, setPuzzle] = useState<PuzzleData | null>(null);
   
-  // Settings State
+  // Settings State - Initialize from localStorage
   const [showSettings, setShowSettings] = useState(false);
-  const [selectedTenses, setSelectedTenses] = useState<string[]>(ALL_TENSES);
+  const [selectedTenses, setSelectedTenses] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(TENSES_STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        } catch (e) {
+          console.warn("Failed to parse saved tenses pref");
+        }
+      }
+    }
+    return ALL_TENSES;
+  });
 
   // Hint State
   const [showHint, setShowHint] = useState(false);
@@ -177,6 +194,7 @@ const App: React.FC = () => {
   
   const handleSettingsSave = (newTenses: string[]) => {
       setSelectedTenses(newTenses);
+      localStorage.setItem(TENSES_STORAGE_KEY, JSON.stringify(newTenses));
   };
 
   const selectLanguage = (lang: Language) => {

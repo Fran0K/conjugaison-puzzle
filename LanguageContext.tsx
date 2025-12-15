@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, TRANSLATIONS } from './locales';
 
 interface LanguageContextType {
@@ -11,8 +11,26 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const LANGUAGE_STORAGE_KEY = 'app_language_pref';
+
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('fr'); // Default to French
+  // Initialize from localStorage or default to 'fr'
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      // Validate that the saved language is a valid key
+      if (saved && (saved === 'fr' || saved === 'en' || saved === 'zh' || saved === 'ja')) {
+        return saved as Language;
+      }
+    }
+    return 'fr';
+  });
+
+  // Wrapper to update both state and localStorage
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+  };
 
   const t = (key: keyof typeof TRANSLATIONS.fr.ui): string => {
     return TRANSLATIONS[language].ui[key] || TRANSLATIONS['fr'].ui[key];
