@@ -96,7 +96,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
            </div>
 
            {/* Footer: Author */}
-           <div className="w-full border-t border-gray-100 pt-6 text-center">
+           <div className="w-full border-t border-gray-100 pt-6 pb-6 md:pb-10 text-center">
              <p className="text-sm text-gray-500 mb-2 font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
              </p>
