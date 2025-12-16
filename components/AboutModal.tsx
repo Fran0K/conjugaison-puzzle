@@ -1,19 +1,20 @@
 
 import React from 'react';
-import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle } from 'lucide-react';
+import { X, Heart, Github, Linkedin, Rss, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 interface AboutModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRestartTutorial?: () => void;
 }
 
-export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
+export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onRestartTutorial }) => {
   const { t } = useLanguage();
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)]  bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header - Fixed */}
         <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
@@ -29,7 +30,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
         </div>
         
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4 ">
            <div className="flex flex-col items-center text-center mb-8">
               {/* Logo / Icon */}
               <div className="w-16 h-16 bg-french-blue rounded-2xl flex items-center justify-center text-white shadow-lg mb-4">
@@ -95,8 +96,25 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
              </div>
            </div>
 
+            {/* Restart Tutorial Button */}
+            {onRestartTutorial && (
+              <div className="mb-8 flex justify-center">
+                 <button 
+                  onClick={() => {
+                    onClose();
+                    onRestartTutorial();
+                  }}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-all text-sm"
+                 >
+                    <RotateCcw className="w-4 h-4" />
+                    {/* @ts-ignore */}
+                    {t('restart_tutorial')}
+                 </button>
+              </div>
+            )}
+
            {/* Footer: Author */}
-           <div className="w-full border-t border-gray-100 pt-6 pb-6 md:pb-10 text-center">
+           <div className="w-full border-t border-gray-100 pt-6 pb-8 md:pb-10 text-center">
              <p className="text-sm text-gray-500 mb-2 font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
              </p>

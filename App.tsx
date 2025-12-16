@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchRandomPuzzleFromDB } from './services/supabase';
 import { PuzzleData, GameState, SlotType } from './types';
 import { PuzzlePiece } from './components/PuzzlePiece';
@@ -6,8 +7,9 @@ import { DropZone } from './components/DropZone';
 import { GrammarModal } from './components/GrammarModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
+import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay'; // Changed Import
 import { ALL_TENSES, SHIMMER_CLASS } from './constants';
-import { BookOpen, RefreshCw, ArrowRight, BrainCircuit, Database, Settings, Lightbulb, ChevronDown, Info, Plus, Puzzle as PuzzleIcon } from 'lucide-react';
+import { BookOpen, RefreshCw, ArrowRight, Database, Settings, Lightbulb, ChevronDown, Info, Plus, Puzzle as PuzzleIcon } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { Language } from './locales';
 
@@ -43,6 +45,7 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
 ];
 
 const TENSES_STORAGE_KEY = 'app_tenses_pref';
+const ONBOARDING_STORAGE_KEY = 'app_has_seen_tutorial_v2'; // Updated key for new tutorial
 
 const App: React.FC = () => {
   const { t, tTense, tRule, language, setLanguage } = useLanguage();
@@ -75,8 +78,17 @@ const App: React.FC = () => {
   // Language Menu State
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
-  // About Modal State
+  // Modal States
   const [showAbout, setShowAbout] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  // --- REFS FOR TUTORIAL ---
+  const langBtnRef = useRef<HTMLDivElement>(null);
+  const settingsBtnRef = useRef<HTMLButtonElement>(null);
+  const objectiveRef = useRef<HTMLDivElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
+  const trayRef = useRef<HTMLDivElement>(null);
+  const grammarRef = useRef<HTMLButtonElement>(null);
 
   // --- Available pieces in the "tray" ---
   // Verb / Main Parts
@@ -97,6 +109,30 @@ const App: React.FC = () => {
   // UI States
   const [showGrammar, setShowGrammar] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+
+  // Check for First Time User on Mount
+  useEffect(() => {
+    // Only show tutorial once the game is actually playable (UI elements exist)
+    if (gameState === GameState.PLAYING) {
+      const hasSeen = localStorage.getItem(ONBOARDING_STORAGE_KEY);
+      if (!hasSeen) {
+        setTimeout(() => {
+          setShowTutorial(true);
+        }, 800);
+      }
+    }
+  }, [gameState]);
+
+  const handleTutorialComplete = () => {
+    localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true');
+    setShowTutorial(false);
+  };
+
+  const handleRestartTutorial = () => {
+    // Reset key? Not strictly necessary if we just force show.
+    // localStorage.removeItem(ONBOARDING_STORAGE_KEY); 
+    setShowTutorial(true);
+  };
 
   const loadNewPuzzle = useCallback(async () => {
     setGameState(GameState.LOADING);
@@ -248,8 +284,8 @@ const App: React.FC = () => {
     onSelect, 
     title, 
     color, 
-    gridClass, // Passed directly now for maximum flexibility
-    containerClass = "w-full", // The outer wrapper width (default full, overridable)
+    gridClass, 
+    containerClass = "w-full",
     showConnectors 
   }: { 
     items: string[], 
@@ -287,8 +323,6 @@ const App: React.FC = () => {
   };
 
   // --- HELPER FOR RENDERING TRAYS ---
-  // Updated to pass containerClass to TrayBlock
-  // Updated onSelect to handle toggle logic (deselect if already selected)
   const AuxStemTray = ({ gridClass, containerClass }: { gridClass: string, containerClass?: string }) => (
     <TrayBlock 
       items={availableAuxStems}
@@ -343,6 +377,16 @@ const App: React.FC = () => {
     />
   );
 
+  // Define Steps for the tutorial
+  const tutorialSteps: TutorialStep[] = [
+    { targetRef: objectiveRef, titleKey: 'tour_obj_title', descKey: 'tour_obj_desc', position: 'bottom' },
+    { targetRef: trayRef, titleKey: 'tour_tray_title', descKey: 'tour_tray_desc', position: 'top' },
+    { targetRef: dropZoneRef, titleKey: 'tour_zone_title', descKey: 'tour_zone_desc', position: 'bottom' },
+    { targetRef: settingsBtnRef, titleKey: 'tour_settings_title', descKey: 'tour_settings_desc', position: 'bottom' },
+    { targetRef: grammarRef, titleKey: 'tour_grammar_title', descKey: 'tour_grammar_desc', position: 'bottom' },
+    { targetRef: langBtnRef, titleKey: 'tour_lang_title', descKey: 'tour_lang_desc', position: 'bottom' },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-32 sm:pb-20">
       
@@ -369,7 +413,7 @@ const App: React.FC = () => {
           
           <div className="flex items-center gap-2 sm:gap-3">
              {/* Language Dropdown */}
-             <div className="relative">
+             <div className="relative" ref={langBtnRef}>
                 <button 
                   onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
                   className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors border border-gray-200"
@@ -398,16 +442,16 @@ const App: React.FC = () => {
                 )}
              </div>
 
-            <button onClick={() => setShowSettings(true)} className="p-2 text-gray-400 hover:bg-blue-50 rounded-full transition-colors">
+            <button ref={settingsBtnRef} onClick={() => setShowSettings(true)} className="p-2 hover:bg-blue-50 rounded-full transition-colors text-gray-400">
               <Settings className="w-6 h-6" />
             </button>
 
-            <button onClick={() => setShowGrammar(true)} className="p-2 text-gray-400 hover:bg-blue-50 rounded-full transition-colors">
+            <button ref={grammarRef} onClick={() => setShowGrammar(true)} className="p-2 hover:bg-blue-50 rounded-full transition-colors text-gray-400">
               <BookOpen className="w-6 h-6" />
             </button>
 
-             {/* Info Button - Now visible on all screens, at the end of the row */}
-             <button onClick={() => setShowAbout(true)} className="p-2 text-gray-400 hover:bg-blue-50 rounded-full transition-colors">
+             {/* Info Button */}
+             <button onClick={() => setShowAbout(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
                <Info className="w-6 h-6" />
              </button>
           </div>
@@ -444,7 +488,7 @@ const App: React.FC = () => {
           <>
             {/* The Challenge - Card Area */}
             <div className="w-full text-center mb-6 sm:mb-8 px-1">
-              <div className="relative inline-block w-full max-w-lg">
+              <div className="relative inline-block w-full max-w-lg" ref={objectiveRef}>
                 
                 {/* Card Background & Content */}
                 <div className="bg-white px-4 py-5 sm:px-12 sm:py-6 rounded-3xl shadow-lg shadow-blue-100/50 border border-blue-50 relative overflow-hidden transition-all duration-300">
@@ -470,12 +514,12 @@ const App: React.FC = () => {
                       onClick={() => setShowHint(!showHint)}
                       className={`sm:hidden absolute bottom-2 right-2 p-2.5 rounded-full shadow-sm border transition-all z-20 ${
                         showHint 
-                          ? 'bg-blue-600 text-white border-blue-600 rotate-12' 
+                          ? 'bg-blue-600 text-white border-blue-600' 
                           : 'bg-white/50 hover:bg-white backdrop-blur-sm text-gray-400 border-transparent hover:border-gray-100 hover:text-french-blue'
                       }`}
                       aria-label={t('hint')}
                   >
-                      {showHint ? <BrainCircuit className="w-5 h-5" /> : <Lightbulb className="w-5 h-5" />}
+                      {showHint ? <Lightbulb className="w-5 h-5" /> : <Lightbulb className="w-5 h-5" />}
                   </button>
                 </div>
 
@@ -502,7 +546,7 @@ const App: React.FC = () => {
                   </button>
                 ) : (
                   <button onClick={() => setShowHint(false)} className="flex items-center justify-center gap-2 text-sm bg-blue-50 text-blue-800 hover:bg-blue-100 px-4 py-2 rounded-full border border-blue-100 shadow-sm animate-in fade-in zoom-in-95 transition-colors cursor-pointer">
-                    <BrainCircuit className="w-4 h-4" />
+                    <Lightbulb className="w-4 h-4" />
                     <span className="font-semibold">{translatedRuleSummary}</span>
                   </button>
                 )}
@@ -511,7 +555,7 @@ const App: React.FC = () => {
 
             {/* --- DROP ZONES (PUZZLE AREA) --- */}
             {/* Force single row on Desktop (sm:flex-row) regardless of Aux */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-10 w-full transition-all duration-300">
+            <div ref={dropZoneRef} className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-10 w-full transition-all duration-300">
               
               {/* GROUP 1: AUXILIARY (Optional) */}
               {isCompound && (
@@ -573,7 +617,7 @@ const App: React.FC = () => {
 
             {/* --- PIECES TRAY (CANDIDATES) --- */}
             {/* LAYOUT LOGIC BASED ON TRAY COUNT */}
-            <div className="w-full max-w-4xl mt-0">
+            <div className="w-full max-w-4xl mt-0" ref={trayRef}>
               {gameState !== GameState.SUCCESS && (
                 <>
                 
@@ -758,9 +802,11 @@ const App: React.FC = () => {
         )}
       </main>
 
+      {/* Modals & Overlays */}
+      <TutorialOverlay isOpen={showTutorial} steps={tutorialSteps} onComplete={handleTutorialComplete} />
       <GrammarModal isOpen={showGrammar} onClose={() => setShowGrammar(false)} />
       <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} selectedTenses={selectedTenses} onSave={handleSettingsSave} />
-      <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+      <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} onRestartTutorial={handleRestartTutorial} />
     </div>
   );
 };
