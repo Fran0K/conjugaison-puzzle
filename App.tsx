@@ -519,7 +519,7 @@ const App: React.FC = () => {
                   <DropZone 
                     type="aux-stem" 
                     content={selectedAuxStem} 
-                    placeholder="Aux" 
+                    placeholder={puzzle.is_regular ? t('stem_zone') : t('stem_zone')} 
                     onClear={() => setSelectedAuxStem(null)}
                     onDrop={(text) => setSelectedAuxStem(text)}
                     isCorrect={gameState === GameState.SUCCESS ? true : (feedback && !feedback.includes(t('correct')) ? false : null)}
