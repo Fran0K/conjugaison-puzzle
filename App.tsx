@@ -549,13 +549,13 @@ const App: React.FC = () => {
                 )}
              </div>
 
-            <button ref={settingsBtnRef} onClick={() => setShowSettings(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            <button ref={settingsBtnRef} onClick={() => setShowSettings(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-xl transition-colors">
               <Settings className="w-6 h-6" />
             </button>
-            <button ref={grammarRef} onClick={() => setShowGrammar(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            <button ref={grammarRef} onClick={() => setShowGrammar(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-xl transition-colors">
               <BookOpen className="w-6 h-6" />
             </button>
-             <button onClick={() => setShowAbout(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+             <button onClick={() => setShowAbout(true)} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-xl transition-colors">
                <Info className="w-6 h-6" />
              </button>
           </div>
