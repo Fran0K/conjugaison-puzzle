@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLanguage } from '../LanguageContext';
-import { ChevronRight, ChevronLeft, Check } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, X } from 'lucide-react';
 
 export interface TutorialStep {
   targetRef: React.RefObject<HTMLElement | null>;
@@ -185,14 +185,24 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                 zIndex: 60
             }}
         >
-            <div className="flex justify-between items-start">
-                <h3 className="font-display font-bold text-lg text-french-blue leading-tight">
+            <div className="flex justify-between items-start gap-4">
+                <h3 className="font-display font-bold text-lg text-french-blue leading-tight flex-1">
                     {/* @ts-ignore dynamic key */}
                     {t(step.titleKey)}
                 </h3>
-                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded-full shrink-0 ml-2">
+                
+                <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded-full min-w-[36px] text-center">
                     {currentStepIndex + 1} / {steps.length}
                 </span>
+                <button 
+                  onClick={onComplete}
+                  className="p-1 rounded-full text-black-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                  aria-label="Close tutorial"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>  
             </div>
             
             <p className="text-sm text-gray-600 leading-relaxed">

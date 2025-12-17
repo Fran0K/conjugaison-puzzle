@@ -23,7 +23,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         return saved as Language;
       }
     }
-    return 'fr';
+    return 'en';
   });
 
   // Wrapper to update both state and localStorage

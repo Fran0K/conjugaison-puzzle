@@ -4,10 +4,10 @@ export type Language = 'fr' | 'en' | 'zh' | 'ja';
 export const TRANSLATIONS = {
   fr: {
     ui: {
-      title: "Conjugaison Puzzle",
+      title: "ConjuPuzzle",
       score: "Score",
       settings: "Paramètres",
-      rules: "Règles",
+      rules: "Les règles de conjugaison",
       about: "À propos",
       objective: "Objectif",
       hint: "Indice",
@@ -106,10 +106,10 @@ export const TRANSLATIONS = {
   },
   en: {
     ui: {
-      title: "Conjugation Puzzle",
+      title: "ConjuPuzzle",
       score: "Score",
       settings: "Settings",
-      rules: "Rules",
+      rules: "Conjugasion Rules",
       about: "About",
       objective: "Goal",
       hint: "Hint",
@@ -156,7 +156,7 @@ export const TRANSLATIONS = {
       tour_tray_title: "The Pieces",
       tour_tray_desc: "Find the correct parts (Base & Ending) in this tray.",
       tour_zone_title: "Assembly",
-      tour_zone_desc: "Drag the pieces here to build the word.",
+      tour_zone_desc: "Drag or Click the pieces here to build the word.",
       tour_settings_title: "Settings",
       tour_settings_desc: "Change tenses (Present, Future...) here.",
       tour_lang_title: "Language",
@@ -169,7 +169,7 @@ export const TRANSLATIONS = {
       onboarding_logic_title: "The Logic",
       onboarding_logic_desc: "Most verbs follow this pattern: Stem + Ending.",
       onboarding_action_title: "Your Mission",
-      onboarding_action_desc: "Drag pieces from the tray to the empty slots to build the conjugated verb.",
+      onboarding_action_desc: "Drag or Click pieces from the tray to the empty slots to build the conjugated verb.",
       start_game: "Start Game",
       restart_tutorial: "Restart Tutorial"
     },
@@ -190,7 +190,11 @@ export const TRANSLATIONS = {
       "Subjonctif Plus-que-parfait": "Subj. Pluperfect"
     },
     "rules": {
+<<<<<<< HEAD
       "Présent": "Infinitive stem + present tense endings (1st group: e, es, e, ons, ez, ent; 2nd group: is, is, it, issons, issez, issent; 3rd group: irregular forms).",
+=======
+      "Présent": "Infinitive stem + present tense endings (3 Groups).",
+>>>>>>> 5280b35 (new tray algorithm for the puzzle arrangement)
       "Imparfait": "Indicative present (nous form) - ons + ais, ais, ait, ions, iez, aient.",
       "Futur Simple": "Full infinitive + ai, as, a, ons, ez, ont.",
       "Passé Simple": "Stem + endings: -er → ai, as, a, âmes, âtes, èrent; -ir/-re → is, is, it, îmes, îtes, irent; frequent irregulars → us, us, ut, ûmes, ûtes, urent.",
@@ -208,10 +212,10 @@ export const TRANSLATIONS = {
   },
   zh: {
     ui: {
-      title: "法语变位拼图",
+      title: "ConjuPuzzle",
       score: "得分",
       settings: "设置",
-      rules: "规则",
+      rules: "动词变位规则",
       about: "关于",
       objective: "目标",
       hint: "提示",
@@ -229,7 +233,7 @@ export const TRANSLATIONS = {
       correct: "正确！",
       wrong: "再试一次",
       explanation: "解析",
-      filter_title: "时态选择",
+      filter_title: "时态",
       filter_desc: "选择练习时态",
       select_all: "全选",
       deselect_all: "全不选",
@@ -244,7 +248,7 @@ export const TRANSLATIONS = {
       step_1_title: "阅读目标",
       step_1_desc: "顶部面板显示代词、动词和目标时态。",
       step_2_title: "理解逻辑",
-      step_2_desc: "法语变位通常由 “词根 (Base) + 词尾 (Fin)” 组成。",
+      step_2_desc: "法语变位通常由 “词干 (Base) + 词尾 (Fin)” 组成。",
       step_3_title: "拖拽拼图",
       step_3_desc: "从下方托盘选择正确的拼图块，拖入中间的空槽。",
       step_4_title: "验证答案",
@@ -256,7 +260,7 @@ export const TRANSLATIONS = {
       tour_obj_title: "当前目标",
       tour_obj_desc: "这里显示需要变位的 人称代词 + 动词 + 时态。",
       tour_tray_title: "拼图碎片",
-      tour_tray_desc: "在下方区域找到正确的【词根】和【词尾】。",
+      tour_tray_desc: "在下方区域找到正确的【词干】和【词尾】。",
       tour_zone_title: "拼装区域",
       tour_zone_desc: "将碎片拖拽到这里，像拼图一样组合它们。",
       tour_settings_title: "时态设置",
@@ -267,11 +271,11 @@ export const TRANSLATIONS = {
       tour_grammar_desc: "忘记规则了？点击这本“书”查看所有变位规则。",
       // Onboarding Modal
       welcome_title: "欢迎来到法语变位拼图",
-      welcome_subtitle: "通过游戏轻松掌握法语动词变位。",
+      welcome_subtitle: "通过拼图方式轻松掌握法语动词变位规律。",
       onboarding_logic_title: "核心逻辑",
-      onboarding_logic_desc: "大多数动词遵循此规律：词根 + 词尾。",
+      onboarding_logic_desc: "大多数动词遵循此规律：词干 + 词尾。",
       onboarding_action_title: "你的任务",
-      onboarding_action_desc: "将碎片拖入空槽，拼出正确的变位形式。",
+      onboarding_action_desc: "将碎片拖入空槽，拼出正确的动词变位形式。",
       start_game: "开始游戏",
       restart_tutorial: "重看教程"
     },
@@ -292,6 +296,7 @@ export const TRANSLATIONS = {
       "Subjonctif Plus-que-parfait": "虚拟式愈过去"
     },
     rules: {
+<<<<<<< HEAD
       "Présent": "不定式词干 + 现在时词尾（三组类型的动词）。",
       "Imparfait": "现在时直陈式第一人称复数（nous）去掉 -ons + ais, ais, ait, ions, iez, aient。",
       "Futur Simple": "动词完整不定式 + ai, as, a, ons, ez, ont。",
@@ -306,11 +311,27 @@ export const TRANSLATIONS = {
       "Conditionnel Passé": "助动词 avoir 或 être 的条件式现在时 + 过去分词。",
       "Subjonctif Passé": "助动词 avoir 或 être 的虚拟式现在时 + 过去分词。",
       "Subjonctif Plus-que-parfait": "助动词 avoir 或 être 的虚拟式未完成过去时 + 过去分词。"
+=======
+      "Présent": "不定式词干 + 现在时词尾(三组类型的动词)",
+      "Imparfait": "直陈式现在时第一人称复数（nous）的词干 + ais, ais, ait, ions, iez, aient",
+      "Futur Simple": "动词完整不定式 + ai, as, a, ons, ez, ont",
+      "Passé Simple": "词干 + 过去简单时词尾：-er 动词 → ai, as, a, âmes, âtes, èrent；-ir/-re 动词 → is, is, it, îmes, îtes, irent；常见不规则 → us, us, ut, ûmes, ûtes, urent。",
+      "Conditionnel Présent": "简单将来时词干 + 未完成过去时词尾 ais, ais, ait, ions, iez, aient",
+      "Subjonctif Présent": "直陈式现在时第三人称复数（ils）的词干 + e, es, e, ions, iez, ent",
+      "Subjonctif Imparfait": "过去简单时第三人称单数形式作为词干 + sse, sses, ât/ît/ût, ssions, ssiez, ssent",
+      "Passé Composé": "助动词 avoir 或 être 的现在时 + 过去分词",
+      "Plus-que-parfait": "助动词 avoir 或 être 的未完成过去时 + 过去分词",
+      "Futur Antérieur": "助动词 avoir 或 être 的简单将来时 + 过去分词",
+      "Passé Antérieur": "助动词 avoir 或 être 的过去简单时 + 过去分词",
+      "Conditionnel Passé": "助动词 avoir 或 être 的条件式现在时 + 过去分词",
+      "Subjonctif Passé": "助动词 avoir 或 être 的虚拟式现在时 + 过去分词",
+      "Subjonctif Plus-que-parfait": "助动词 avoir 或 être 的虚拟式未完成过去时 + 过去分词"
+>>>>>>> 5280b35 (new tray algorithm for the puzzle arrangement)
     }
   },
   ja: {
     ui: {
-      title: "活用パズル",
+      title: "ConjuPuzzle",
       score: "点数",
       settings: "設定",
       rules: "規則",
