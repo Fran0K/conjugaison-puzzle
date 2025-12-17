@@ -4,7 +4,7 @@ export type Language = 'fr' | 'en' | 'zh' | 'ja';
 export const TRANSLATIONS = {
   fr: {
     ui: {
-      title: "Conjugaison Puzzle",
+      title: "ConjuPuzzle",
       score: "Score",
       settings: "Paramètres",
       rules: "Les règles de conjugaison",
@@ -33,7 +33,7 @@ export const TRANSLATIONS = {
       validate: "Valider",
       regular: "Régulier",
       irregular: "Irrégulier",
-      about_desc: "Conjugaison Puzzle est un outil interactif conçu pour démystifier la conjugaison française.",
+      about_desc: "Con ju est un outil interactif conçu pour démystifier la conjugaison française.",
       author: "Créé par",
       version: "v1.0.0",
       how_to_title: "Comment jouer ?",
@@ -62,7 +62,7 @@ export const TRANSLATIONS = {
       tour_grammar_title: "Aide Grammaticale",
       tour_grammar_desc: "Un doute ? Cliquez sur ce livre pour voir toutes les règles de conjugaison.",
       // Onboarding Modal
-      welcome_title: "Bienvenue sur Conjugaison Puzzle",
+      welcome_title: "Bienvenue sur ConjuPuzzle",
       welcome_subtitle: "Apprenez la conjugaison française en jouant.",
       onboarding_logic_title: "La Logique",
       onboarding_logic_desc: "La plupart des verbes se construisent ainsi : Base + Terminaison.",
@@ -106,7 +106,7 @@ export const TRANSLATIONS = {
   },
   en: {
     ui: {
-      title: "Conjugation Puzzle",
+      title: "ConjuPuzzle",
       score: "Score",
       settings: "Settings",
       rules: "Conjugasion Rules",
@@ -208,7 +208,7 @@ export const TRANSLATIONS = {
   },
   zh: {
     ui: {
-      title: "法语变位拼图",
+      title: "ConjuPuzzle",
       score: "得分",
       settings: "设置",
       rules: "动词变位规则",
@@ -237,16 +237,16 @@ export const TRANSLATIONS = {
       validate: "确认",
       regular: "规则",
       irregular: "不规则",
-      about_desc: "通过拼接词根和词尾来掌握法语动词变位。",
+      about_desc: "ConjuPuzzle是通过拼接词根和词尾来掌握法语动词变位",
       author: "开发者",
       version: "v1.0.0",
       how_to_title: "如何使用",
       step_1_title: "阅读目标",
-      step_1_desc: "顶部面板显示代词、动词和目标时态。",
+      step_1_desc: "顶部面板显示代词、动词和目标时态",
       step_2_title: "理解逻辑",
-      step_2_desc: "法语变位通常由 “词干 (Base) + 词尾 (Fin)” 组成。",
+      step_2_desc: "法语变位通常由 “词干 (Base) + 词尾 (Fin)” 组成",
       step_3_title: "拖拽拼图",
-      step_3_desc: "从下方托盘选择正确的拼图块，拖入中间的空槽。",
+      step_3_desc: "从下方托盘选择正确的拼图块，拖入中间的空槽",
       step_4_title: "验证答案",
       step_4_desc: "点击检查按钮，系统会验证你的组合是否正确！",
       // Tutorial
@@ -254,9 +254,9 @@ export const TRANSLATIONS = {
       tour_next: "下一步",
       tour_finish: "知道了",
       tour_obj_title: "当前目标",
-      tour_obj_desc: "这里显示需要变位的 人称代词 + 动词 + 时态。",
+      tour_obj_desc: "这里显示需要变位的 人称代词 + 动词 + 时态",
       tour_tray_title: "拼图碎片",
-      tour_tray_desc: "在下方区域找到正确的【词干】和【词尾】。",
+      tour_tray_desc: "在下方区域找到正确的词干 (Base)和【词尾 (Fin)",
       tour_zone_title: "拼装区域",
       tour_zone_desc: "将碎片拖拽到这里，像拼图一样组合它们。",
       tour_settings_title: "时态设置",
@@ -310,7 +310,7 @@ export const TRANSLATIONS = {
   },
   ja: {
     ui: {
-      title: "活用パズル",
+      title: "ConjuPuzzle",
       score: "点数",
       settings: "設定",
       rules: "規則",

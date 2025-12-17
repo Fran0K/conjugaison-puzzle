@@ -751,7 +751,7 @@ const App: React.FC = () => {
             )}
             
             {/* Footer */}
-            <div className="fixed bottom-0 left-0 right-0 px-4 py-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:shadow-none sm:mt-10 sm:backdrop-blur-none">
+            {/* <div className="fixed bottom-0 left-0 right-0 px-4 py-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:shadow-none sm:mt-10 sm:backdrop-blur-none">
               <div className="flex gap-3 sm:gap-4 w-full justify-center max-w-4xl mx-auto">
                   {gameState === GameState.SUCCESS ? (
                      <button 
@@ -777,6 +777,41 @@ const App: React.FC = () => {
                           isComplete 
                           ? 'bg-green-600 text-white hover:scale-105 active:scale-95 hover:bg-green-700' 
                           : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        <span>{t('check')}</span>
+                      </button>
+                    </>
+                  )}
+              </div>
+            </div> */}
+            {/* Footer - UPDATED BUTTONS STYLE */}
+            <div className="fixed bottom-0 left-0 right-0 px-4 py-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-none z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:mt-10 sm:backdrop-blur-none">
+              <div className="flex gap-3 sm:gap-4 w-full justify-center max-w-4xl mx-auto">
+                  {gameState === GameState.SUCCESS ? (
+                     <button 
+                     onClick={loadNewPuzzle}
+                     className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-french-dark text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl sm:rounded-2xl font-bold border-2 border-gray-900 shadow-sm hover:bg-gray-800 transition-all active:scale-95 ring-4 ring-gray-100"
+                   >
+                     <span>{t('next')}</span>
+                     <ArrowRight className="w-5 h-5" />
+                   </button>
+                  ) : (
+                    <>
+                       <button 
+                        onClick={handleSkip}
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-gray-600 px-4 py-3 sm:px-6 rounded-xl font-bold transition-all border-2 border-gray-200 bg-white hover:bg-gray-50 shadow-sm active:scale-95"
+                      >
+                        <RefreshCw className="w-5 h-5" />
+                        <span>{t('skip')}</span>
+                      </button>
+                      <button 
+                        onClick={handleCheck}
+                        disabled={!isComplete}
+                        className={`flex-[2] sm:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all border-2 ${
+                          isComplete 
+                          ? 'bg-green-600 text-white border-green-700 shadow-sm hover:bg-green-700 active:scale-95' 
+                          : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-60'
                         }`}
                       >
                         <span>{t('check')}</span>
