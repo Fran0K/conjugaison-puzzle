@@ -4,7 +4,7 @@ export type Language = 'fr' | 'en' | 'zh' | 'ja';
 export const TRANSLATIONS = {
   fr: {
     ui: {
-      title: "ConjuPuzzle",
+      title: "Conjugaison Puzzle",
       score: "Score",
       settings: "Paramètres",
       rules: "Les règles de conjugaison",
@@ -106,7 +106,7 @@ export const TRANSLATIONS = {
   },
   en: {
     ui: {
-      title: "ConjuPuzzle",
+      title: "Conjugation Puzzle",
       score: "Score",
       settings: "Settings",
       rules: "Conjugasion Rules",
@@ -190,11 +190,7 @@ export const TRANSLATIONS = {
       "Subjonctif Plus-que-parfait": "Subj. Pluperfect"
     },
     "rules": {
-<<<<<<< HEAD
-      "Présent": "Infinitive stem + present tense endings (1st group: e, es, e, ons, ez, ent; 2nd group: is, is, it, issons, issez, issent; 3rd group: irregular forms).",
-=======
       "Présent": "Infinitive stem + present tense endings (3 Groups).",
->>>>>>> 5280b35 (new tray algorithm for the puzzle arrangement)
       "Imparfait": "Indicative present (nous form) - ons + ais, ais, ait, ions, iez, aient.",
       "Futur Simple": "Full infinitive + ai, as, a, ons, ez, ont.",
       "Passé Simple": "Stem + endings: -er → ai, as, a, âmes, âtes, èrent; -ir/-re → is, is, it, îmes, îtes, irent; frequent irregulars → us, us, ut, ûmes, ûtes, urent.",
@@ -212,7 +208,7 @@ export const TRANSLATIONS = {
   },
   zh: {
     ui: {
-      title: "ConjuPuzzle",
+      title: "法语变位拼图",
       score: "得分",
       settings: "设置",
       rules: "动词变位规则",
@@ -296,22 +292,6 @@ export const TRANSLATIONS = {
       "Subjonctif Plus-que-parfait": "虚拟式愈过去"
     },
     rules: {
-<<<<<<< HEAD
-      "Présent": "不定式词干 + 现在时词尾（三组类型的动词）。",
-      "Imparfait": "现在时直陈式第一人称复数（nous）去掉 -ons + ais, ais, ait, ions, iez, aient。",
-      "Futur Simple": "动词完整不定式 + ai, as, a, ons, ez, ont。",
-      "Passé Simple": "词干 + 过去简单时词尾：-er 动词 → ai, as, a, âmes, âtes, èrent；-ir/-re 动词 → is, is, it, îmes, îtes, irent；常见不规则 → us, us, ut, ûmes, ûtes, urent。",
-      "Conditionnel Présent": "简单将来时词干 + 未完成过去时词尾 ais, ais, ait, ions, iez, aient。",
-      "Subjonctif Présent": "现在时直陈式第三人称复数（ils）去掉 -ent + e, es, e, ions, iez, ent。",
-      "Subjonctif Imparfait": "过去简单时第三人称单数形式作为词干 + sse, sses, ât/ît/ût, ssions, ssiez, ssent。",
-      "Passé Composé": "助动词 avoir 或 être 的现在时 + 过去分词。",
-      "Plus-que-parfait": "助动词 avoir 或 être 的未完成过去时 + 过去分词。",
-      "Futur Antérieur": "助动词 avoir 或 être 的简单将来时 + 过去分词。",
-      "Passé Antérieur": "助动词 avoir 或 être 的过去简单时 + 过去分词。",
-      "Conditionnel Passé": "助动词 avoir 或 être 的条件式现在时 + 过去分词。",
-      "Subjonctif Passé": "助动词 avoir 或 être 的虚拟式现在时 + 过去分词。",
-      "Subjonctif Plus-que-parfait": "助动词 avoir 或 être 的虚拟式未完成过去时 + 过去分词。"
-=======
       "Présent": "不定式词干 + 现在时词尾(三组类型的动词)",
       "Imparfait": "直陈式现在时第一人称复数（nous）的词干 + ais, ais, ait, ions, iez, aient",
       "Futur Simple": "动词完整不定式 + ai, as, a, ons, ez, ont",
@@ -326,12 +306,11 @@ export const TRANSLATIONS = {
       "Conditionnel Passé": "助动词 avoir 或 être 的条件式现在时 + 过去分词",
       "Subjonctif Passé": "助动词 avoir 或 être 的虚拟式现在时 + 过去分词",
       "Subjonctif Plus-que-parfait": "助动词 avoir 或 être 的虚拟式未完成过去时 + 过去分词"
->>>>>>> 5280b35 (new tray algorithm for the puzzle arrangement)
     }
   },
   ja: {
     ui: {
-      title: "ConjuPuzzle",
+      title: "活用パズル",
       score: "点数",
       settings: "設定",
       rules: "規則",
