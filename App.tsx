@@ -37,14 +37,28 @@ export function cleanAndShuffle(correct: string | null | undefined, distractors:
   return shuffleArray(Array.from(set));
 }
 
-// 1. Text Measurement Helper
+// 1. Text Measurement Helper (Optimized Singleton Pattern)
+let sharedCanvas: HTMLCanvasElement | null = null;
+let sharedContext: CanvasRenderingContext2D | null = null;
+
 const measureTextWidth = (text: string, font: string): number => {
   if (typeof document === 'undefined') return 0;
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-  if (!context) return 0;
-  context.font = font;
-  return context.measureText(text).width;
+  
+  // Lazy initialization: create once, reuse forever
+  if (!sharedCanvas) {
+    sharedCanvas = document.createElement('canvas');
+    sharedContext = sharedCanvas.getContext('2d');
+  }
+
+  if (!sharedContext) return 0;
+
+  // Optimization: Only update font property if it changes
+  // (Context state access can be slightly expensive)
+  if (sharedContext.font !== font) {
+    sharedContext.font = font;
+  }
+  
+  return sharedContext.measureText(text).width;
 };
 
 // --- TYPES ---
