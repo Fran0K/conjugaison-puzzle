@@ -292,13 +292,25 @@ const App: React.FC = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-french-blue rounded-lg flex items-center justify-center text-white shadow-sm">
+            {/* <div className="w-8 h-8 bg-french-blue rounded-lg flex items-center justify-center text-white shadow-sm">
               <PuzzleIcon className="w-5 h-5" />
-            </div>
-            <h1 className="text-xl font-display font-bold text-french-dark hidden sm:block">
-              {t('title')}
-            </h1>
+            </div> */}
+            <div className="flex items-center">
+              <img 
+                src="/img/logo_desk3.png" 
+                alt={t('title')} 
+                className="hidden sm:block h-10 w-auto object-contain" 
+              />
+              <img 
+                src="/img/logo_mobi3.png" 
+                alt={t('title')} 
+                className="block sm:hidden h-8 w-auto object-contain" 
+              />
           </div>
+            {/* <h1 className="text-xl font-display font-bold text-french-dark hidden sm:block">
+              {t('title')}
+            </h1> */}
+        </div>
           
           <div className="flex items-center gap-2 sm:gap-3">
              <div className="relative" ref={langBtnRef}>
@@ -348,9 +360,9 @@ const App: React.FC = () => {
         
         {gameState === GameState.LOADING && (
           <div className="w-full flex flex-col items-center gap-4 animate-pulse mt-10">
-            <div className={`h-24 w-full max-w-md ${SHIMMER_CLASS}`}></div>
-            <div className={`h-16 w-full max-w-md ${SHIMMER_CLASS}`}></div>
-            <div className={`h-32 w-full ${SHIMMER_CLASS}`}></div>
+            <div className={`h-24 w-full  ${SHIMMER_CLASS}`}></div>
+            <div className={`h-16 w-full ${SHIMMER_CLASS}`}></div>
+            <div className={`h-40 w-full ${SHIMMER_CLASS}`}></div>
             <div className="mt-4 text-gray-400 text-sm font-medium">{t('loading')}</div>
           </div>
         )}

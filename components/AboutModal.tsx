@@ -33,9 +33,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
         <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4 ">
            <div className="flex flex-col items-center text-center mb-8">
               {/* Logo / Icon */}
-              <div className="w-16 h-16 bg-french-blue rounded-2xl flex items-center justify-center text-white shadow-lg mb-4">
-                  <Puzzle className="w-10 h-10" />
-              </div>
+              <img 
+                src="/img/logo_about3.png" 
+                alt="ConjuPuzzle" 
+                className="w-24 h-24 mb-4 object-contain "/>
               <h1 className="text-2xl font-bold text-gray-800">{t('title')}</h1>
               <p className="text-xs font-mono text-gray-400 mt-1">{t('version')}</p>
               <p className="text-sm text-gray-600 mt-4 leading-relaxed max-w-sm">
@@ -112,7 +113,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
            </div>
 
            {/* Footer: Author */}
-           <div className="w-full border-t border-gray-100 pt-6 pb-8 md:pb-10 text-center">
+           <div className="w-full border-t border-gray-100 pt-6 pb-4 md:pb-10 text-center">
              <p className="text-sm text-gray-500 mb-2 font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
              </p>
@@ -133,6 +134,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                   <Mail className="w-5 h-5" />
                 </a>
              </div>
+             <p className="text-sm text-gray-500 font-semibold flex items-center justify-center pt-4">
+               Copyright © 2025 Conjupuzzle. All Rights Reserved.
+             </p>
            </div>
         </div>
       </div>
