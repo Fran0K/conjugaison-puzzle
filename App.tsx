@@ -297,12 +297,12 @@ const App: React.FC = () => {
             </div> */}
             <div className="flex items-center">
               <img 
-                src="img/logo_desk.png" 
+                src="/img/logo_desk.png" 
                 alt={t('title')} 
                 className="hidden sm:block h-10 w-auto object-contain" 
               />
               <img 
-                src="img/logo_mobi.png" 
+                src="/img/logo_mobi.png" 
                 alt={t('title')} 
                 className="block sm:hidden h-8 w-auto object-contain" 
               />

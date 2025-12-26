@@ -34,7 +34,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
            <div className="flex flex-col items-center text-center mb-8">
               {/* Logo / Icon */}
               <img 
-                src="img/logo_about.png" 
+                src="/img/logo_about.png" 
                 alt="ConjuPuzzle" 
                 className="w-24 h-24 mb-4 object-contain "/>
               <h1 className="text-2xl font-bold text-gray-800">{t('title')}</h1>
