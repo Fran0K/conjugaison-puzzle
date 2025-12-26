@@ -145,18 +145,18 @@ export const TrayGroup: React.FC<TrayGroupProps> = ({ trays }) => {
         const w0 = trayMaxPieceWidths[0];
         const w1 = trayMaxPieceWidths[1];
 
-        // Calculate theoretical width if both use cols: 2
-        const widthIfCols2 = getMobileTrayWidth(2, w0) + getMobileTrayWidth(2, w1) + gap;
+        // // Calculate theoretical width if both use cols: 2
+        // const widthIfCols2 = getMobileTrayWidth(2, w0) + getMobileTrayWidth(2, w1) + gap;
 
-        if (widthIfCols2 <= containerWidth) {
-          newLayouts.push({ cols: 2, pieceWidth: w0 });
-          newLayouts.push({ cols: 2, pieceWidth: w1 });
-        } 
-        else {
+        // if (widthIfCols2 <= containerWidth) {
+        //   newLayouts.push({ cols: 2, pieceWidth: w0 });
+        //   newLayouts.push({ cols: 2, pieceWidth: w1 });
+        // } 
+        // else {
            // Fallback to vertical shelf (cols: 1) to keep them side-by-side
-           newLayouts.push({ cols: 1, pieceWidth: w0 });
-           newLayouts.push({ cols: 1, pieceWidth: w1 });
-        }
+        newLayouts.push({ cols: 1, pieceWidth: w0 });
+        newLayouts.push({ cols: 1, pieceWidth: w1 });
+        // }
       } else if (trayCount === 1) {
         // Rule: 1 Tray -> Smart Check
         const w0 = trayMaxPieceWidths[0];

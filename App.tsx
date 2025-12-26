@@ -8,7 +8,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
 import { ALL_TENSES, SHIMMER_CLASS } from './constants';
-import { BookOpen, RefreshCw, ArrowRight, Database, Settings, Lightbulb, ChevronDown, Info, Plus, Puzzle as PuzzleIcon } from 'lucide-react';
+import { BookOpen, RefreshCw, ArrowRight, Database, Settings, Lightbulb, ChevronDown, Info, Plus, Search } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { Language } from './locales';
 import { cleanAndShuffle } from './utils';
@@ -282,7 +282,9 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-32 sm:pb-20">
+    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-10">
+     
+    {/* <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-32 sm:pb-20"> */}
       
       {isLangMenuOpen && (
         <div className="fixed inset-0 z-20 cursor-default" onClick={() => setIsLangMenuOpen(false)} />
@@ -502,33 +504,35 @@ const App: React.FC = () => {
 
             {/* Success Feedback */}
             {gameState === GameState.SUCCESS && feedback && (
-              <div className="mt-6 sm:mt-10 p-4 sm:p-6 rounded-2xl border-2 text-center animate-in zoom-in-95 duration-300 bg-green-50 border-green-200">
-                <h3 className="text-xl sm:text-2xl font-display font-bold mb-2 text-green-700">
-                  {feedback}
-                </h3>
-                <div className="space-y-4 mt-4">
-                    <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
-                      {puzzle.pronoun} 
-                      <span className="font-bold ml-2">
-                        {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
-                        <span className="border-b-2 border-green-500">{puzzle.correctStem}{puzzle.correctEnding || ''}</span>
-                      </span>
-                    </div>
-                    <p className="text-sm text-green-700 italic flex items-center justify-center gap-2">
-                      <span>{currentLangObj.flag}</span> "{puzzle.translation}"
-                    </p>
-                    <div className="text-sm bg-green-100/50 p-4 rounded-xl text-left text-green-900 border border-green-100 mt-4">
-                       <span className="font-bold block mb-1 text-xs uppercase opacity-70 flex items-center gap-1">
-                         <BookOpen className="w-3 h-3" /> {t('explanation')}
-                       </span>
-                       {puzzle.explanation}
-                    </div>
+              <div className="w-full max-w-lg mt-0 px-1">
+                <div className="p-4 sm:p-6 rounded-3xl border-2 text-center animate-in zoom-in-95 duration-300 bg-green-50 border-green-200">
+                  <h3 className="text-xl sm:text-2xl font-display font-bold mb-2 text-green-700">
+                    {feedback}
+                  </h3>
+                  <div className="space-y-4 mt-4">
+                      <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
+                        {puzzle.pronoun} 
+                        <span className="font-bold ml-2">
+                          {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
+                          <span className="border-b-2 border-green-500">{puzzle.correctStem}{puzzle.correctEnding || ''}</span>
+                        </span>
+                      </div>
+                      <p className="text-sm text-green-700 italic flex items-center justify-center gap-2">
+                        <span>{currentLangObj.flag}</span> "{puzzle.translation}"
+                      </p>
+                      <div className="text-sm bg-green-100/50 p-4 rounded-xl text-left text-green-900 border border-green-100 mt-4">
+                        <span className="font-bold block mb-1 text-xs uppercase opacity-70 flex items-center gap-1">
+                          <BookOpen className="w-3 h-3" /> {t('explanation')}
+                        </span>
+                        {puzzle.explanation}
+                      </div>
+                  </div>
                 </div>
               </div>
             )}
             
             {/* Footer - UPDATED BUTTONS STYLE */}
-            <div className="fixed bottom-0 left-0 right-0 px-4 py-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-none z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:mt-10 sm:backdrop-blur-none">
+            <div className="w-full flex flex-col items-center justify-center mt-6 sm:mt-10 z-30">
               <div className="flex gap-3 sm:gap-4 w-full justify-center max-w-4xl mx-auto">
                   {gameState === GameState.SUCCESS ? (
                      <button 
@@ -557,6 +561,8 @@ const App: React.FC = () => {
                         }`}
                       >
                         <span>{t('check')}</span>
+                        <Search className="w-5 h-5" />
+                        
                       </button>
                     </>
                   )}
