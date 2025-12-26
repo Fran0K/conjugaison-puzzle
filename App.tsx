@@ -532,7 +532,7 @@ const App: React.FC = () => {
             )}
             
             {/* Footer - UPDATED BUTTONS STYLE */}
-            <div className="fixed bottom-0 left-0 right-0 px-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-none z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:backdrop-blur-none">
+            <div className="fixed bottom-0 left-0 right-0 px-4 py-3 md:py-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-none z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:backdrop-blur-none">
               <div ref={footerRef} className="flex gap-3 sm:gap-4 w-full justify-center max-w-4xl mx-auto">
                   {gameState === GameState.SUCCESS ? (
                      <button 
