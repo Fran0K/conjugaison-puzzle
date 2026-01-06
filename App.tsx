@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { fetchRandomPuzzleFromDB } from './services/supabase';
+import { fetchPuzzleBatch } from './services/supabase';
 import { PuzzleData, GameState, SlotType, TrayConfig } from './types';
 import { DropZone } from './components/DropZone';
 import { TrayGroup } from './components/TrayGroup';
@@ -25,12 +26,21 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
 const TENSES_STORAGE_KEY = 'app_tenses_pref';
 const ONBOARDING_STORAGE_KEY = 'app_has_seen_tutorial_v2'; 
 
+// Queue Configuration
+const INITIAL_BATCH_SIZE = 5;
+const REFILL_THRESHOLD = 2;
+const REFILL_BATCH_SIZE = 3;
+
 const App: React.FC = () => {
   const { t, tTense, tRule, language, setLanguage } = useLanguage();
 
   const [gameState, setGameState] = useState<GameState>(GameState.LOADING);
   const [puzzle, setPuzzle] = useState<PuzzleData | null>(null);
   
+  // Queue State
+  const puzzleQueue = useRef<PuzzleData[]>([]);
+  const isFetchingRef = useRef(false); // Semaphore to prevent double fetching
+
   // Settings State
   const [showSettings, setShowSettings] = useState(false);
   const [selectedTenses, setSelectedTenses] = useState<string[]>(() => {
@@ -92,8 +102,47 @@ const App: React.FC = () => {
 
   const handleRestartTutorial = () => setShowTutorial(true);
 
+  // --- Puzzle Logic ---
+
+  const setupPuzzleState = (newPuzzle: PuzzleData) => {
+    setPuzzle(newPuzzle);
+    setAvailableStems(cleanAndShuffle(newPuzzle.correctStem, newPuzzle.distractorStems));
+    
+    if (newPuzzle.correctEnding !== null) {
+       setAvailableEndings(cleanAndShuffle(newPuzzle.correctEnding, newPuzzle.distractorEndings));
+    } else {
+       setAvailableEndings([]);
+    }
+
+    if (newPuzzle.auxStem) {
+      setAvailableAuxStems(cleanAndShuffle(newPuzzle.auxStem, newPuzzle.auxDistractorStems));
+      if (newPuzzle.auxEnding !== null) {
+        setAvailableAuxEndings(cleanAndShuffle(newPuzzle.auxEnding, newPuzzle.auxDistractorEndings));
+      } else {
+        setAvailableAuxEndings([]);
+      }
+    } else {
+      setAvailableAuxStems([]);
+      setAvailableAuxEndings([]);
+    }
+    setGameState(GameState.PLAYING);
+  };
+
+  const fetchMorePuzzles = async (count: number) => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+    try {
+      const newPuzzles = await fetchPuzzleBatch(count, selectedTenses, language);
+      puzzleQueue.current = [...puzzleQueue.current, ...newPuzzles];
+    } catch (e) {
+      console.error("Bg fetch failed", e);
+    } finally {
+      isFetchingRef.current = false;
+    }
+  };
+
   const loadNewPuzzle = useCallback(async () => {
-    setGameState(GameState.LOADING);
+    // Reset UI state
     setFeedback(null);
     setSelectedStem(null);
     setSelectedEnding(null);
@@ -101,42 +150,45 @@ const App: React.FC = () => {
     setSelectedAuxEnding(null);
     setShowHint(false); 
     
-    try {
-      const newPuzzle = await fetchRandomPuzzleFromDB(selectedTenses, language);
-      if (newPuzzle) {
-        setPuzzle(newPuzzle);
-        setAvailableStems(cleanAndShuffle(newPuzzle.correctStem, newPuzzle.distractorStems));
-        
-        if (newPuzzle.correctEnding !== null) {
-           setAvailableEndings(cleanAndShuffle(newPuzzle.correctEnding, newPuzzle.distractorEndings));
-        } else {
-           setAvailableEndings([]);
-        }
+    // 1. Check Queue
+    if (puzzleQueue.current.length > 0) {
+      // Instant Load
+      const nextPuzzle = puzzleQueue.current.shift()!;
+      setupPuzzleState(nextPuzzle);
 
-        if (newPuzzle.auxStem) {
-          setAvailableAuxStems(cleanAndShuffle(newPuzzle.auxStem, newPuzzle.auxDistractorStems));
-          if (newPuzzle.auxEnding !== null) {
-            setAvailableAuxEndings(cleanAndShuffle(newPuzzle.auxEnding, newPuzzle.auxDistractorEndings));
-          } else {
-            setAvailableAuxEndings([]);
-          }
-        } else {
-          setAvailableAuxStems([]);
-          setAvailableAuxEndings([]);
-        }
-
-        setGameState(GameState.PLAYING);
-      } else {
-         setGameState(GameState.ERROR);
+      // Background Refill if low
+      if (puzzleQueue.current.length <= REFILL_THRESHOLD) {
+        fetchMorePuzzles(REFILL_BATCH_SIZE);
       }
-
-    } catch (error) {
-      console.error(error);
-      setGameState(GameState.ERROR);
+    } else {
+      // 2. Queue Empty (Cold start or network lag)
+      setGameState(GameState.LOADING);
+      try {
+        const newPuzzles = await fetchPuzzleBatch(INITIAL_BATCH_SIZE, selectedTenses, language);
+        if (newPuzzles && newPuzzles.length > 0) {
+          puzzleQueue.current = newPuzzles;
+          const first = puzzleQueue.current.shift()!;
+          setupPuzzleState(first);
+        } else {
+          setGameState(GameState.ERROR);
+        }
+      } catch (error) {
+        console.error(error);
+        setGameState(GameState.ERROR);
+      }
     }
   }, [selectedTenses, language]);
 
-  useEffect(() => { loadNewPuzzle(); }, [loadNewPuzzle]);
+  // Initial Load
+  useEffect(() => { loadNewPuzzle(); }, []);
+
+  // Flush queue when settings change to ensure fresh data
+  useEffect(() => {
+    puzzleQueue.current = [];
+    if (gameState !== GameState.LOADING) {
+       loadNewPuzzle();
+    }
+  }, [selectedTenses, language]);
 
   const handleCheck = () => {
     if (!puzzle) return;
@@ -268,9 +320,6 @@ const App: React.FC = () => {
   const allTrays = [...auxTrays, ...verbTrays];
 
   // Mobile DropZone Layout Strategy:
-  // If we have few trays (<= 2), we can fit them side-by-side even on mobile.
-  // This avoids taking up too much vertical space for simple compound tenses (e.g., Aux + PastParticiple).
-  // For complex cases (3 or 4 trays), we keep the stacked layout on mobile.
   const isCompactDropZone = allTrays.length <= 2;
 
   const tutorialSteps: TutorialStep[] = [
@@ -386,7 +435,7 @@ const App: React.FC = () => {
               <div className="relative inline-block w-full max-w-lg" ref={objectiveRef}>
                 <div className="bg-white px-4 py-5 sm:px-12 sm:py-6 rounded-3xl shadow-lg shadow-blue-100/50 border border-blue-50 relative overflow-hidden transition-all duration-300">
                   <div className="text-3xl sm:text-5xl font-display font-black text-french-dark tracking-tight pb-2">
-                    <span className="text-french-blue italic">{puzzle.person}</span> 
+                    <span className="text-french-blue">{puzzle.person}</span> 
                     <span className="mx-2 sm:mx-3 text-gray-300">·</span>
                     <span className="relative inline-block">
                         <span className="relative z-10 text-french-red">{puzzle.verb}</span>
@@ -477,12 +526,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* --- SMART TRAY ZONE (MOBILE OPTIMIZED v3) --- */}
-            {/* 
-              Layout Strategy:
-              - We now pass ALL trays (Aux + Verb) to a single TrayGroup.
-              - This allows the TrayGroup to see the *total count* and apply the Matrix rules.
-            */}
+            {/* --- SMART TRAY ZONE --- */}
             <div className="w-full max-w-5xl mt-0 mb-6 sm:mb-10" ref={trayRef}>
               {gameState !== GameState.SUCCESS && allTrays.length > 0 && (
                 <TrayGroup trays={allTrays} />
@@ -525,7 +569,7 @@ const App: React.FC = () => {
               </div>
             )}
             
-            {/* Footer - UPDATED BUTTONS STYLE */}
+            {/* Footer - ACTIONS */}
             <div className="fixed bottom-0 left-0 right-0 px-4 py-3 md:py-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-none z-40 flex flex-col items-center justify-center sm:static sm:bg-transparent sm:border-0 sm:backdrop-blur-none">
               <div ref={footerRef} className="flex gap-3 sm:gap-4 w-full justify-center max-w-4xl mx-auto">
                   {gameState === GameState.SUCCESS ? (

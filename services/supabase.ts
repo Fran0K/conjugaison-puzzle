@@ -4,8 +4,8 @@ import { DatabasePuzzle, PuzzleData } from '../types';
 
 // Use Vite environment variables
 // Cast import.meta to any to avoid TypeScript errors if types are missing
-const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
-const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = "https://ojpxifdqrehlzodcamhr.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qcHhpZmRxcmVobHpvZGNhbWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyOTA5NDcsImV4cCI6MjA4MDg2Njk0N30.LATtUWNJgTkL-9tVRp0n2GmpbilFNDH0ziVcS2oZetY"
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("Supabase credentials missing! Please check your .env file.");
@@ -14,6 +14,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase: SupabaseClient | null = (supabaseUrl && supabaseAnonKey) 
   ? createClient(supabaseUrl, supabaseAnonKey) 
   : null;
+
+// --- Memory Cache for Verb IDs ---
+// Avoids fetching the entire ID list on every single puzzle request
+let cachedVerbIds: string[] | null = null;
 
 /**
  * Mapper: Extracts the correct language from JSONB columns
@@ -52,64 +56,107 @@ export const mapDatabasePuzzleToUI = (dbPuzzle: DatabasePuzzle, languageCode: st
   };
 };
 
-export const fetchRandomPuzzleFromDB = async (allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData | null> => {
-  if (!supabase) {
-    console.warn("Supabase client is not initialized.");
+/**
+ * Internal helper to ensure we have the list of all verb IDs
+ */
+const ensureVerbIds = async (): Promise<string[]> => {
+  if (cachedVerbIds && cachedVerbIds.length > 0) {
+    return cachedVerbIds;
+  }
+
+  if (!supabase) return [];
+
+  const { data: verbs, error } = await supabase.from('verbs').select('id');
+  
+  if (error) {
+    console.error('Error fetching verb IDs:', error);
+    return [];
+  }
+
+  if (verbs) {
+    cachedVerbIds = verbs.map(v => v.id);
+  }
+  
+  return cachedVerbIds || [];
+};
+
+/**
+ * Fetches a single puzzle for a specific random verb ID
+ */
+const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData | null> => {
+  if (!supabase) return null;
+
+  let query = supabase
+    .from('puzzles')
+    .select(`
+      *,
+      verbs (
+        infinitive,
+        translations
+      )
+    `)
+    .eq('verb_id', verbId);
+  
+  if (allowedTenses && allowedTenses.length > 0) {
+    query = query.in('tense', allowedTenses);
+  }
+
+  const { data: puzzles, error } = await query;
+
+  if (error) {
+    console.error(`Error fetching puzzles for verb ${verbId}:`, error);
     return null;
   }
+
+  if (!puzzles || puzzles.length === 0) {
+    return null;
+  }
+
+  // Pick one random puzzle for this verb
+  const randomPuzzleIndex = Math.floor(Math.random() * puzzles.length);
+  return mapDatabasePuzzleToUI(puzzles[randomPuzzleIndex] as any, languageCode);
+};
+
+/**
+ * Public API: Fetch a batch of random puzzles
+ * Uses Promise.all to fetch concurrently
+ */
+export const fetchPuzzleBatch = async (count: number = 1, allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData[]> => {
+  if (!supabase) return [];
 
   try {
-    // Step 1: Get Random Verb ID
-    const { data: verbs, error: verbError } = await supabase
-      .from('verbs')
-      .select('id');
-
-    if (verbError) {
-      console.error('Error fetching verbs:', JSON.stringify(verbError, null, 2));
-      return null;
-    }
+    const allVerbIds = await ensureVerbIds();
     
-    if (!verbs || verbs.length === 0) {
+    if (allVerbIds.length === 0) {
       console.warn('Database is empty: No verbs found.');
-      return null;
+      return [];
     }
 
-    const randomVerbIndex = Math.floor(Math.random() * verbs.length);
-    const randomVerbId = verbs[randomVerbIndex].id;
-
-    // Step 2: Fetch Puzzles + Verb Info (No complex joins for translations needed!)
-    let query = supabase
-      .from('puzzles')
-      .select(`
-        *,
-        verbs (
-          infinitive,
-          translations
-        )
-      `)
-      .eq('verb_id', randomVerbId);
-    
-    if (allowedTenses && allowedTenses.length > 0) {
-      query = query.in('tense', allowedTenses);
+    // Pick 'count' random verb IDs
+    // It's okay if we pick the same verb twice in a batch, but we try to be random
+    const selectedIds: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const randomIndex = Math.floor(Math.random() * allVerbIds.length);
+      selectedIds.push(allVerbIds[randomIndex]);
     }
 
-    const { data: puzzles, error: puzzleError } = await query;
+    // Execute queries in parallel
+    const promises = selectedIds.map(id => fetchPuzzleForVerbId(id, allowedTenses, languageCode));
+    const results = await Promise.all(promises);
 
-    if (puzzleError) {
-      console.error('Error fetching puzzles:', JSON.stringify(puzzleError, null, 2));
-      return null;
-    }
-
-    if (!puzzles || puzzles.length === 0) {
-      return null;
-    }
-
-    // Step 3: Pick random puzzle and Map
-    const randomPuzzleIndex = Math.floor(Math.random() * puzzles.length);
-    return mapDatabasePuzzleToUI(puzzles[randomPuzzleIndex] as any, languageCode);
+    // Filter out nulls (failed fetches or verbs with no puzzles in selected tenses)
+    return results.filter((p): p is PuzzleData => p !== null);
 
   } catch (err) {
-    console.error("Unexpected error in fetchRandomPuzzleFromDB:", err);
-    return null;
+    console.error("Unexpected error in fetchPuzzleBatch:", err);
+    return [];
   }
+};
+
+/**
+ * Legacy wrapper for backward compatibility (fetches 1)
+ */
+export const fetchRandomPuzzleFromDB = async (allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData | null> => {
+  const batch = await fetchPuzzleBatch(1, allowedTenses, languageCode);
+  return batch.length > 0 ? batch[0] : null;
 };
