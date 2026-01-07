@@ -113,29 +113,28 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
            </div>
 
            {/* Footer: Author */}
-           <div className="w-full border-t border-gray-100 pt-6 pb-4 md:pb-10 text-center">
-             <p className="text-sm text-gray-500 mb-2 font-semibold flex items-center justify-center gap-1">
+           <div className="w-full border-t border-gray-100 pt-6 pb-4 md:pb-4 text-center">
+            <div className="flex justify-center gap-2">
+             <p className="text-sm text-french-dark font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
              </p>
-             <p className="text-french-dark font-bold text-lg">
+             <p className="text-french-dark font-semibold text-sm">
                Frank Lam
              </p>
+             </div>
              <div className="flex justify-center mt-3 gap-4">
-                <a href="https://github.com/Fran0K/fran0k.github.io" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
-                  <Github className="w-5 h-5" />
-                </a>
-                <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-french-dark hover:text-orange-500 transition-colors">
                   <Link className="w-5 h-5" />
                 </a>
-                <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-french-dark hover:text-orange-500 transition-colors">
                   <Linkedin className="w-5 h-5" />
                 </a>
-                <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-french-dark hover:text-orange-500 transition-colors">
                   <Mail className="w-5 h-5" />
                 </a>
              </div>
-             <p className="text-sm text-gray-500 font-semibold flex items-center justify-center pt-4">
-               Copyright © 2025 Conjupuzzle. All Rights Reserved.
+             <p className="text-sm gap-2 text-french-dark font-semibold flex items-center justify-center pt-4">
+               Copyright © 2025 Conjupuzzle.  All Rights Reserved.
              </p>
            </div>
         </div>

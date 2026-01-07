@@ -103,7 +103,10 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
   };
 
   // Logic to enforce exact width if provided
-  const style: React.CSSProperties = fixedWidth ? { width: `${fixedWidth}px`, minWidth: `${fixedWidth}px` } : { minWidth: '60px' };
+  // const style: React.CSSProperties = fixedWidth ? { width: `${fixedWidth}px`, minWidth: `${fixedWidth}px` } : { minWidth: '60px' };
+  const style: React.CSSProperties = fixedWidth 
+      ? { minWidth: `${fixedWidth}px`, width: '100%' } 
+      : { minWidth: '80px' };
 
   return (
     <button
@@ -134,7 +137,7 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
          </>
       )}
       
-      <span className="relative z-30 truncate px-1">{text}</span>
+      <span className="relative z-30 px-1">{text}</span>
     </button>
   );
 };
