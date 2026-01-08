@@ -117,3 +117,5 @@ USING (true);
 CREATE INDEX idx_puzzles_verb_id ON puzzles(verb_id);
 CREATE INDEX idx_puzzles_tense ON puzzles(tense);
 ```
+
+测试数据

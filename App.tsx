@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchPuzzleBatch } from './services/supabase';
 import { PuzzleData, GameState, SlotType, TrayConfig } from './types';
@@ -31,6 +30,14 @@ const ONBOARDING_STORAGE_KEY = 'app_has_seen_tutorial_v2';
 const INITIAL_BATCH_SIZE = 5;
 const REFILL_THRESHOLD = 2;
 const REFILL_BATCH_SIZE = 3;
+
+// Helper type for granular validation
+interface ValidationState {
+  stem?: boolean;
+  ending?: boolean;
+  auxStem?: boolean;
+  auxEnding?: boolean;
+}
 
 const App: React.FC = () => {
   const { t, tTense, tRule, language, setLanguage } = useLanguage();
@@ -89,6 +96,9 @@ const App: React.FC = () => {
   
   const [showGrammar, setShowGrammar] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  
+  // Partial Validation State
+  const [validationState, setValidationState] = useState<ValidationState | null>(null);
 
   // Init
   useEffect(() => {
@@ -149,6 +159,7 @@ const App: React.FC = () => {
   const loadNewPuzzle = useCallback(async () => {
     // Reset UI state
     setFeedback(null);
+    setValidationState(null); // Reset validation
     setSelectedStem(null);
     setSelectedEnding(null);
     setSelectedAuxStem(null);
@@ -197,21 +208,36 @@ const App: React.FC = () => {
 
   const handleCheck = () => {
     if (!puzzle) return;
+    
+    // Calculate individual correctness
     const isStemCorrect = selectedStem === puzzle.correctStem;
     const isEndingCorrect = puzzle.correctEnding !== null ? (selectedEnding === puzzle.correctEnding) : true;
-    let isAuxCorrect = true;
+    
+    let isAuxStemCorrect = true;
+    let isAuxEndingCorrect = true;
+
     if (puzzle.auxStem) {
-        const isAuxStemCorrect = selectedAuxStem === puzzle.auxStem;
-        const isAuxEndingCorrect = puzzle.auxEnding !== null ? selectedAuxEnding === puzzle.auxEnding : true;
-        isAuxCorrect = isAuxStemCorrect && isAuxEndingCorrect;
+        isAuxStemCorrect = selectedAuxStem === puzzle.auxStem;
+        isAuxEndingCorrect = puzzle.auxEnding !== null ? selectedAuxEnding === puzzle.auxEnding : true;
     }
 
-    if (isStemCorrect && isEndingCorrect && isAuxCorrect) {
+    // Set Partial Validation State (for UI coloring)
+    setValidationState({
+        stem: isStemCorrect,
+        ending: puzzle.correctEnding !== null ? isEndingCorrect : undefined,
+        auxStem: puzzle.auxStem ? isAuxStemCorrect : undefined,
+        auxEnding: (puzzle.auxStem && puzzle.auxEnding !== null) ? isAuxEndingCorrect : undefined
+    });
+
+    const isAllCorrect = isStemCorrect && isEndingCorrect && isAuxStemCorrect && isAuxEndingCorrect;
+
+    if (isAllCorrect) {
       setGameState(GameState.SUCCESS);
       setSuccessCount(prev => prev + 1);
       setFeedback(t('correct'));
     } else {
       setFeedback(t('wrong'));
+      // Keep validation state visible, but hide text feedback after delay
       setTimeout(() => {
           setFeedback((current) => current === t('wrong') ? null : current);
       }, 3000);
@@ -230,7 +256,10 @@ const App: React.FC = () => {
     setIsLangMenuOpen(false);
   };
 
-  const clearFeedback = () => {
+  // When user interacts with a slot, we should clear the "Wrong" (Red) state for that slot
+  // effectively resetting validation to null to allow "neutral" state.
+  const clearValidation = () => {
+    setValidationState(null);
     if (feedback && gameState !== GameState.SUCCESS) setFeedback(null);
   };
 
@@ -260,7 +289,7 @@ const App: React.FC = () => {
   const showAuxConnectors = puzzle ? (puzzle.auxEnding !== null) : false;
   const showVerbConnectors = puzzle ? (puzzle.correctEnding !== null) : false;
 
-  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 5 === 0;
+  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 1 === 0;
 
   const hasAuxStem = availableAuxStems.length > 0;
   const hasAuxEnd = availableAuxEndings.length > 0;
@@ -276,7 +305,7 @@ const App: React.FC = () => {
         items: availableAuxStems,
         type: 'aux-stem' as SlotType,
         selected: selectedAuxStem,
-        onSelect: (item: string) => { setSelectedAuxStem(prev => prev === item ? null : item); clearFeedback(); },
+        onSelect: (item: string) => { setSelectedAuxStem(prev => prev === item ? null : item); clearValidation(); },
         title: hasAuxEnd ? t('lbl_aux_stem') : t('lbl_aux'),
         color: 'amber' as const,
         showConnectors: showAuxConnectors
@@ -288,7 +317,7 @@ const App: React.FC = () => {
         items: availableAuxEndings,
         type: 'aux-ending' as SlotType,
         selected: selectedAuxEnding,
-        onSelect: (item: string) => { setSelectedAuxEnding(prev => prev === item ? null : item); clearFeedback(); },
+        onSelect: (item: string) => { setSelectedAuxEnding(prev => prev === item ? null : item); clearValidation(); },
         title: t('lbl_aux_ending'),
         color: 'amber' as const
       });
@@ -304,7 +333,7 @@ const App: React.FC = () => {
         items: availableStems,
         type: 'stem' as SlotType,
         selected: selectedStem,
-        onSelect: (item: string) => { setSelectedStem(prev => prev === item ? null : item); clearFeedback(); },
+        onSelect: (item: string) => { setSelectedStem(prev => prev === item ? null : item); clearValidation(); },
         title: hasVerbEnd ? t('lbl_verb_stem') : t('lbl_verb'),
         color: 'blue' as const,
         showConnectors: showVerbConnectors
@@ -316,7 +345,7 @@ const App: React.FC = () => {
         items: availableEndings,
         type: 'ending' as SlotType,
         selected: selectedEnding,
-        onSelect: (item: string) => { setSelectedEnding(prev => prev === item ? null : item); clearFeedback(); },
+        onSelect: (item: string) => { setSelectedEnding(prev => prev === item ? null : item); clearValidation(); },
         title: t('lbl_verb_ending'),
         color: 'blue' as const
       });
@@ -489,9 +518,10 @@ const App: React.FC = () => {
                     type="aux-stem" 
                     content={selectedAuxStem} 
                     placeholder={puzzle.is_regular ? t('stem_zone') : t('stem_zone')} 
-                    onClear={() => { setSelectedAuxStem(null); clearFeedback(); }}
-                    onDrop={(text) => { setSelectedAuxStem(text); clearFeedback(); }}
-                    isCorrect={gameState === GameState.SUCCESS ? true : (feedback ? false : null)}
+                    onClear={() => { setSelectedAuxStem(null); clearValidation(); }}
+                    onDrop={(text) => { setSelectedAuxStem(text); clearValidation(); }}
+                    // Use optional chaining for validationState to fallback to null (neutral) if validation hasn't run yet
+                    isCorrect={gameState === GameState.SUCCESS ? true : (validationState?.auxStem ?? null)}
                     position={puzzle.auxEnding !== null ? 'left' : 'single'}
                   />
                   {puzzle.auxEnding !== null && (
@@ -499,9 +529,9 @@ const App: React.FC = () => {
                       type="aux-ending" 
                       content={selectedAuxEnding} 
                       placeholder={t('ending_zone')} 
-                      onClear={() => { setSelectedAuxEnding(null); clearFeedback(); }}
-                      onDrop={(text) => { setSelectedAuxEnding(text); clearFeedback(); }}
-                      isCorrect={gameState === GameState.SUCCESS ? true : (feedback ? false : null)}
+                      onClear={() => { setSelectedAuxEnding(null); clearValidation(); }}
+                      onDrop={(text) => { setSelectedAuxEnding(text); clearValidation(); }}
+                      isCorrect={gameState === GameState.SUCCESS ? true : (validationState?.auxEnding ?? null)}
                       position="right"
                     />
                   )}
@@ -517,9 +547,9 @@ const App: React.FC = () => {
                   type="stem" 
                   content={selectedStem} 
                   placeholder={puzzle.is_regular ? t('stem_zone') : t('stem_zone')} 
-                  onClear={() => { setSelectedStem(null); clearFeedback(); }}
-                  onDrop={(text) => { setSelectedStem(text); clearFeedback(); }}
-                  isCorrect={gameState === GameState.SUCCESS ? true : (feedback ? false : null)}
+                  onClear={() => { setSelectedStem(null); clearValidation(); }}
+                  onDrop={(text) => { setSelectedStem(text); clearValidation(); }}
+                  isCorrect={gameState === GameState.SUCCESS ? true : (validationState?.stem ?? null)}
                   position={puzzle.correctEnding !== null ? 'left' : 'single'}
                 />
                 
@@ -528,9 +558,9 @@ const App: React.FC = () => {
                     type="ending" 
                     content={selectedEnding} 
                     placeholder={t('ending_zone')} 
-                    onClear={() => { setSelectedEnding(null); clearFeedback(); }}
-                    onDrop={(text) => { setSelectedEnding(text); clearFeedback(); }}
-                    isCorrect={gameState === GameState.SUCCESS ? true : (feedback ? false : null)}
+                    onClear={() => { setSelectedEnding(null); clearValidation(); }}
+                    onDrop={(text) => { setSelectedEnding(text); clearValidation(); }}
+                    isCorrect={gameState === GameState.SUCCESS ? true : (validationState?.ending ?? null)}
                     position="right"
                   />
                 )}
@@ -546,23 +576,23 @@ const App: React.FC = () => {
 
             {/* Error Feedback */}
             {gameState !== GameState.SUCCESS && feedback && (
-               <div className="mb-6 p-3 rounded-xl border-2 text-center bg-red-50 border-red-200 animate-in zoom-in-95">
+               <div className="w-full max-w-lg mb-6 p-3 rounded-xl border-2 text-center bg-red-50 border-red-200 animate-in zoom-in-95">
                  <h3 className="text-lg font-bold text-red-700">{feedback}</h3>
                </div>
             )}
 
             {/* Success Feedback */}
             {gameState === GameState.SUCCESS && feedback && (
-              <div className="w-full max-w-lg mt-0 pb-2 px-1 relative">
+              <div className="w-full max-w-lg mt-0 mb-6 pb-2 px-1 relative">
 
                 {/* Milestone Message */}
                 {isMilestone && (
-                  <div className="mb-6 animate-in bounce-in duration-700 flex justify-center">
+                  <div className="mb-6 animate-in bounce-in duration-700 w-full">
                     <div 
                       onClick={() => setConfettiTrigger(t => t + 1)}
-                      className="bg-orange-500 text-white px-6 py-2 rounded-full shadow-lg font-display font-bold text-lg flex items-center gap-2 transform transition-transform cursor-pointer active:scale-95 select-none"
+                      className="w-full bg-orange-500 text-white px-6 py-3 rounded-full font-display text-lg flex items-center justify-center gap-2 transform transition-transform cursor-pointer active:scale-95 select-none shadow-md border-2 border-orange-400"
                     >
-                      <Trophy className="w-5 h-5 text-yellow-100" fill="currentColor" />
+                      <Trophy className="w-6 h-6 text-yellow-100" fill="currentColor" />
                       {/* @ts-ignore */}
                       {t('milestone').replace('{n}', successCount)}
                     </div>
@@ -577,7 +607,7 @@ const App: React.FC = () => {
                       <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
                         {puzzle.pronoun} 
                         <span className="font-bold ml-2">
-                          {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
+                          <span className="border-b-2 border-green-500">{puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}</span>
                           <span className="border-b-2 border-green-500">{puzzle.correctStem}{puzzle.correctEnding || ''}</span>
                         </span>
                       </div>

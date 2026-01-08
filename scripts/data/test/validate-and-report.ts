@@ -69,7 +69,7 @@ const output = process.argv[3];
 /*
 Usage:
 Usage: npm install -D ts-node typescript @types/node
-Usage: --loader ts-node/esm validate-and-report <input.json> [report.json]
+Usage: node--loader ts-node/esm validate-and-report <input.json> [report.json]
 
 */
 

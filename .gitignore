@@ -30,3 +30,4 @@ scripts/data/test/*.json
 *.njsproj
 *.sln
 *.sw?
+scripts/json_to_csv.js

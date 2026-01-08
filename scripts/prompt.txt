@@ -84,7 +84,7 @@ REQUIREMENTS & RULES (must be strictly followed):
    - distractorEndings: MUST be an array of **3** strings OR null if endings are not applicable. For irregular fused forms (correctEnding = null), set distractorEndings = null.
    - For compound tenses, also provide distractorAuxStems (3 strings) and distractorAuxEndings (3 strings) where applicable; if auxEnding not applicable, set corresponding distractorAuxEndings = null.
    - Important constraints for distractors:
-     a) **None** of the distractor items (stems/endings/aux) may equal the correctStem / correctEnding / auxStem / auxEnding; duplicates are forbidden.
+     a) **None** of the distractor items (stems/endings/aux) may equal the correctStem / correctEnding / auxStem / auxEnding; duplicates are forbidden.Distractor must not be identical to correct value
      b) Distractors must be plausible: common error patterns include wrong tense stem, wrong auxiliary form, wrong person ending, omission or erroneous insertion of typical suffixes, or confusion with other verbs' stems.
      c) Avoid nonsensical strings; all distractors must look like possible French morphemes.
    - Example guidance (not to be output): for "parler, présent, tu": correctStem="parl", correctEnding="es", distractorStems could be ["parlER","par","parliss"] and distractorEndings ["e","ons","ez"] provided none equals correctEnding.
