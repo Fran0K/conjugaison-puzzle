@@ -9,6 +9,7 @@ interface FeedbackPanelProps {
   feedback: string | null;
   puzzle: PuzzleData;
   successCount: number;
+  isMilestone: boolean;
   onMilestoneClick: () => void;
 }
 
@@ -17,6 +18,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   feedback,
   puzzle,
   successCount,
+  isMilestone,
   onMilestoneClick
 }) => {
   const { t, language } = useLanguage();
@@ -26,8 +28,6 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   // Helper for flag display using centralized constant
   const currentLangObj = SUPPORTED_LANGUAGES.find(l => l.code === language);
   const flag = currentLangObj ? currentLangObj.flag : '🇬🇧';
-
-  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 5 === 0;
 
   // 1. Error / Warning Mode
   if (gameState !== GameState.SUCCESS) {
