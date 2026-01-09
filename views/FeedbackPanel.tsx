@@ -47,7 +47,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
         <div className="mb-6 animate-in bounce-in duration-700 w-full">
           <div 
             onClick={onMilestoneClick}
-            className="w-full bg-orange-500 text-white px-6 py-3 rounded-full font-display text-lg flex items-center justify-center gap-2 transform transition-transform cursor-pointer active:scale-95 select-none shadow-md border-2 border-orange-400"
+            className="w-full bg-orange-400 text-white px-6 py-3 rounded-full font-display text-lg flex items-center justify-center gap-2 transform transition-transform cursor-pointer active:scale-95 select-none shadow-md"
           >
             <Trophy className="w-6 h-6 text-yellow-100" fill="currentColor" />
             {/* @ts-ignore */}

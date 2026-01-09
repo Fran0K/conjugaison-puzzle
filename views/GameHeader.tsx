@@ -58,44 +58,47 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
           
           {/* Controls Area */}
           <div className="flex items-center gap-2 sm:gap-3">
-             {/* Language Selector */}
-             <div className="relative" ref={langBtnRef}>
-                <button 
-                  onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors border border-gray-200"
-                >
-                  <span className="text-sm">{currentLangObj.flag}</span>
-                  <span className="hidden sm:inline">{currentLangObj.label}</span>
-                  <span className="sm:hidden uppercase">{currentLangObj.code}</span>
-                  <ChevronDown className="w-3 h-3 text-gray-400" />
-                </button>
-
-                {isLangMenuOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-200">
-                    {SUPPORTED_LANGUAGES.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => selectLanguage(lang.code)}
-                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors ${
-                          language === lang.code ? 'bg-blue-50 text-french-blue' : 'text-gray-700'
-                        }`}
-                      >
-                        <span className="text-lg">{lang.flag}</span>
-                        <span>{lang.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-             </div>
-
+            
+            {/* Tense Selector */}
             <button 
             ref={headerRef as React.RefObject<HTMLButtonElement>}
             onClick={onOpenSettings} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
               <Settings className="w-6 h-6" />
             </button>
+            {/* Gammar teaching Selector */}
             <button onClick={onOpenGrammar} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
               <BookOpen className="w-6 h-6" />
             </button>
+            
+             {/* Language Selector */}
+            <div className="relative" ref={langBtnRef}>
+              <button 
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="p-2 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                title={currentLangObj.label}
+              >
+                <span className="text-2xl leading-none">{currentLangObj.flag}</span>
+              </button>
+
+              {isLangMenuOpen && (
+                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-200">
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => selectLanguage(lang.code)}
+                      className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors ${
+                        language === lang.code ? 'bg-blue-50 text-french-blue' : 'text-gray-700'
+                      }`}
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* About Page Selector */}
              <button onClick={onOpenAbout} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
                <Info className="w-6 h-6" />
              </button>

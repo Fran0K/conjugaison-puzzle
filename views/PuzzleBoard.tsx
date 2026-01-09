@@ -33,7 +33,7 @@ export const PuzzleBoard: React.FC<PuzzleBoardProps> = ({
                 <span className="relative z-10 text-french-red">{puzzle.verb}</span>
             </span>
           </div>
-          <div className="text-sm sm:text-lg font-bold text-gray-700 mt-1 sm:mt-2">
+          <div className="text-sm sm:text-lg font-bold text-gray-500 mt-1 sm:mt-2">
             {tTense(puzzle.tense)}
           </div>
           <button
