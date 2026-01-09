@@ -86,8 +86,7 @@ const App: React.FC = () => {
 
   const handleRestartTutorial = () => setShowTutorial(true);
 
-  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 5 === 0;
-
+  
   const tutorialSteps: TutorialStep[] = [
     { targetRef: objectiveRef, titleKey: 'tour_obj_title', descKey: 'tour_obj_desc', position: 'bottom' },
     { targetRef: trayRef, titleKey: 'tour_tray_title', descKey: 'tour_tray_desc', position: 'top' },
@@ -100,7 +99,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
       
-      {isMilestone && <Confetti key={confettiTrigger} />}
+      
 
       <GameHeader 
         headerRef={settingRef}

@@ -27,7 +27,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   const currentLangObj = SUPPORTED_LANGUAGES.find(l => l.code === language);
   const flag = currentLangObj ? currentLangObj.flag : '🇬🇧';
 
-  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 1 === 0;
+  const isMilestone = gameState === GameState.SUCCESS && successCount > 0 && successCount % 5 === 0;
 
   // 1. Error / Warning Mode
   if (gameState !== GameState.SUCCESS) {
