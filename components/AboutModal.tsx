@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { X, Heart, Github, Linkedin, Link, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle, RotateCcw, Mail } from 'lucide-react';
+import { X, Heart, Github, Linkedin, Link, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle, RotateCcw, Mail , Coffee } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -114,6 +115,15 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
 
            {/* Footer: Author */}
            <div className="w-full border-t border-gray-100 pt-6 pb-4 md:pb-4 text-center">
+             <a
+                href="https://www.buymeacoffee.com/fran0k"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFDD00] text-[#000000] rounded-full font-display font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all mb-6 active:scale-95"
+              >
+                <Coffee className="w-5 h-5 fill-black/10" />
+                <span>Buy me a coffee</span>
+             </a>
             <div className="flex justify-center gap-2">
              <p className="text-sm text-gray-500 font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
@@ -134,6 +144,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 </a>
              </div>
              <div className='flex-row items-center justify-center pt-4'>
+             
               <p className="text-sm gap-2 text-gray-500 font-semibold">
                 Copyright © 2025 Conjupuzzle.
               </p>
