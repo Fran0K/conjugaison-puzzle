@@ -4,7 +4,7 @@ import { GrammarModal } from './components/GrammarModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
-import { ALL_TENSES, SHIMMER_CLASS, STORAGE_KEYS } from './constants';
+import { ALL_TENSES,DEFAULT_TENSES, SHIMMER_CLASS, STORAGE_KEYS } from './constants';
 import {Database} from "@phosphor-icons/react";
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
@@ -33,7 +33,7 @@ const App: React.FC = () => {
         } catch (e) { console.warn("Failed to parse saved tenses pref"); }
       }
     }
-    return ALL_TENSES;
+    return DEFAULT_TENSES;
   });
 
   const handleSettingsSave = (newTenses: string[]) => {

@@ -55,11 +55,11 @@ export const GRAMMAR_RULES: Partial<GrammarRule>[] = [
     example: "J'avais fini",
     color: "bg-yellow-100 border-yellow-500 text-yellow-900"
   },
-  {
-    id: "Subjonctif Imparfait",
-    example: "Qu'il parlât, qu'il fût",
-    color: "bg-teal-100 border-teal-500 text-teal-900",
-  },
+  // {
+  //   id: "Subjonctif Imparfait",
+  //   example: "Qu'il parlât, qu'il fût",
+  //   color: "bg-teal-100 border-teal-500 text-teal-900",
+  // },
   {
     id: "Futur Antérieur",
     example: "J'aurai terminé",
@@ -75,13 +75,16 @@ export const GRAMMAR_RULES: Partial<GrammarRule>[] = [
     example: "Que j'aie fini",
     color: "bg-green-100 border-green-500 text-green-900"
   },
-  {
-    id: "Subjonctif Plus-que-parfait",
-    example: "Que j'eusse fini",
-    color: "bg-lime-100 border-lime-500 text-lime-900"
-  }
+  // {
+  //   id: "Subjonctif Plus-que-parfait",
+  //   example: "Que j'eusse fini",
+  //   color: "bg-lime-100 border-lime-500 text-lime-900"
+  // }
 ];
 
 export const ALL_TENSES = GRAMMAR_RULES.map(rule => rule.id!);
+
+// Default selection for new users: Present, Compound Past, Imperfect
+export const DEFAULT_TENSES = ["Présent", "Passé Composé", "Imparfait"];
 
 export const SHIMMER_CLASS = "animate-pulse bg-slate-200 rounded";
