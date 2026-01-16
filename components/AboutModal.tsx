@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Heart, Github, Linkedin, Link, Eye, MousePointerClick, CheckCircle2, Plus, Puzzle, RotateCcw, Mail , Coffee } from 'lucide-react';
+import { PuzzlePiece, XCircle, Heart, DiscordLogo, EnvelopeSimple, Browser, LinkedinLogo, CursorClick, Plus, CheckCircle, ArrowCounterClockwise,Eyes,Coffee, X } from "@phosphor-icons/react";
 import { useLanguage } from '../LanguageContext';
 
 
@@ -26,7 +26,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
             onClick={onClose}
             className="p-2 hover:bg-gray-200 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X weight="bold" className="w-6 h-6 text-black-500" />
           </button>
         </div>
         
@@ -60,7 +60,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold transition-all text-xs"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <ArrowCounterClockwise className="w-4 h-4" />
                   {t('restart_tutorial')}
                 </button>
               )}
@@ -70,7 +70,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 1 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-blue-50 text-french-blue flex items-center justify-center shrink-0 mt-0.5">
-                   <Eye className="w-4 h-4" />
+                   <Eyes className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_1_title')}</h4>
@@ -81,7 +81,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 2 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <Plus className="w-4 h-4" />
+                   <PuzzlePiece className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_2_title')}</h4>
@@ -92,7 +92,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 3 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <MousePointerClick className="w-4 h-4" />
+                   <CursorClick className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_3_title')}</h4>
@@ -103,7 +103,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 4 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <CheckCircle2 className="w-4 h-4" />
+                   <CheckCircle className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-gray-800 text-sm">{t('step_4_title')}</h4>
@@ -121,26 +121,29 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFDD00] text-[#000000] rounded-full font-display font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all mb-6 active:scale-95"
               >
-                <Coffee className="w-5 h-5 fill-black/10" />
+                <Coffee color="#000000ff" weight="bold" className="w-5 h-5" />
                 <span>Buy me a coffee</span>
              </a>
             <div className="flex justify-center gap-2">
              <p className="text-sm text-gray-500 font-semibold flex items-center justify-center gap-1">
-               {t('author')} <Heart className="w-3 h-3 text-red-500 fill-current" />
+               {t('author')} <Heart  color="#f95d5d" weight="fill" className="w-4 h-4 " />
              </p>
              <p className="text-gray-500 font-semibold text-sm">
                Frank Lam
              </p>
              </div>
              <div className="flex justify-center mt-3 gap-4">
+                <a href = "https://discord.gg/H9NBS3Nu" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
+                  <DiscordLogo className="w-6 h-6" />
+                </a>
                 <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
-                  <Link className="w-5 h-5" />
+                  <Browser className="w-6 h-6" />
                 </a>
                 <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
-                  <Linkedin className="w-5 h-5" />
+                  <LinkedinLogo className="w-6 h-6" />
                 </a>
                 <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
-                  <Mail className="w-5 h-5" />
+                  <EnvelopeSimple className="w-6 h-6" />
                 </a>
              </div>
              <div className='flex-row items-center justify-center pt-4'>

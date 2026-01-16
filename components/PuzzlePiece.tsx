@@ -73,7 +73,7 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
   const borderStyle = (isStem && showConnectors) ? "border-dashed" : "border-solid";
 
   // Removed w-full to strictly follow content-based layout rules
-  const baseClasses = `relative group transition-all duration-200 select-none flex items-center justify-center font-display font-bold text-sm sm:text-xl transform hover:-translate-y-1 active:translate-y-0 overflow-visible ${shadowClass} border-2 ${borderStyle} ${bgClass} ${textClass} ${borderClass} ${ringClass}`;
+  const baseClasses = `relative group transition-all duration-200 select-none flex items-center justify-center font-display font-bold text-sm sm:text-xl transform hover:-translate-x-1 active:translate-y-0 overflow-visible ${shadowClass} border-2 ${borderStyle} ${bgClass} ${textClass} ${borderClass} ${ringClass}`;
 
   // --- Shape Logic ---
   let shapeClass = "";

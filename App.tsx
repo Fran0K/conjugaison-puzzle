@@ -5,7 +5,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
 import { ALL_TENSES, SHIMMER_CLASS, STORAGE_KEYS } from './constants';
-import { Database } from 'lucide-react';
+import {Database} from "@phosphor-icons/react";
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
 import { usePuzzleEngine } from './hooks/usePuzzleEngine';
