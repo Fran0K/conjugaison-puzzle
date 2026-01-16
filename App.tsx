@@ -67,7 +67,10 @@ const App: React.FC = () => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
   const trayRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
-  const settingRef = useRef<HTMLElement>(null);
+  const settingRef = useRef<HTMLButtonElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const grammarRef = useRef<HTMLButtonElement>(null);
+  const AboutRef = useRef<HTMLButtonElement>(null);
 
   // Trigger Tutorial on first load
   useEffect(() => {
@@ -94,6 +97,9 @@ const App: React.FC = () => {
     { targetRef: dropZoneRef, titleKey: 'tour_zone_title', descKey: 'tour_zone_desc', position: 'bottom' },
     { targetRef: footerRef, titleKey: 'tour_footer_title', descKey: 'tour_footer_desc', position: 'top' },
     { targetRef: settingRef, titleKey: 'tour_header_title', descKey: 'tour_header_desc', position: 'bottom' },
+    { targetRef: grammarRef, titleKey: 'tour_grammar_title', descKey: 'tour_grammar_desc', position: 'bottom' },
+    { targetRef: langRef, titleKey: 'tour_lang_title', descKey: 'tour_lang_desc', position: 'bottom' },
+    { targetRef: AboutRef, titleKey: 'tour_about_title', descKey: 'tour_about_desc', position: 'bottom' },
   ];
 
 
@@ -103,7 +109,10 @@ const App: React.FC = () => {
       {isMilestone && <Confetti key={confettiTrigger} />}
 
       <GameHeader 
-        headerRef={settingRef}
+        settingRef={settingRef}
+        grammarRef={grammarRef}
+        AboutRef={AboutRef}
+        langBtnRef={langRef}
         onOpenSettings={() => setShowSettings(true)}
         onOpenGrammar={() => setShowGrammar(true)}
         onOpenAbout={() => setShowAbout(true)}

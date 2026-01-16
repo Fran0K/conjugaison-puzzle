@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle } from 'react';
 import { Settings, BookOpen, Info, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Language } from '../locales';
@@ -8,18 +8,23 @@ interface GameHeaderProps {
   onOpenSettings: () => void;
   onOpenGrammar: () => void;
   onOpenAbout: () => void;
-  headerRef?: React.RefObject<HTMLElement | null>;
+  settingRef?: React.RefObject<HTMLButtonElement | null>;
+  langBtnRef?: React.RefObject<HTMLDivElement | null>;
+  grammarRef?: React.RefObject<HTMLButtonElement | null>;
+  AboutRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ 
   onOpenSettings, 
   onOpenGrammar, 
   onOpenAbout,
-  headerRef 
+  settingRef,
+  grammarRef,
+  langBtnRef,
+  AboutRef, 
 }) => {
   const { t, language, setLanguage } = useLanguage();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const langBtnRef = useRef<HTMLDivElement>(null);
 
   const currentLangObj = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
 
@@ -61,18 +66,22 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             
             {/* Tense Selector */}
             <button 
-            ref={headerRef as React.RefObject<HTMLButtonElement>}
-            onClick={onOpenSettings} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            ref={settingRef}
+            onClick={onOpenSettings} 
+            className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
               <Settings className="w-6 h-6" />
             </button>
             {/* Gammar teaching Selector */}
-            <button onClick={onOpenGrammar} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            <button 
+            ref = {grammarRef}
+            onClick={onOpenGrammar} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
               <BookOpen className="w-6 h-6" />
             </button>
             
              {/* Language Selector */}
-            <div className="relative" ref={langBtnRef}>
-              <button 
+            <div className="relative">
+              <button
+                ref={langBtnRef} 
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
                 className="p-2 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                 title={currentLangObj.label}
@@ -99,7 +108,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             </div>
 
             {/* About Page Selector */}
-             <button onClick={onOpenAbout} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+             <button 
+             ref={AboutRef}
+             onClick={onOpenAbout} 
+             className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
                <Info className="w-6 h-6" />
              </button>
           </div>
