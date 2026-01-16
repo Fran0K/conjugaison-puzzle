@@ -1,5 +1,5 @@
 import React, { useState, useRef, useImperativeHandle } from 'react';
-import { Settings, BookOpen, Info, ChevronDown } from 'lucide-react';
+import { Settings, BookText, Info, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Language } from '../locales';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -75,13 +75,12 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             <button 
             ref = {grammarRef}
             onClick={onOpenGrammar} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
-              <BookOpen className="w-6 h-6" />
+              <BookText className="w-6 h-6" />
             </button>
             
              {/* Language Selector */}
-            <div className="relative">
+            <div className="relative" ref={langBtnRef} >
               <button
-                ref={langBtnRef} 
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
                 className="p-2 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                 title={currentLangObj.label}
