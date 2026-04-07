@@ -100,6 +100,7 @@ export const TRANSLATIONS = {
       lbl_verb_stem: "Verbe · Rad",
       lbl_verb_ending: "Verbe · Term",
 
+      speak: "Écouter",
       milestone: "Incroyable ! {n} bonnes réponses !"
     },
     tenses: {
@@ -422,6 +423,7 @@ export const TRANSLATIONS = {
       lbl_verb_stem: "Verb · Stem",
       lbl_verb_ending: "Verb · End",
 
+      speak: "Listen",
       milestone: "Incroyable ! {n} bonnes réponses !"
     },
     tenses: {
@@ -691,7 +693,7 @@ export const TRANSLATIONS = {
       error_title: "错误",
       error_desc: "加载失败",
       retry: "重试",
-      correct: "正确！",
+      correct: "正确!",
       wrong: "再试一次",
       explanation: "解析",
       filter_title: "时态",
@@ -755,8 +757,9 @@ export const TRANSLATIONS = {
       lbl_verb_ending: "动词 · 词尾",
       
       // Milestone
-      milestone: "太棒了！已答对 {n} 题！"
-      
+      milestone: "太棒了！已答对 {n} 题！",
+      speak: "朗读"
+
     },
     tenses: {
       "Présent": "直陈式现在时",
@@ -1086,7 +1089,8 @@ export const TRANSLATIONS = {
       lbl_verb_stem: "動詞 · 語幹",
       lbl_verb_ending: "動詞 · 語尾",
       // Milestone
-      milestone: "すごい！正解数: {n}！"
+      milestone: "すごい！正解数: {n}！",
+      speak: "聴く"
     },
     tenses: {
       "Présent": "現在形",
