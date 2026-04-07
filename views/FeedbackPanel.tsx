@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, BookOpen } from 'lucide-react';
+import { Trophy, BookOpen, Speech } from 'lucide-react';
 import { PuzzleData, GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -61,15 +61,40 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           {feedback}
         </h3>
         <div className="space-y-4 mt-4">
-            <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
-              {puzzle.pronoun} 
-              <span className="font-bold ml-2">
-                <span className="border-b-2 border-green-500">{puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}</span>
-                <span className="border-b-2 border-green-500">{puzzle.correctStem}{puzzle.correctEnding || ''}</span>
-              </span>
+            <div className="flex items-center justify-center gap-2">
+              <div className="text-base sm:text-lg text-green-900 bg-white/60 inline-block px-4 py-2 sm:px-6 rounded-xl">
+                {puzzle.pronoun}
+                <span className="font-bold ml-2">
+                  <span className="border-b-2 border-green-500">{puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}</span>
+                  <span className="border-b-2 border-green-500">{puzzle.correctStem}{puzzle.correctEnding || ''}</span>
+                </span>
+              </div>
+              {typeof window !== 'undefined' && window.speechSynthesis && (
+                <button
+                  onClick={() => {
+                    const aux = puzzle.auxStem ? (puzzle.auxStem + (puzzle.auxEnding || '')) : '';
+                    const verb = puzzle.correctStem + (puzzle.correctEnding || '');
+                    const text = [puzzle.pronoun, aux, verb].filter(Boolean).join(' ');
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.resume();
+                    const voices = window.speechSynthesis.getVoices();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'fr-FR';
+                    const voice = voices.find(v => v.name === 'Thomas')
+                      || voices.find(v => v.lang === 'fr-FR')
+                      || voices.find(v => v.lang.startsWith('fr'));
+                    if (voice) utterance.voice = voice;
+                    window.speechSynthesis.speak(utterance);
+                  }}
+                  className="p-2 hover:text-orange-600 hover:bg-orange-100 rounded-full transition-colors"
+                  title={t('speak')}
+                >
+                  <Speech className="w-5 h-5 " />
+                </button>
+              )}
             </div>
-            <p className="text-sm text-green-700 italic flex items-center justify-center gap-2">
-              <span>{flag}</span> "{puzzle.translation}"
+            <p className="text-sm text-green-700 flex items-center justify-center gap-2">
+              "{puzzle.translation}"
             </p>
             <div className="text-sm bg-green-100/50 p-4 rounded-xl text-left text-green-900 border border-green-100 mt-4">
               <span className="font-bold block mb-1 text-xs uppercase opacity-70 flex items-center gap-1">

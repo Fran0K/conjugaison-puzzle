@@ -67,3 +67,10 @@ Object.defineProperty(window, 'matchMedia', {
 
 // 4. Suppress specific console warnings if necessary
 // console.warn = vi.fn();
+
+// 5. Mock SpeechSynthesis (Used by FeedbackPanel TTS feature)
+globalThis.SpeechSynthesisUtterance = vi.fn().mockImplementation(function(this: any, text: string) {
+  this.text = text;
+  this.lang = '';
+  this.voice = null;
+});
