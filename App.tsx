@@ -4,7 +4,7 @@ import { GrammarModal } from './components/GrammarModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
-import { ALL_TENSES,DEFAULT_TENSES, SHIMMER_CLASS, STORAGE_KEYS } from './constants';
+import { ALL_TENSES,DEFAULT_TENSES, STORAGE_KEYS } from './constants';
 import {Database} from "@phosphor-icons/react";
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
@@ -104,8 +104,8 @@ const App: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
-      
+    <div className="min-h-screen bg-cream text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
+
       {isMilestone && <Confetti key={confettiTrigger} />}
 
       <GameHeader 
@@ -123,22 +123,39 @@ const App: React.FC = () => {
         
         {/* Loading State */}
         {gameState === GameState.LOADING && (
-          <div className="w-full flex flex-col items-center gap-4 animate-pulse mt-10">
-            <div className={`h-24 w-full  ${SHIMMER_CLASS}`}></div>
-            <div className={`h-16 w-full ${SHIMMER_CLASS}`}></div>
-            <div className={`h-40 w-full ${SHIMMER_CLASS}`}></div>
-            <div className="mt-4 text-gray-400 text-sm font-medium">{t('loading')}</div>
+          <div className="w-full flex flex-col items-center justify-center gap-6 mt-16 sm:mt-24 animate-in fade-in duration-300">
+            {/* Logo */}
+            <img
+              src="/img/logo_desk.png"
+              alt={t('title')}
+              className="hidden sm:block h-20 w-auto object-contain opacity-95"
+            />
+            <img
+              src="/img/logo_mobi.png"
+              alt={t('title')}
+              className="block sm:hidden h-16 w-auto object-contain opacity-95"
+            />
+            {/* Bouncing Puzzle Pieces */}
+            <div className="flex items-end gap-3 sm:gap-4">
+              <div className="loading-piece w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#fed8aa' }} />
+              <div className="loading-piece loading-piece-delay-1 w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#bae6fe' }} />
+              <div className="loading-piece loading-piece-delay-2 w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#fb923c' }} />
+            </div>
+            {/* Loading Text */}
+            <div className="text-warm-silver text-sm font-medium tracking-wide">
+              {t('loading')}
+            </div>
           </div>
         )}
 
         {/* Error State */}
         {gameState === GameState.ERROR && (
-           <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-md mt-10">
-             <div className="text-french-blue mb-4 bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+           <div className="text-center py-20 bg-white rounded-2xl border border-oat p-8 max-w-md mt-10">
+             <div className="text-french-blue mb-4 bg-oat-light w-16 h-16 rounded-full flex items-center justify-center mx-auto">
                <Database className="w-8 h-8"/>
              </div>
-             <h2 className="text-xl font-bold text-gray-800 mb-2">{t('error_title')}</h2>
-             <p className="text-gray-500 mb-6 text-sm">{t('error_desc')}</p>
+             <h2 className="text-xl font-bold text-black mb-2">{t('error_title')}</h2>
+             <p className="text-warm-charcoal mb-6 text-sm">{t('error_desc')}</p>
              <button onClick={loadNextPuzzle} className="px-6 py-3 bg-french-blue text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
                {t('retry')}
              </button>

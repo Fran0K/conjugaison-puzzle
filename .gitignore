@@ -19,6 +19,7 @@ scripts/*.json
 scripts/data/*.csv
 scripts/data/*.json
 scripts/data/test/*.json
+scripts/data/verbs/*
 
 # Editor directories and files
 .vscode/*

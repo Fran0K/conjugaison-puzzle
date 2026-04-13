@@ -59,16 +59,16 @@ export const DropZone: React.FC<DropZoneProps> = ({
 
   // --- Theme Logic ---
   // Default Empty State
-  let borderColor = isAux ? "border-amber-200" : "border-blue-200";
-  let bgColor = "bg-white"; 
-  let textColor = isAux ? "text-amber-300" : "text-blue-300";
+  let borderColor = isAux ? "border-[#fed8aa]" : "border-[#bae6fe]";
+  let bgColor = "bg-white";
+  let textColor = isAux ? "text-[#fb923c]" : "text-[#0ca5e9]";
   let additionalClasses = "";
 
   // Filled State (Pending Check)
   if (content) {
-    textColor = isAux ? "text-amber-900" : "text-blue-900";
-    bgColor = isAux ? "bg-amber-50" : "bg-blue-50";
-    borderColor = isAux ? "border-amber-500" : "border-blue-500";
+    textColor = isAux ? "text-[#9b3412]" : "text-[#036aa2]";
+    bgColor = isAux ? "bg-[#ffedd5]" : "bg-[#e1f3fe]";
+    borderColor = isAux ? "border-[#fb923c]" : "border-[#0ca5e9]";
   }
 
   // Validated State (Correct/Incorrect)
@@ -84,9 +84,9 @@ export const DropZone: React.FC<DropZoneProps> = ({
 
   // Drag Over Feedback
   if (isOver) {
-    borderColor = isAux ? "border-amber-500" : "border-blue-500";
-    bgColor = isAux ? "bg-amber-50" : "bg-blue-50";
-    const ringColor = isAux ? "ring-amber-200" : "ring-blue-200";
+    borderColor = isAux ? "border-[#fb923c]" : "border-[#0ca5e9]";
+    bgColor = isAux ? "bg-[#ffedd5]" : "bg-[#e1f3fe]";
+    const ringColor = isAux ? "ring-[#fed8aa]" : "ring-[#bae6fe]";
     additionalClasses = `ring-4 ${ringColor} scale-105 z-10`;
   }
 
@@ -132,12 +132,12 @@ export const DropZone: React.FC<DropZoneProps> = ({
        {/* Notch representation for dropzone */}
        {showNotch && (
         <div className={`absolute right-[-8px] sm:right-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 z-10 ${
-             isOver ? (isAux ? 'bg-amber-50 border-amber-500' : 'bg-blue-50 border-blue-500') :
+             isOver ? (isAux ? 'bg-[#ffedd5] border-[#fb923c]' : 'bg-[#e1f3fe] border-[#0ca5e9]') :
              content ? (
-               isCorrect === true ? 'bg-green-50 border-green-500' : 
-               (isCorrect === false ? 'bg-red-50 border-red-500' : 
-               (isAux ? 'bg-amber-50 border-amber-500' : 'bg-blue-50 border-blue-500'))
-             ) : (isAux ? 'bg-white border-amber-200' : 'bg-white border-blue-200')
+               isCorrect === true ? 'bg-green-50 border-green-500' :
+               (isCorrect === false ? 'bg-red-50 border-red-500' :
+               (isAux ? 'bg-[#ffedd5] border-[#fb923c]' : 'bg-[#e1f3fe] border-[#0ca5e9]'))
+             ) : (isAux ? 'bg-white border-[#fed8aa]' : 'bg-white border-[#bae6fe]')
         }`}></div>
       )}
 
@@ -151,9 +151,9 @@ export const DropZone: React.FC<DropZoneProps> = ({
       
       {/* Label for Aux/Verb distinction */}
       <span className={`absolute -top-2 sm:-top-3 left-2 text-[8px] sm:text-[10px] font-bold uppercase px-1 rounded-full border ${
-        isAux 
-        ? 'bg-amber-50 text-amber-500 border-amber-100' 
-        : 'bg-blue-50 text-blue-400 border-blue-100'
+        isAux
+        ? 'bg-cream text-amber-600 border-oat'
+        : 'bg-cream text-french-blue border-oat'
       }`}>
         {isAux ? t('lbl_aux') : t('lbl_verb')}
       </span>

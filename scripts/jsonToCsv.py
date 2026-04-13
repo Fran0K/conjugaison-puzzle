@@ -10,9 +10,9 @@ import sys
 import uuid
 
 # Configuration
-INPUT_FILE = 'data/verbs/lire.json'
-OUTPUT_VERBS = 'data/verbs/verbs_lire.csv'
-OUTPUT_PUZZLES = 'data/verbs/puzzles_lire.csv'
+INPUT_FILE = 'data/verbs/naitre.json'
+OUTPUT_VERBS = 'data/verbs/verbs_naitre.csv'
+OUTPUT_PUZZLES = 'data/verbs/puzzles_naitre.csv'
 
 def to_csv_cell(value):
     """

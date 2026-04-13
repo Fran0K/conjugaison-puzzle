@@ -46,14 +46,16 @@ export interface GrammarDetail {
   examples?: string;
 }
 
+export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2';
+
 export interface GrammarRule {
   id: string;
   title: string;
   formula: string;
   description: string;
   example: string;
-  color: string;
-  details?: GrammarDetail[]; // New field for expandable content
+  level: CEFRLevel;
+  details?: GrammarDetail[];
 }
 
 // Extended slot types for precise drag and drop validation

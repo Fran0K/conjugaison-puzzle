@@ -1,5 +1,5 @@
 import React, { useState, useRef, useImperativeHandle } from 'react';
-import { Settings, BookText, Info, ChevronDown } from 'lucide-react';
+import { Settings, BookText, Info, ChevronDown, Globe } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Language } from '../locales';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -39,8 +39,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
         <div className="fixed inset-0 z-20 cursor-default" onClick={() => setIsLangMenuOpen(false)} />
       )}
 
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between">
+      <header className="bg-cream sticky top-0 z-30">
+        <div className="mx-auto px-4 sm:px-16 h-14 sm:h-16 flex items-center justify-between">
           
           {/* Logo Area */}
           <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
                 className="block sm:hidden h-8 w-auto object-contain" 
               />
             </div>
-            <h1 className="text-xl font-display font-bold text-french-dark hidden sm:block">
+            <h1 className="text-xl font-display font-bold text-[#55534e] hidden sm:block">
               {t('title')}
             </h1>
           </div>
@@ -68,13 +68,13 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             <button 
             ref={settingRef}
             onClick={onOpenSettings} 
-            className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
               <Settings className="w-6 h-6" />
             </button>
             {/* Gammar teaching Selector */}
-            <button 
+            <button
             ref = {grammarRef}
-            onClick={onOpenGrammar} className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+            onClick={onOpenGrammar} className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
               <BookText className="w-6 h-6" />
             </button>
             
@@ -82,20 +82,20 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             <div className="relative" ref={langBtnRef} >
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="p-2 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                className="p-2 rounded-full hover:text-[#55534e] hover:bg-oat-light transition-colors flex items-center justify-center"
                 title={currentLangObj.label}
               >
-                <span className="text-2xl leading-none">{currentLangObj.flag}</span>
+                <Globe className="w-6 h-6 text-warm-silver hover:text-[#55534e]" />
               </button>
 
               {isLangMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-oat py-1 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-200">
                   {SUPPORTED_LANGUAGES.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => selectLanguage(lang.code)}
-                      className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors ${
-                        language === lang.code ? 'bg-blue-50 text-french-blue' : 'text-gray-700'
+                      className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-oat-light transition-colors ${
+                        language === lang.code ? 'bg-cream text-french-blue' : 'text-black'
                       }`}
                     >
                       <span className="text-lg">{lang.flag}</span>
@@ -110,7 +110,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
              <button 
              ref={AboutRef}
              onClick={onOpenAbout} 
-             className="p-2 text-gray-400 hover:text-french-blue hover:bg-blue-50 rounded-full transition-colors">
+             className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
                <Info className="w-6 h-6" />
              </button>
           </div>
