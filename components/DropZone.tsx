@@ -142,9 +142,9 @@ export const DropZone: React.FC<DropZoneProps> = ({
       )}
 
       {content ? (
-        <span className="text-lg sm:text-2xl font-display font-bold">{content}</span>
+        <span className="text-xl sm:text-2xl font-display font-bold">{content}</span>
       ) : (
-        <span className={`font-display font-semibold text-[10px] sm:text-sm uppercase tracking-wider select-none pointer-events-none text-center ${textColor}`}>
+        <span className={`font-display font-semibold text-xs sm:text-sm uppercase tracking-wider select-none pointer-events-none text-center ${textColor}`}>
           {placeholder}
         </span>
       )}

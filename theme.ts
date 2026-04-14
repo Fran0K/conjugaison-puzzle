@@ -14,9 +14,9 @@ export const CONNECTOR = {
 export const FONT = {
   family: '"Fredoka", sans-serif',
   weight: 700,
-  mobile: { base: 14, min: 10 },
+  mobile: { base: 17, min: 12 },
   desktop: { base: 20, min: 16 },
-  trayTitle: { mobile: 10, desktop: 12 },
+  trayTitle: { mobile: 11, desktop: 14 },
 };
 
 // --- Puzzle Piece Padding & Sizing ---
@@ -44,8 +44,8 @@ export const LEVEL_COLORS: Record<string, string> = {
 
 // --- Colors ---
 export const COLORS = {
-  aux:  { active: '#fb923c', inactive: '#fed8aa', text: '#9b3412', textActive: '#ffffff', trayBg: '#ffedd5' },
-  verb: { active: '#0ca5e9', inactive: '#bae6fe', text: '#036aa2', textActive: '#ffffff', trayBg: '#e1f3fe' },
+  aux:  { active: '#fb923c', inactive: '#fed8aa', text: '#9b3412', textActive: '#ffffff', trayBg: '#f3efe8' },
+  verb: { active: '#0ca5e9', inactive: '#bae6fe', text: '#036aa2', textActive: '#ffffff', trayBg: '#f3efe8' },
   feedback: { correct: '#22c55e', incorrect: '#EF4135' },
 };
 

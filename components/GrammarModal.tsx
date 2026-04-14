@@ -69,7 +69,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
                         </div>
 
                       </div>
-                      <h3 className="font-medium text-xl tracking-tight text-black" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                      <h3 className="font-medium tracking-normal text-xl text-black" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                         {localizedRule.title || tTense(rule.id)}
                       </h3>
                     </div>
