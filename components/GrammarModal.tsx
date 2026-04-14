@@ -4,18 +4,13 @@ import { GRAMMAR_RULES } from '../constants';
 import { CEFRLevel } from '../types';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { LEVEL_COLORS } from '../theme';
 
 interface GrammarModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const LEVEL_COLORS: Record<CEFRLevel, string> = {
-  A1: '#0fa76e',
-  A2: '#3772cf',
-  B1: '#c37d0d',
-  B2: '#d45656',
-};
 
 export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) => {
   const { t, tTense, tRule } = useLanguage();
@@ -42,8 +37,8 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6 space-y-3 scrollbar-hide hover:scrollbar-default">
-          <div className="grid gap-4">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6 space-y-3 scrollbar-hide hover:scrollbar-default ">
+          <div className="grid gap-4 ">
             {GRAMMAR_RULES.map((rule) => {
               if (!rule.id || !rule.level) return null;
               const localizedRule = tRule(rule.id);
@@ -55,7 +50,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
               return (
                 <div
                   key={rule.id}
-                  className={`rounded-2xl transition-shadow duration-200 overflow-hidden ${isExpanded ? 'border border-[#55534e]' : 'cursor-pointer'}`}
+                  className={`rounded-2xl transition-shadow  transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg] overflow-hidden ${isExpanded ? 'border border-[#55534e]' : 'cursor-pointer'} ` }
                   style={{ backgroundColor: '#f5f4f2' }}
                   onClick={() => handleToggle(rule.id)}
                 >

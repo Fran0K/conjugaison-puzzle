@@ -77,6 +77,8 @@ export interface TrayConfig {
 export interface TrayLayoutState {
   cols: number; // 1, 2, or 4
   pieceWidth: number;
+  fontSize: number;    // dynamic font size in px
+  isDesktop: boolean;  // for SmartTray padding/connector calculations
 }
 
 // --- Database Types (Supabase) ---
