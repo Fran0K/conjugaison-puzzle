@@ -39,7 +39,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 alt="ConjuPuzzle" 
                 className="w-24 h-24 mb-4 object-contain "/>
               <h1 className="text-2xl font-bold text-black">ConjuPuzzle</h1>
-              <p className="text-xs font-mono text-warm-silver mt-1">1.0.1</p>
+              <p className="text-xs font-mono text-warm-silver mt-1">1.2.0</p>
               <p className="text-sm text-warm-charcoal mt-4 leading-relaxed max-w-sm">
                 {t('about_desc')}
               </p>
@@ -58,7 +58,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                     onClose();
                     onRestartTutorial();
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-oat-light hover:bg-oat text-warm-charcoal rounded-lg font-bold transition-all text-xs"
+                  className="flex items-center gap-2 px-4 py-2 bg-oat-light rounded-xl text-xs font-semibold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
                 >
                   <ArrowCounterClockwise className="w-4 h-4" />
                   {t('restart_tutorial')}
@@ -119,12 +119,12 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 href="https://www.buymeacoffee.com/fran0k"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFDD00] text-[#000000] rounded-full font-display font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all mb-6 active:scale-95"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFDD00] text-[#000000] rounded-full font-display font-bold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
               >
                 <Coffee color="#000000ff" weight="bold" className="w-5 h-5" />
                 <span>Buy me a coffee</span>
              </a>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center mt-3 gap-2">
              <p className="text-sm text-warm-silver font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart  color="#f95d5d" weight="fill" className="w-4 h-4 " />
              </p>
@@ -146,7 +146,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                   <EnvelopeSimple className="w-6 h-6" />
                 </a>
              </div>
-             <div className='flex-row items-center justify-center pt-4'>
+             <div className='flex-row items-center justify-center mt-3'>
 
               <p className="text-sm gap-2 text-warm-silver font-semibold">
                 Copyright © 2025 Conjupuzzle.

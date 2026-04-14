@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, Search, ArrowRight } from 'lucide-react';
+import { RefreshCw, Check, ArrowRight } from 'lucide-react';
 import { GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 
@@ -48,11 +48,11 @@ export const ControlBar: React.FC<ControlBarProps> = ({
                 disabled={isCheckDisabled}
                 className={`flex-[2] flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
                     !isCheckDisabled
-                  ? 'bg-green-600 text-white hover:bg-green-700 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]'
+                  ? 'bg-[#078a52] text-white hover:bg-[#078a52] active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]'
                   : 'bg-oat-light text-warm-silver cursor-not-allowed opacity-60'
                 }`}
               >
-                <Search className="w-5 h-5" />
+                <Check className="w-5 h-5" />
                 <span>{t('check')}</span>
               </button>
             </>

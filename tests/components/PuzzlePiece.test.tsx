@@ -31,8 +31,8 @@ describe('PuzzlePiece', () => {
   it('applies selected styles when isSelected is true', () => {
     render(<PuzzlePiece {...defaultProps} isSelected={true} />);
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-french-blue');
-    expect(button.className).toContain('text-white');
+    // Active verb color is applied via inline style
+    expect(button).toHaveStyle({ backgroundColor: '#0ca5e9' });
   });
 
   it('does not fire click when disabled', () => {
@@ -42,17 +42,34 @@ describe('PuzzlePiece', () => {
   });
 
   it('renders correct style for Auxiliary type', () => {
-      render(<PuzzlePiece {...defaultProps} type="aux-stem" />);
-      const button = screen.getByRole('button');
-      expect(button.className).toContain('bg-amber-50'); 
+    render(<PuzzlePiece {...defaultProps} type="aux-stem" />);
+    const button = screen.getByRole('button');
+    // Inactive aux color is applied via inline style
+    expect(button).toHaveStyle({ backgroundColor: '#fed8aa' });
   });
 
   it('respects fixedWidth prop when provided', () => {
-      const width = 150;
-      render(<PuzzlePiece {...defaultProps} fixedWidth={width} />);
-      const button = screen.getByRole('button');
-      // React sets styles as inline styles
-      expect(button).toHaveStyle({ width: `${width}px` });
-      expect(button).toHaveStyle({ minWidth: `${width}px` });
+    const width = 150;
+    render(<PuzzlePiece {...defaultProps} fixedWidth={width} />);
+    const button = screen.getByRole('button');
+    expect(button).toHaveStyle({ minWidth: `${width}px`, width: '100%' });
+  });
+
+  it('applies fontSize prop as inline style', () => {
+    render(<PuzzlePiece {...defaultProps} fontSize={18} />);
+    const button = screen.getByRole('button');
+    expect(button).toHaveStyle({ fontSize: '18px' });
+  });
+
+  it('defaults to 14px font size on mobile', () => {
+    render(<PuzzlePiece {...defaultProps} isDesktop={false} />);
+    const button = screen.getByRole('button');
+    expect(button).toHaveStyle({ fontSize: '14px' });
+  });
+
+  it('defaults to 20px font size on desktop', () => {
+    render(<PuzzlePiece {...defaultProps} isDesktop={true} />);
+    const button = screen.getByRole('button');
+    expect(button).toHaveStyle({ fontSize: '20px' });
   });
 });

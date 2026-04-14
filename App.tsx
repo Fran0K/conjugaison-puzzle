@@ -104,7 +104,7 @@ const App: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-cream text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
+    <div className="h-[100dvh] overflow-y-auto overscroll-y-contain bg-cream text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
 
       {isMilestone && <Confetti key={confettiTrigger} />}
 
@@ -126,12 +126,12 @@ const App: React.FC = () => {
           <div className="w-full flex flex-col items-center justify-center gap-6 mt-16 sm:mt-24 animate-in fade-in duration-300">
             {/* Logo */}
             <img
-              src="/img/logo_desk.png"
+              src="/img/logo_about.png"
               alt={t('title')}
               className="hidden sm:block h-20 w-auto object-contain opacity-95"
             />
             <img
-              src="/img/logo_mobi.png"
+              src="/img/logo_about.png"
               alt={t('title')}
               className="block sm:hidden h-16 w-auto object-contain opacity-95"
             />

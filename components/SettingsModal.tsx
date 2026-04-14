@@ -5,6 +5,7 @@ import { GRAMMAR_RULES } from '../constants';
 import { CEFRLevel } from '../types';
 import { X, Check, Filter } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { LEVEL_COLORS } from '../theme';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -12,13 +13,6 @@ interface SettingsModalProps {
   selectedTenses: string[];
   onSave: (tenses: string[]) => void;
 }
-
-const LEVEL_COLORS: Record<CEFRLevel, string> = {
-  A1: '#0fa76e',
-  A2: '#3772cf',
-  B1: '#c37d0d',
-  B2: '#d45656',
-};
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, selectedTenses, onSave }) => {
   const { t, tTense } = useLanguage();
