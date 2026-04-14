@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SlotType } from '../types';
 
 interface PuzzlePieceProps {
@@ -8,88 +8,66 @@ interface PuzzlePieceProps {
   isSelected: boolean;
   onClick: () => void;
   disabled?: boolean;
-  isCorrect?: boolean | null; 
-  showConnectors?: boolean; 
-  fixedWidth?: number; // New prop for precise content-based layout
+  isCorrect?: boolean | null;
+  showConnectors?: boolean;
+  fixedWidth?: number;
 }
 
-export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ 
-  text, 
-  type, 
-  isSelected, 
-  onClick, 
-  disabled, 
+export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
+  text,
+  type,
+  isSelected,
+  onClick,
+  disabled,
   isCorrect,
   showConnectors = true,
   fixedWidth
 }) => {
-  
+
   const isStem = type.includes('stem');
   const isAux = type.includes('aux');
+  const [isHovered, setIsHovered] = useState(false);
 
-  // --- Theme Color Logic ---
-  let bgClass = "";
+  // --- Theme Color Logic (Material Design) ---
+  let bg = "";
   let textClass = "";
-  let borderClass = "";
-  let ringClass = "";
+
+  const isActive = isHovered || isSelected;
 
   if (isAux) {
-     bgClass = "bg-amber-50";
-     textClass = "text-amber-900";
-     borderClass = "border-amber-300";
+    bg = isActive ? "#fb923c" : "#fed8aa";
+    textClass = isActive ? "text-[#ffffff]" : "text-[#9b3412]";
   } else {
-     bgClass = "bg-blue-50";
-     textClass = "text-blue-900";
-     borderClass = "border-blue-300";
-  }
-
-  if (isSelected) {
-    if (isAux) {
-      bgClass = "bg-amber-500";
-      textClass = "text-white";
-      borderClass = "border-amber-600";
-      ringClass = "ring-2 sm:ring-4 ring-amber-200";
-    } else {
-      bgClass = "bg-french-blue";
-      textClass = "text-white";
-      borderClass = "border-blue-600";
-      ringClass = "ring-2 sm:ring-4 ring-blue-200";
-    }
+    bg = isActive ? "#0ca5e9" : "#bae6fe";
+    textClass = isActive ? "text-[#ffffff]" : "text-[#036aa2]";
   }
 
   if (isCorrect === true) {
-    bgClass = "bg-green-500";
+    bg = "#22c55e";
     textClass = "text-white";
-    borderClass = "border-green-600";
-    ringClass = "ring-2 sm:ring-4 ring-green-200";
   } else if (isCorrect === false) {
-    bgClass = "bg-french-red";
+    bg = "#EF4135";
     textClass = "text-white";
-    borderClass = "border-red-600";
-    ringClass = "ring-2 sm:ring-4 ring-red-200";
   }
 
-  const shadowClass = "drop-shadow-sm";
-  const borderStyle = (isStem && showConnectors) ? "border-dashed" : "border-solid";
+  const bgStyle: React.CSSProperties = { backgroundColor: bg };
 
-  // Removed w-full to strictly follow content-based layout rules
-  const baseClasses = `relative group transition-all duration-200 select-none flex items-center justify-center font-display font-bold text-sm sm:text-xl transform hover:-translate-x-1 active:translate-y-0 overflow-visible ${shadowClass} border-2 ${borderStyle} ${bgClass} ${textClass} ${borderClass} ${ringClass}`;
+  // Connector sizing
+  const tabSize = 'w-5 h-5 sm:w-7 sm:h-7';
+  const tabOffset = 'right-[-10px] sm:right-[-14px]';
+  const slotOffset = 'left-[-10px] sm:left-[-14px]';
 
   // --- Shape Logic ---
   let shapeClass = "";
 
-  // Connectors visuals are purely decorative overlays now, 
-  // padding is handled by the layout engine calculation + base styles
-
-  // ajust the puzzle height
   if (isStem) {
     if (showConnectors) {
-      shapeClass = "rounded-l-lg rounded-r-none pr-2 pl-1 py-2 sm:pr-5 sm:pl-3 sm:py-3";
+      shapeClass = "rounded-l-lg rounded-r-none pr-3 pl-2 py-2 sm:pr-4 sm:pl-3 sm:py-3";
     } else {
-      shapeClass = "rounded-xl px-1 py-2 sm:px-4 sm:py-3"; 
+      shapeClass = "rounded-xl px-2 py-2 sm:px-4 sm:py-3";
     }
   } else {
-    shapeClass = "rounded-r-lg rounded-l-none pl-2 pr-2 py-2 sm:pl-4 sm:pr-4 sm:py-3";
+    shapeClass = "rounded-r-lg rounded-l-none pl-3 pr-2 py-2 sm:pl-4 sm:pr-3 sm:py-3";
   }
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -102,11 +80,11 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
     e.dataTransfer.effectAllowed = "copy";
   };
 
-  // Logic to enforce exact width if provided
-  // const style: React.CSSProperties = fixedWidth ? { width: `${fixedWidth}px`, minWidth: `${fixedWidth}px` } : { minWidth: '60px' };
-  const style: React.CSSProperties = fixedWidth 
-      ? { minWidth: `${fixedWidth}px`, width: '100%' } 
-      : { minWidth: '80px' };
+  const style: React.CSSProperties = fixedWidth
+      ? { minWidth: `${fixedWidth}px`, width: '100%', ...bgStyle }
+      : { minWidth: '80px', ...bgStyle };
+
+  const showHoverEffect = !disabled && !isSelected && isCorrect === null;
 
   return (
     <button
@@ -114,29 +92,28 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       draggable={!disabled}
       onDragStart={handleDragStart}
       disabled={disabled}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={style}
-      className={`${baseClasses} ${shapeClass} ${disabled ? 'opacity-50 cursor-not-allowed transform-none' : 'cursor-grab active:cursor-grabbing'}`}
+      className={`relative group transition-[shadow,transform,background-color,color] duration-300 select-none flex items-center justify-center font-display font-bold text-sm sm:text-xl overflow-visible ${textClass} ${shapeClass} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'} ${showHoverEffect ? 'hover:-translate-y-1 hover:shadow-clay-hover hover:-rotate-z-[2deg]' : ''}`}
     >
-      
-      {/* ---------------- STEM (Base) CONNECTOR LOGIC ---------------- */}
+
+      {/* Convex tab (stem): circle protrudes right, same bg color */}
       {isStem && showConnectors && (
-        <>
-          <div className={`absolute right-[-8px] sm:right-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 border-dashed z-10 ${bgClass} ${borderClass}`}></div>
-          <div className={`absolute right-[-4px] sm:right-[-6px] top-1/2 transform -translate-y-1/2 w-2 h-3 sm:w-3 sm:h-4 z-20 ${bgClass}`}></div>
-        </>
+        <div
+          className={`absolute ${tabOffset} top-1/2 -translate-y-1/2 ${tabSize} rounded-full transition-colors duration-300`}
+          style={bgStyle}
+        />
       )}
 
-      {/* ---------------- ENDING (Fin) CONNECTOR LOGIC ---------------- */}
+      {/* Concave slot (ending): circle matches tray background color */}
       {!isStem && showConnectors && (
-         <>
-           <div className="absolute left-[-8px] sm:left-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-white z-20"></div>
-           <div 
-             className={`absolute left-[-8px] sm:left-[-12px] top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 bg-transparent z-30 pointer-events-none ${borderClass}`}
-             style={{ clipPath: 'inset(0 0 0 50%)' }} 
-           ></div>
-         </>
+        <div
+          className={`absolute ${slotOffset} top-1/2 -translate-y-1/2 ${tabSize} rounded-full`}
+          style={{ backgroundColor: isAux ? '#ffedd5' : '#e1f3fe' }}
+        />
       )}
-      
+
       <span className="relative z-30 px-1">{text}</span>
     </button>
   );

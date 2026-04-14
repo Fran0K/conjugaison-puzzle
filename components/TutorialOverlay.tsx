@@ -175,7 +175,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
 
         {/* Tooltip Card */}
         <div 
-            className="absolute bg-white p-5 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-300 flex flex-col gap-3"
+            className="absolute bg-white p-5 rounded-2xl border border-oat animate-in fade-in zoom-in-95 duration-300 flex flex-col gap-3"
             style={{
                 top: tooltipTop,
                 left: tooltipLeft,
@@ -192,7 +192,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                 </h3>
                 
                 <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded-full min-w-[36px] text-center">
+                <span className="text-[10px] font-bold text-warm-silver bg-oat-light px-2 py-1 rounded-full min-w-[36px] text-center">
                     {currentStepIndex + 1} / {steps.length}
                 </span>
                 <button 
@@ -205,7 +205,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
               </div>  
             </div>
             
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-warm-charcoal leading-relaxed">
                 {/* @ts-ignore dynamic key */}
                 {t(step.descKey)}
             </p>
@@ -216,7 +216,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                    onClick={handlePrev}
                    disabled={isFirstStep}
                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold transition-all
-                     ${isFirstStep ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 active:bg-gray-200'}
+                     ${isFirstStep ? 'text-oat cursor-not-allowed' : 'text-warm-charcoal hover:bg-oat-light active:bg-oat'}
                    `}
                 >
                    <ChevronLeft className="w-4 h-4" />
@@ -243,7 +243,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
             
             {/* Arrow/Triangle */}
             <div 
-                className={`absolute w-4 h-4 bg-white transform rotate-45 border-r border-b border-gray-100 shadow-sm`}
+                className={`absolute w-4 h-4 bg-white transform rotate-45 border-r border-b border-oat shadow-sm`}
                 style={{
                     left: arrowLeft,
                     // If bottom, arrow is on top (-8px). If top, arrow is on bottom (100% - 8px).

@@ -16,31 +16,31 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)]  bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90dvh] border border-oat">
         {/* Header - Fixed */}
-        <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-          <h2 className="text-xl font-display font-bold text-french-dark">
+        <div className="px-4 py-3 md:px-6 md:py-4 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-3xl">
+          <h2 className="text-xl font-m text-[#55534e] tracking-tight">
             {t('about')}
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+            className="p-2 hover:bg-oat-light rounded-full transition-colors"
           >
-            <X weight="bold" className="w-6 h-6 text-black-500" />
+            <X className="w-5 h-5 text-warm-charcoal" />
           </button>
         </div>
         
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4 ">
+        <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4 scrollbar-hide hover:scrollbar-default">
            <div className="flex flex-col items-center text-center mb-8">
               {/* Logo / Icon */}
               <img 
                 src="/img/logo_about.png" 
                 alt="ConjuPuzzle" 
                 className="w-24 h-24 mb-4 object-contain "/>
-              <h1 className="text-2xl font-bold text-gray-800">ConjuPuzzle</h1>
-              <p className="text-xs font-mono text-gray-400 mt-1">1.0.1</p>
-              <p className="text-sm text-gray-600 mt-4 leading-relaxed max-w-sm">
+              <h1 className="text-2xl font-bold text-black">ConjuPuzzle</h1>
+              <p className="text-xs font-mono text-warm-silver mt-1">1.0.1</p>
+              <p className="text-sm text-warm-charcoal mt-4 leading-relaxed max-w-sm">
                 {t('about_desc')}
               </p>
            </div>
@@ -58,7 +58,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                     onClose();
                     onRestartTutorial();
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold transition-all text-xs"
+                  className="flex items-center gap-2 px-4 py-2 bg-oat-light hover:bg-oat text-warm-charcoal rounded-lg font-bold transition-all text-xs"
                 >
                   <ArrowCounterClockwise className="w-4 h-4" />
                   {t('restart_tutorial')}
@@ -73,8 +73,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                    <Eyes className="w-5 h-5" />
                  </div>
                  <div className="text-left">
-                   <h4 className="font-bold text-gray-800 text-sm">{t('step_1_title')}</h4>
-                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{t('step_1_desc')}</p>
+                   <h4 className="font-bold text-black text-sm">{t('step_1_title')}</h4>
+                   <p className="text-xs text-warm-charcoal mt-0.5 leading-relaxed">{t('step_1_desc')}</p>
                  </div>
                </div>
 
@@ -84,8 +84,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                    <PuzzlePiece className="w-5 h-5" />
                  </div>
                  <div className="text-left">
-                   <h4 className="font-bold text-gray-800 text-sm">{t('step_2_title')}</h4>
-                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{t('step_2_desc')}</p>
+                   <h4 className="font-bold text-black text-sm">{t('step_2_title')}</h4>
+                   <p className="text-xs text-warm-charcoal mt-0.5 leading-relaxed">{t('step_2_desc')}</p>
                  </div>
                </div>
 
@@ -95,8 +95,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                    <CursorClick className="w-5 h-5" />
                  </div>
                  <div className="text-left">
-                   <h4 className="font-bold text-gray-800 text-sm">{t('step_3_title')}</h4>
-                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{t('step_3_desc')}</p>
+                   <h4 className="font-bold text-black text-sm">{t('step_3_title')}</h4>
+                   <p className="text-xs text-warm-charcoal mt-0.5 leading-relaxed">{t('step_3_desc')}</p>
                  </div>
                </div>
 
@@ -106,15 +106,15 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                    <CheckCircle className="w-5 h-5" />
                  </div>
                  <div className="text-left">
-                   <h4 className="font-bold text-gray-800 text-sm">{t('step_4_title')}</h4>
-                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{t('step_4_desc')}</p>
+                   <h4 className="font-bold text-black text-sm">{t('step_4_title')}</h4>
+                   <p className="text-xs text-warm-charcoal mt-0.5 leading-relaxed">{t('step_4_desc')}</p>
                  </div>
                </div>
              </div>
            </div>
 
            {/* Footer: Author */}
-           <div className="w-full border-t border-gray-100 pt-6 pb-4 md:pb-4 text-center">
+           <div className="w-full border-t border-oat pt-6 pb-4 md:pb-4 text-center">
              <a
                 href="https://www.buymeacoffee.com/fran0k"
                 target="_blank"
@@ -125,33 +125,33 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 <span>Buy me a coffee</span>
              </a>
             <div className="flex justify-center gap-2">
-             <p className="text-sm text-gray-500 font-semibold flex items-center justify-center gap-1">
+             <p className="text-sm text-warm-silver font-semibold flex items-center justify-center gap-1">
                {t('author')} <Heart  color="#f95d5d" weight="fill" className="w-4 h-4 " />
              </p>
-             <p className="text-gray-500 font-semibold text-sm">
+             <p className="text-warm-silver font-semibold text-sm">
                Frank Lam
              </p>
              </div>
              <div className="flex justify-center mt-3 gap-4">
-                <a href = "https://discord.gg/H9NBS3Nu" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
+                <a href = "https://discord.gg/H9NBS3Nu" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
                   <DiscordLogo className="w-6 h-6" />
                 </a>
-                <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
+                <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
                   <Browser className="w-6 h-6" />
                 </a>
-                <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
+                <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
                   <LinkedinLogo className="w-6 h-6" />
                 </a>
-                <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-french-dark transition-colors">
+                <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
                   <EnvelopeSimple className="w-6 h-6" />
                 </a>
              </div>
              <div className='flex-row items-center justify-center pt-4'>
-             
-              <p className="text-sm gap-2 text-gray-500 font-semibold">
+
+              <p className="text-sm gap-2 text-warm-silver font-semibold">
                 Copyright © 2025 Conjupuzzle.
               </p>
-              <p className="text-sm gap-2 text-gray-500 font-semibold">
+              <p className="text-sm gap-2 text-warm-silver font-semibold">
                 All Rights Reserved.
               </p>
              </div>

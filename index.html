@@ -21,14 +21,16 @@
     <meta property="twitter:image" content="https://www.conjupuzzle.icu/img/og.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Nunito', 'sans-serif'],
+              sans: ['Nunito', 'Noto Sans','sans-serif'],
               display: ['Fredoka', 'sans-serif'],
+              mono: ['"Space Mono"', 'monospace'],
             },
             colors: {
               french: {
@@ -36,15 +38,49 @@
                 white: '#FFFFFF',
                 red: '#EF4135',
                 dark: '#1A202C',
-              }
-            }
+              },
+              cream: '#faf9f7',
+              oat: '#dad4c8',
+              'oat-light': '#eee9df',
+              'warm-silver': '#9f9b93',
+              'warm-charcoal': '#55534e',
+              matcha: {
+                300: '#84e7a5',
+                600: '#078a52',
+                800: '#02492a',
+              },
+              slushie: {
+                500: '#3bd3fd',
+                800: '#0089ad',
+              },
+              lemon: {
+                400: '#f8cc65',
+                500: '#fbbd41',
+                700: '#d08a11',
+              },
+              ube: {
+                300: '#c1b0ff',
+                800: '#43089f',
+                900: '#32037d',
+              },
+              pomegranate: {
+                400: '#fc7981',
+              },
+              blueberry: {
+                800: '#01418d',
+              },
+            },
+            boxShadow: {
+              clay: '0px 1px 1px rgba(0,0,0,0.1), 0px -1px 1px rgba(0,0,0,0.04) inset, 0px -0.5px 1px rgba(0,0,0,0.05)',
+              'clay-hover': '-4px 4px 0px rgb(0,0,0)',
+            },
           }
         }
       }
     </script>
     <style>
       body {
-        background-color: #f3f4f6;
+        background: linear-gradient(160deg, #faf9f7 0%, #f0ebe3 50%, #faf9f7 100%);
       }
       .puzzle-shape {
         clip-path: polygon(10% 0, 100% 0, 100% 100%, 10% 100%, 10% 60%, 0 50%, 10% 40%);
@@ -52,6 +88,40 @@
       .puzzle-shape-receiver {
         clip-path: polygon(0 0, 90% 0, 90% 40%, 100% 50%, 90% 60%, 90% 100%, 0 100%);
       }
+      .scrollbar-hide {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-default {
+        scrollbar-width: thin;
+        scrollbar-color: #dad4c8 transparent;
+        -ms-overflow-style: auto;
+      }
+      .scrollbar-default::-webkit-scrollbar {
+        display: block;
+        width: 6px;
+      }
+      .scrollbar-default::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .scrollbar-default::-webkit-scrollbar-thumb {
+        background-color: #dad4c8;
+        border-radius: 3px;
+      }
+      @keyframes puzzle-bounce {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        30% { transform: translateY(-14px) rotate(-3deg); }
+        50% { transform: translateY(-18px) rotate(0deg); }
+        70% { transform: translateY(-14px) rotate(3deg); }
+      }
+      .loading-piece {
+        animation: puzzle-bounce 1.4s ease-in-out infinite;
+      }
+      .loading-piece-delay-1 { animation-delay: 0.15s; }
+      .loading-piece-delay-2 { animation-delay: 0.3s; }
     </style>
   <script type="importmap">
 {

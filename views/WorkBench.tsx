@@ -50,7 +50,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       className={`flex ${isCompact ? 'flex-row' : 'flex-col'} sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-6 sm:mb-10 w-full transition-all duration-300`}
     >
       {isCompound && (
-        <div className="flex items-center justify-center bg-amber-50 p-1 sm:p-1.5 rounded-2xl shadow-sm border border-amber-100">
+        <div className="flex items-center justify-center bg-[#ffedd5]/70 p-1 sm:p-1.5 rounded-2xl">
           <DropZone 
             type="aux-stem" 
             content={selection.auxStem} 
@@ -75,10 +75,10 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       )}
 
       {isCompound && (
-         <Plus className={`text-gray-300 w-4 h-4 sm:w-5 sm:h-5 ${isCompact ? 'rotate-0' : 'rotate-90'} sm:rotate-0 transition-transform`} />
+         <Plus className={`text-[#55534e] w-4 h-4 sm:w-5 sm:h-5 ${isCompact ? 'rotate-0' : 'rotate-90'} sm:rotate-0 transition-transform`} />
       )}
 
-      <div className="flex items-center justify-center bg-blue-50 p-1 sm:p-1.5 rounded-2xl shadow-sm border border-blue-100">
+      <div className="flex items-center justify-center bg-[#e1f3fe]/70 p-1 sm:p-1.5 rounded-2xl">
         <DropZone 
           type="stem" 
           content={selection.stem} 
