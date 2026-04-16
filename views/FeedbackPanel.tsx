@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, ScanSearch, Volume2, Frown } from 'lucide-react';
+import { Trophy, ScanSearch, Volume2, Frown, MessageCircle } from 'lucide-react';
 import { PuzzleData, GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -33,7 +33,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   if (gameState !== GameState.SUCCESS) {
     return (
        <div className="w-full max-w-lg mb-6 p-3 rounded-xl text-center bg-[#b53333] border-red-200 animate-in zoom-in-95">
-         <h3 className="text-lg font-bold text-[#ecca00] flex items-center justify-center gap-2">
+         <h3 className="text-lg font-bold text-[#eee9df] flex items-center justify-center gap-2">
             <Frown className="w-5 h-5" />
             {feedback}
             </h3>
@@ -60,13 +60,13 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
         </div>
       )}
 
-      <div className="p-4 sm:p-6 rounded-3xl text-center animate-in zoom-in-95 duration-300 bg-white">
-        <h3 className="text-base sm:text-lg font-display font-base mb-1 text-[#55534e]">
+      <div className="p-4 sm:p-6 rounded-3xl text-center animate-in zoom-in-95 duration-300 bg-[#ec785d]">
+        <h3 className="text-xl sm:text-lg font-display font-base mb-1 text-[#F8DCD4]">
           {feedback}
         </h3>
         <div className="flex flex-col items-center gap-3">
           {/* Pronoun + verb */}
-          <div className="text-[#5d5e61] text-2xl sm:text-3xl font-bold px-5 py-2.5">
+          <div className="text-[#fff] text-2xl sm:text-3xl font-bold px-5 py-2.5">
             {puzzle.pronoun}
             <span className="ml-1.5">
               {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
@@ -91,7 +91,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
                 if (voice) utterance.voice = voice;
                 window.speechSynthesis.speak(utterance);
               }}
-              className="text-sm font-medium text-[#fff] bg-[#ff752d] px-8 py-2.5 rounded-xl transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg] flex items-center gap-1.5"
+              className="text-sm font-medium text-[#4c4c4c] bg-[#ffc154] px-8 py-2.5 rounded-full transition-all duration-300 active:scale-95 hover:shadow-clay-hover flex items-center gap-1.5"
               title={t('speak')}
             >
               <Volume2 className="w-4 h-4 mr-2" />
@@ -99,16 +99,16 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
             </button>
           )}
         </div>
-        
-        <div className="text-sm text-left text-[#0a5b40] mt-4 bg-[#d1fae6] p-4 rounded-xl">
-          <span className="font-bold block mb-1 text-l uppercase tracking-wider text-[#0a5b40] flex items-center gap-1">
+
+        <div className="text-sm text-left text-[#4c4c4c] mt-4 bg-[#F8A58E] p-4 rounded-xl">
+          <span className="font-bold block mb-1 text-l uppercase tracking-wider flex items-center gap-1">
             <ScanSearch className="w-3 h-3" /> {t('explanation')}
           </span>
           {puzzle.explanation}
         </div>
 
-        <div className="text-l text-left text-[#3730a3] mt-4 bg-[#e1e7ff] p-4 rounded-xl">
-          <div className="font-medium flex justify-between">
+        <div className="text-l text-left text-[#4c4c4c] mt-4 bg-[#F8A679] p-4 rounded-xl">
+          <div className="font-bold text-xl flex justify-between">
             <div>
               {puzzle.verb}
             </div>
@@ -116,6 +116,15 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
               {puzzle.translation}
             </div>
           </div>
+          {puzzle.example && (
+            <div className="mt-3 pt-3 border-t border-[#4c4c4c]">
+              <span className="font-bold block mb-1 text-xs uppercase tracking-wider text-[#4c4c4c] flex items-center gap-1">
+                <MessageCircle className="w-3 h-3" /> {t('exampleSentence')}
+              </span>
+              <p className="text-[#4c4c4c] font-medium mb-1">{puzzle.example.sentence}</p>
+              <p className="text-[#4c4c4c] italic">{puzzle.example.translations[language] || puzzle.example.translations.en}</p>
+            </div>
+          )}
         </div>
 
       </div>

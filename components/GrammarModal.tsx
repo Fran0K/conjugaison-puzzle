@@ -50,7 +50,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
               return (
                 <div
                   key={rule.id}
-                  className={`rounded-2xl transition-shadow  transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg] overflow-hidden ${isExpanded ? 'border border-[#55534e]' : 'cursor-pointer'} ` }
+                  className={`rounded-2xl transition-shadow  transition-all duration-300 active:scale-95 hover:shadow-clay-hover overflow-hidden ${isExpanded ? 'border border-[#55534e]' : 'cursor-pointer'} ` }
                   style={{ backgroundColor: '#f5f4f2' }}
                   onClick={() => handleToggle(rule.id)}
                 >

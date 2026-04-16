@@ -38,6 +38,19 @@ export interface PuzzleData {
 
   explanation: string; // The translated explanation
   ruleSummary: string;
+
+  // Example sentence (optional, may not exist for all puzzles)
+  example?: ExampleData;
+}
+
+export interface ExampleData {
+  id: string;
+  sentence: string; // French example sentence
+  translations: {
+    en: string;
+    zh: string;
+    ja: string;
+  };
 }
 
 export interface GrammarDetail {
@@ -120,6 +133,14 @@ export interface DatabasePuzzle {
   
   // Joined fields
   verbs?: DatabaseVerb;
+  examples?: DatabaseExample[];
+}
+
+export interface DatabaseExample {
+  id: string;
+  puzzle_id: string;
+  sentence: string;
+  translations: Record<string, string>;
 }
 
 export interface DatabaseUserHistory {

@@ -29,7 +29,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           {gameState === GameState.SUCCESS ? (
              <button 
              onClick={onNext}
-             className="w-full flex items-center justify-center gap-2 bg-[#55534e] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full sm:rounded-2xl font-bold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
+             className="w-full flex items-center justify-center gap-2 bg-[#55534e] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full sm:rounded-2xl font-bold transition-all duration-300 active:scale-95 hover:shadow-clay-hover"
            >
              <span>{t('next')}</span>
              <ArrowRight className="w-5 h-5" />
@@ -38,7 +38,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
             <>
                <button 
                 onClick={onSkip}
-                className="flex-1 flex items-center justify-center gap-2 text-warm-charcoal px-4 py-3 sm:px-6 rounded-xl font-bold transition-all duration-300 bg-white hover:bg-[#fc7981] hover:text-white active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
+                className="flex-1 flex items-center justify-center gap-2 text-warm-charcoal px-4 py-3 sm:px-6 rounded-xl font-bold transition-all duration-300 bg-white hover:bg-[#fc7981] hover:text-white active:scale-95 hover:shadow-clay-hover"
               >
                 <RefreshCw className="w-5 h-5" />
                 <span>{t('skip')}</span>
@@ -48,7 +48,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
                 disabled={isCheckDisabled}
                 className={`flex-[2] flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
                     !isCheckDisabled
-                  ? 'bg-[#078a52] text-white hover:bg-[#078a52] active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]'
+                  ? 'bg-[#078a52] text-white hover:bg-[#078a52] active:scale-95 hover:shadow-clay-hover'
                   : 'bg-oat-light text-warm-silver cursor-not-allowed opacity-60'
                 }`}
               >
