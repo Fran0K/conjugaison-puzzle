@@ -101,7 +101,7 @@ export const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={style}
-      className={`relative group transition-[shadow,transform,background-color,color] duration-300 select-none flex items-center justify-center font-display font-bold overflow-visible ${shapeClass} ${paddingClass} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'} ${showHoverEffect ? 'hover:-translate-y-1 hover:shadow-clay-hover hover:-rotate-z-[2deg]' : ''}`}
+      className={`relative group transition-[shadow,transform,background-color,color] duration-300 select-none flex items-center justify-center font-display font-bold overflow-visible ${shapeClass} ${paddingClass} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'} ${showHoverEffect ? 'hover:-translate-y-1 hover:shadow-clay-hover' : ''}`}
     >
 
       {/* Convex tab (stem): circle protrudes right, same bg color */}

@@ -5,7 +5,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { AboutModal } from './components/AboutModal';
 import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
 import { ALL_TENSES,DEFAULT_TENSES, STORAGE_KEYS } from './constants';
-import {Database} from "@phosphor-icons/react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
 import { usePuzzleEngine } from './hooks/usePuzzleEngine';
@@ -123,42 +123,32 @@ const App: React.FC = () => {
         
         {/* Loading State */}
         {gameState === GameState.LOADING && (
-          <div className="w-full flex flex-col items-center justify-center gap-6 mt-16 sm:mt-24 animate-in fade-in duration-300">
-            {/* Logo */}
-            <img
-              src="/img/logo_about.png"
-              alt={t('title')}
-              className="hidden sm:block h-20 w-auto object-contain opacity-95"
-            />
-            <img
-              src="/img/logo_about.png"
-              alt={t('title')}
-              className="block sm:hidden h-16 w-auto object-contain opacity-95"
-            />
-            {/* Bouncing Puzzle Pieces */}
-            <div className="flex items-end gap-3 sm:gap-4">
-              <div className="loading-piece w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#fed8aa' }} />
-              <div className="loading-piece loading-piece-delay-1 w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#bae6fe' }} />
-              <div className="loading-piece loading-piece-delay-2 w-10 h-12 sm:w-14 sm:h-16 rounded-xl shadow-clay" style={{ backgroundColor: '#fb923c' }} />
+          <div className="w-full flex flex-col items-center justify-center gap-4 min-h-[60vh]">
+            <div className="items-center justify-center mx-auto">
+              {/* <DotLottieReact src="/img/Folders.lottie" loop autoplay className="w-60 h-60" /> */}
+              {/* <DotLottieReact src="/img/Catloader.lottie" loop autoplay/> */}
+              <DotLottieReact src="/img/Catinarocket.lottie" loop autoplay className="w-60 h-60" />
+              {/* <DotLottieReact src="/img/catMarkloading.lottie" loop autoplay className="w-50 h-50" /> */}
             </div>
-            {/* Loading Text */}
-            <div className="text-warm-silver text-sm font-medium tracking-wide">
+
+            <div className="text-[#55534e] text-l font-medium tracking-wide">
               {t('loading')}
             </div>
           </div>
+          
         )}
 
         {/* Error State */}
         {gameState === GameState.ERROR && (
-           <div className="text-center py-20 bg-white rounded-2xl border border-oat p-8 max-w-md mt-10">
-             <div className="text-french-blue mb-4 bg-oat-light w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-               <Database className="w-8 h-8"/>
-             </div>
-             <h2 className="text-xl font-bold text-black mb-2">{t('error_title')}</h2>
-             <p className="text-warm-charcoal mb-6 text-sm">{t('error_desc')}</p>
-             <button onClick={loadNextPuzzle} className="px-6 py-3 bg-french-blue text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
-               {t('retry')}
-             </button>
+           <div className="w-full flex flex-col items-center justify-center gap-4 min-h-[60vh]">
+            <h2 className="text-4xl leading-8 italic font-bold text-black sm:mb-8">{t('error_title')}</h2>
+            <div className="flex items-center justify-center mx-auto sm:mb-8">
+              <DotLottieReact src="/img/emptybox3.lottie" loop autoplay className="w-60 h-60" />
+            </div>
+            <p className="text-warm-charcoal mb-8 text-m">{t('error_desc')}</p>
+            <button onClick={loadNextPuzzle} className="px-12 sm:px-24 py-3 bg-[#856af2] text-white rounded-full font-bold hover:shadow-clay-hover">
+              {t('retry')}
+            </button>
            </div>
         )}
 

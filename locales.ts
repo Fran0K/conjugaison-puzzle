@@ -34,12 +34,13 @@ export const TRANSLATIONS = {
       skip: "Passer",
       next: "Suivant",
       loading: "Chargement...",
-      error_title: "Erreur",
-      error_desc: "Données inaccessibles.",
+      error_title: "Oups!",
+      error_desc: "Désolés, nous rencontrons une erreur.",
       retry: "Réessayer",
       correct: "Correct ! Bien joué.",
       wrong: "Oups ! Essaie encore.",
       explanation: "Explication",
+      exampleSentence: "Exemple",
       filter_title: "Choisir les Temps",
       filter_desc: "Sélectionnez les temps à pratiquer.",
       Detail:"Détails",
@@ -357,12 +358,13 @@ export const TRANSLATIONS = {
       skip: "Skip",
       next: "Next",
       loading: "Loading...",
-      error_title: "Error",
-      error_desc: "Data error.",
+      error_title: "Oops!",
+      error_desc: "Sorry, we are facing an error.",
       retry: "Retry",
       correct: "Correct!",
       wrong: "Try again.",
       explanation: "Note",
+      exampleSentence: "Example",
       filter_title: "Tenses",
       filter_desc: "Select tenses.",
       Detail: "Details",
@@ -427,24 +429,24 @@ export const TRANSLATIONS = {
       milestone: "Incroyable ! {n} bonnes réponses !"
     },
     tenses: {
-      "Présent": "Present",
-      "Imparfait": "Imperfect",
-      "Futur Simple": "Future",
-      "Passé Simple": "Past Historic",
-      "Conditionnel Présent": "Conditional",
-      "Subjonctif Présent": "Subjunctive",
-      "Subjonctif Imparfait": "Subj. Imperfect",
-      "Passé Composé": "Compound Past",
-      "Plus-que-parfait": "Pluperfect",
-      "Futur Antérieur": "Future Perfect",
-      "Passé Antérieur": "Past Anterior",
-      "Conditionnel Passé": "Conditional Past",
-      "Subjonctif Passé": "Subj. Past",
-      "Subjonctif Plus-que-parfait": "Subj. Pluperfect"
+      "Présent": "Présent",
+      "Imparfait": "Imparfait",
+      "Futur Simple": "Futur Simple",
+      "Passé Simple": "Passé Simple",
+      "Conditionnel Présent": "Conditionnel Présent",
+      "Subjonctif Présent": "Subjonctif Présent",
+      "Subjonctif Imparfait": "Subjonctif Imparfait",
+      "Passé Composé": "Passé Composé",
+      "Plus-que-parfait": "Plus-que-parfait",
+      "Futur Antérieur": "Futur Antérieur",
+      "Passé Antérieur": "Passé Antérieur",
+      "Conditionnel Passé": "Conditionnel Passé",
+      "Subjonctif Passé": "Subjonctif Passé",
+      "Subjonctif Plus-que-parfait": "Subjonctif P.Q.P."
     },
     rules:{
       "Présent": {
-        "title": "Present Indicative",
+        "title": "Présent",
         "formula": "Infinitive Stem + present tense endings (3 verb groups)",
         "description": "Used to express a current action, a habitual action, or a general truth.",
         "example": "Je parle, je finis, je prends",
@@ -467,7 +469,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Imparfait": {
-        "title": "Imperfect Indicative",
+        "title": "Imparfait",
         "formula": "Present tense nous form minus -ons + imperfect endings",
         "description": "Used to describe habitual actions, background descriptions, or ongoing actions in the past.",
         "example": "Je parlais, je finissais, je prenais",
@@ -480,7 +482,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Futur Simple": {
-        "title": "Simple Future",
+        "title": "Futur Simple",
         "formula": "Infinitive + simple future endings",
         "description": "Used to express future actions or certainty about the future.",
         "example": "Je parlerai, je finirai, je prendrai",
@@ -493,7 +495,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Passé Simple": {
-        "title": "Simple Past Indicative",
+        "title": "Passé Simple",
         "formula": "stem + simple past endings",
         "description": "A literary tense used in written narratives to express completed past actions.",
         "example": "Je parlai, je finis, je pris",
@@ -506,7 +508,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Conditionnel Présent": {
-        "title": "Present Conditional",
+        "title": "Conditionnel Présent",
         "formula": "Future stem + imperfect endings",
         "description": "Used to express hypotheses, conditional results, assumptions, or polite requests.",
         "example": "Je parlerais, je finirais, je prendrais",
@@ -519,7 +521,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Subjonctif Présent": {
-        "title": "Present Subjunctive",
+        "title": "Subjonctif Présent",
         "formula": "Present tense ils form minus -ent + subjunctive endings",
         "description": "Used to express doubt, subjectivity, emotion, desire, or necessity.",
         "example": "Que je parle, que je finisse, que je prenne",
@@ -532,7 +534,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Subjonctif Imparfait": {
-        "title": "Imperfect Subjunctive",
+        "title": "Subjonctif Imparfait",
         "formula": "Simple past stem + imperfect subjunctive endings",
         "description": "A literary tense used in writing to express uncertainty or subjectivity in the past.",
         "example": "Que je parlasse, que je finisse, que je prisse",
@@ -545,7 +547,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Passé Composé": {
-        "title": "Compound Past",
+        "title": "Passé Composé",
         "formula": "Auxiliary avoir / être in the present + past participle",
         "description": "Used to express a completed past action with relevance to the present.",
         "example": "J’ai parlé, je suis allé",
@@ -563,7 +565,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Plus-que-parfait": {
-        "title": "Pluperfect Indicative",
+        "title": "Plus-que-parfait",
         "formula": "Auxiliary avoir / être in the imperfect + past participle",
         "description": "Used to express an action completed before another past action.",
         "example": "J’avais parlé, j’étais parti",
@@ -581,7 +583,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Futur Antérieur": {
-        "title": "Future Perfect",
+        "title": "Futur Antérieur",
         "formula": "Auxiliary avoir / être in the simple future + past participle",
         "description": "Used to express an action that will be completed before a future moment.",
         "example": "J’aurai parlé, je serai parti",
@@ -599,7 +601,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Passé Antérieur": {
-        "title": "Past Anterior",
+        "title": "Passé Antérieur",
         "formula": "Auxiliary avoir / être in the simple past + past participle",
         "description": "A literary tense expressing an action completed immediately before another past action.",
         "example": "J’eus parlé, je fus parti",
@@ -617,7 +619,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Conditionnel Passé": {
-        "title": "Past Conditional",
+        "title": "Conditionnel Passé",
         "formula": "Auxiliary avoir / être in the present conditional + past participle",
         "description": "Used to express an unrealized or hypothetical action in the past.",
         "example": "J’aurais parlé, je serais parti",
@@ -635,7 +637,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Subjonctif Passé": {
-        "title": "Past Subjunctive",
+        "title": "Subjonctif Passé",
         "formula": "Auxiliary avoir / être in the present subjunctive + past participle",
         "description": "Used to express a completed action linked to doubt, emotion, or subjectivity.",
         "example": "Que j’aie parlé, que je sois parti",
@@ -653,7 +655,7 @@ export const TRANSLATIONS = {
         ]
       },
       "Subjonctif Plus-que-parfait": {
-        "title": "Pluperfect Subjunctive",
+        "title": "ubjonctif Plus-que-parfait",
         "formula": "Auxiliary avoir / être in the imperfect subjunctive + past participle",
         "description": "A literary tense used to express a completed action in the past with a hypothetical or subjective nuance.",
         "example": "Que j’eusse parlé, que je fusse parti",
@@ -690,12 +692,13 @@ export const TRANSLATIONS = {
       skip: "跳过",
       next: "下一题",
       loading: "加载中...",
-      error_title: "错误",
-      error_desc: "加载失败",
+      error_title: "哎呀!",
+      error_desc: "抱歉，我们遇到了一个错误",
       retry: "重试",
       correct: "正确!",
       wrong: "再试一次",
       explanation: "解析",
+      exampleSentence: "例句",
       filter_title: "时态",
       filter_desc: "选择练习时态",
       Detail: "详细",
@@ -1024,12 +1027,13 @@ export const TRANSLATIONS = {
       skip: "パス",
       next: "次へ",
       loading: "読込中...",
-      error_title: "エラー",
-      error_desc: "通信エラー",
+      error_title: "おっと",
+      error_desc: "申し訳ございません, エラーが発生しています",
       retry: "再試行",
       correct: "正解！",
       wrong: "不正解",
       explanation: "解説",
+      exampleSentence: "例文",
       filter_title: "時制設定",
       filter_desc: "練習する時制を選択",
       Detail: "詳細",

@@ -1,6 +1,12 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { DatabasePuzzle, PuzzleData } from '../types';
+import { ExampleData } from '../types';
+import { fetchMockPuzzleBatch } from './mockData';
+
+const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+const mockMode = params?.get('mock'); // undefined | '' | 'loading'
+const useMock = mockMode !== null;
 
 // Use Vite environment variables
 // Cast import.meta to any to avoid TypeScript errors if types are missing
@@ -32,17 +38,32 @@ export const mapDatabasePuzzleToUI = (dbPuzzle: DatabasePuzzle, languageCode: st
   const explanationTranslations = dbPuzzle.explanation_translations || {};
   const explanation = explanationTranslations[languageCode] || explanationTranslations['en'] || "No explanation available.";
 
+  // 3. Extract Example Data (optional)
+  let example: ExampleData | undefined;
+  if (dbPuzzle.examples && dbPuzzle.examples.length > 0) {
+    const dbExample = dbPuzzle.examples[Math.floor(Math.random() * dbPuzzle.examples.length)];
+    example = {
+      id: dbExample.id,
+      sentence: dbExample.sentence,
+      translations: {
+        en: dbExample.translations?.en || '',
+        zh: dbExample.translations?.zh || '',
+        ja: dbExample.translations?.ja || '',
+      }
+    };
+  }
+
   return {
     id: dbPuzzle.id,
     verb: dbPuzzle.verbs?.infinitive || 'Unknown',
     tense: dbPuzzle.tense,
     person: dbPuzzle.person,
-    pronoun: dbPuzzle.pronoun || dbPuzzle.person, // Fallback to person if pronoun is empty (safety)
+    pronoun: dbPuzzle.pronoun || dbPuzzle.person,
     translation: verbTrans,
-    is_regular: dbPuzzle.is_regular, 
-    
+    is_regular: dbPuzzle.is_regular,
+
     correctStem: dbPuzzle.correct_stem,
-    correctEnding: dbPuzzle.correct_ending || null, // Ensure it is null if empty
+    correctEnding: dbPuzzle.correct_ending || null,
     distractorStems: dbPuzzle.distractor_stems,
     distractorEndings: dbPuzzle.distractor_endings || [],
 
@@ -52,7 +73,8 @@ export const mapDatabasePuzzleToUI = (dbPuzzle: DatabasePuzzle, languageCode: st
     auxDistractorEndings: dbPuzzle.distractor_aux_endings || [],
 
     explanation: explanation,
-    ruleSummary: dbPuzzle.rule_summary 
+    ruleSummary: dbPuzzle.rule_summary,
+    example,
   };
 };
 
@@ -93,6 +115,11 @@ const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], la
       verbs (
         infinitive,
         translations
+      ),
+      examples (
+        id,
+        sentence,
+        translations
       )
     `)
     .eq('verb_id', verbId);
@@ -122,6 +149,12 @@ const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], la
  * Uses Promise.all to fetch concurrently
  */
 export const fetchPuzzleBatch = async (count: number = 1, allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData[]> => {
+  if (useMock) {
+    if (mockMode === 'loading') return new Promise(() => {}); // Stay in LOADING forever
+    if (mockMode === 'error') return []; // Trigger ERROR state
+    return fetchMockPuzzleBatch(count, allowedTenses, languageCode);
+  }
+
   if (!supabase) return [];
 
   try {

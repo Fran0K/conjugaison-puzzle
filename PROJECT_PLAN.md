@@ -118,4 +118,24 @@ CREATE INDEX idx_puzzles_verb_id ON puzzles(verb_id);
 CREATE INDEX idx_puzzles_tense ON puzzles(tense);
 ```
 
-测试数据
+创建example表
+```sql
+    -- 创建 examples 表
+  CREATE TABLE examples (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    puzzle_id UUID NOT NULL REFERENCES puzzles(id) ON DELETE CASCADE,
+    sentence TEXT NOT NULL,
+    translations JSONB NOT NULL DEFAULT '{}'::jsonb
+  );
+
+  -- 索引
+  CREATE INDEX idx_examples_puzzle_id ON examples(puzzle_id);
+
+  -- RLS
+  ALTER TABLE examples ENABLE ROW LEVEL SECURITY;
+
+  CREATE POLICY "Allow public read access on examples"
+    ON examples FOR SELECT
+    TO anon, authenticated
+    USING (true);
+```
