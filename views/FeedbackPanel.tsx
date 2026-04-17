@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, ScanSearch, Volume2, Frown, MessageCircle } from 'lucide-react';
+import { Trophy, ScanSearch, Volume2, Frown, Armchair, Lasso } from 'lucide-react';
 import { PuzzleData, GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -100,32 +100,45 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           )}
         </div>
 
-        <div className="text-sm text-left text-[#4c4c4c] mt-4 bg-[#F8A58E] p-4 rounded-xl">
-          <span className="font-bold block mb-1 text-l uppercase tracking-wider flex items-center gap-1">
-            <ScanSearch className="w-3 h-3" /> {t('explanation')}
+        <div className="text-[#4c4c4c] text-base mb-1 text-left mt-4 bg-[#F8A58E] p-4 rounded-xl">
+          <span className="text-[#000]/90 font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
+            <Armchair className="w-4 h-4 shrink-0" />
+            {t('explanation')}
           </span>
-          {puzzle.explanation}
+
+          <p className="text-base leading-relaxed">
+            {puzzle.explanation}
+          </p>
         </div>
 
-        <div className="text-l text-left text-[#4c4c4c] mt-4 bg-[#F8A679] p-4 rounded-xl">
-          <div className="font-bold text-xl flex justify-between">
-            <div>
-              {puzzle.verb}
-            </div>
-            <div>
-              {puzzle.translation}
-            </div>
-          </div>
-          {puzzle.example && (
-            <div className="mt-3 pt-3 border-t border-[#4c4c4c]">
-              <span className="font-bold block mb-1 text-xs uppercase tracking-wider text-[#4c4c4c] flex items-center gap-1">
-                <MessageCircle className="w-3 h-3" /> {t('exampleSentence')}
-              </span>
-              <p className="text-[#4c4c4c] font-medium mb-1">{puzzle.example.sentence}</p>
-              <p className="text-[#4c4c4c] italic">{puzzle.example.translations[language] || puzzle.example.translations.en}</p>
-            </div>
-          )}
-        </div>
+        <div className="text-[#4c4c4c] text-base text-left mt-4 bg-[#F8A679] p-4 rounded-xl">
+  
+  {/* 标题 */}
+  <div className="capitalize font-semibold text-lg flex justify-between">
+    <div>{puzzle.verb}</div>
+    <div>{puzzle.translation}</div>
+  </div>
+
+  {/* Example */}
+  {puzzle.example && (
+    <div className="mt-3 pt-3 border-t border-[#4c4c4c]">
+
+      <span className="text-[#000]/90 font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
+        <Lasso className="w-4 h-4 shrink-0" />
+        {t('exampleSentence')}
+      </span>
+
+      <p className="text-base font-medium mb-1 leading-relaxed">
+        {puzzle.example.sentence}
+      </p>
+
+      <p className="text-base italic text-[#4c4c4c]/80 leading-relaxed">
+        {puzzle.example.translations[language] || puzzle.example.translations.en}
+      </p>
+
+    </div>
+  )}
+</div>
 
       </div>
     </div>
