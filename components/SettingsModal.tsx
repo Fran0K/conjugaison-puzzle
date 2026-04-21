@@ -1,11 +1,10 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { GRAMMAR_RULES } from '../constants';
 import { CEFRLevel } from '../types';
 import { X, Check, Filter } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { LEVEL_COLORS } from '../theme';
+import { useModalAnimation } from '../hooks/useModalAnimation';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -17,6 +16,7 @@ interface SettingsModalProps {
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, selectedTenses, onSave }) => {
   const { t, tTense } = useLanguage();
   const [tempSelected, setTempSelected] = useState<string[]>([]);
+  const { shouldRender, closing, handleAnimationEnd } = useModalAnimation(isOpen, onClose);
 
   // Sync state when modal opens
   useEffect(() => {
@@ -25,7 +25,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
     }
   }, [isOpen, selectedTenses]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   const handleToggle = (tenseId: string) => {
     setTempSelected(prev => {
@@ -51,8 +51,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-cream rounded-3xl w-full max-w-lg max-h-[90dvh] flex flex-col border border-oat">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm ${closing ? 'modal-overlay-exit' : 'modal-overlay-enter'}`}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <div className={`bg-cream rounded-3xl w-full max-w-lg max-h-[90dvh] flex flex-col border border-oat ${closing ? 'modal-content-exit' : 'modal-content-enter'}`}>
         {/* Header */}
         <div className="px-4 py-3 md:px-6 md:py-4 flex justify-between items-center sticky top-0 bg-cream z-10 rounded-t-3xl">
           <div className="flex items-center gap-2">
@@ -146,7 +150,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
         <div className="px-4 py-3 md:px-6 md:py-4 border-t border-oat bg-cream rounded-b-3xl flex justify-end gap-3">
            <button
             onClick={onClose}
-            className="px-6 py-2.5 md:py-3 text-warm-charcoal font-semibold hover:bg-oat-light rounded-xl transition-colors p-2 hover:bg-oat-light border border-[#9f9b93] "
+            className="px-6 py-2.5 md:py-3 text-warm-charcoal font-semibold hover:bg-oat-light rounded-xl transition-colors p-2 border border-[#9f9b93] "
           >
             {t('cancel')}
           </button>

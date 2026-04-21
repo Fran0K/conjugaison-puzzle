@@ -15,11 +15,13 @@ dist-ssr
 scripts/*.csv
 scripts/*.md
 scripts/*.json
-scripts/exam/
+scripts/
 scripts/data/*.csv
 scripts/data/*.json
 scripts/data/test/*.json
+scripts/datas/
 scripts/data/verbs/*
+
 
 # Editor directories and files
 .vscode/*

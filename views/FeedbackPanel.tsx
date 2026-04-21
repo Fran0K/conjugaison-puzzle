@@ -68,7 +68,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           {/* Pronoun + verb */}
           <div className="text-[#fff] text-2xl sm:text-3xl font-bold px-5 py-2.5">
             {puzzle.pronoun}
-            <span className="ml-1.5">
+            <span className={puzzle.pronoun.endsWith("'") ? "" : "ml-1.5"}>
               {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
               {puzzle.correctStem}{puzzle.correctEnding || ''}
             </span>
