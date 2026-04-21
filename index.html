@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Conjupuzzle</title>
 
     <!-- Open Graph / Facebook / LinkedIn -->
@@ -122,6 +122,19 @@
       }
       .loading-piece-delay-1 { animation-delay: 0.15s; }
       .loading-piece-delay-2 { animation-delay: 0.3s; }
+      @media (hover: hover) {
+        .hover-skip:hover { background-color: #fc7981 !important; color: white !important; box-shadow: -4px 4px 0px rgb(0,0,0); }
+        .hover-check:hover { background-color: #078a52 !important; box-shadow: -4px 4px 0px rgb(0,0,0); }
+        .hover-next-shadow:hover { box-shadow: -4px 4px 0px rgb(0,0,0); }
+      }
+      @keyframes modal-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes modal-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+      @keyframes modal-content-in { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+      @keyframes modal-content-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(10px); } }
+      .modal-overlay-enter { animation: modal-overlay-in 0.2s ease-out forwards; }
+      .modal-overlay-exit { animation: modal-overlay-out 0.15s ease-in forwards; }
+      .modal-content-enter { animation: modal-content-in 0.25s ease-out forwards; }
+      .modal-content-exit { animation: modal-content-out 0.15s ease-in forwards; }
     </style>
   <script type="importmap">
 {
@@ -138,10 +151,10 @@
 </script>
 </head>
   
-  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/icon-180.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="manifest" href="/img/site.webmanifest">
 
   <body>
     <div id="root"></div>

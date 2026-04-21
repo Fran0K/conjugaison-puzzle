@@ -104,7 +104,7 @@ const App: React.FC = () => {
 
 
   return (
-    <div className="h-[100dvh] overflow-y-auto overscroll-y-contain bg-cream text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-20 sm:pb-15">
+    <div className="h-[100dvh] overflow-y-auto overscroll-y-contain bg-cream text-gray-800 font-sans selection:bg-french-blue selection:text-white pb-[max(5rem,calc(3rem+env(safe-area-inset-bottom)))] sm:pb-15">
 
       {isMilestone && <Confetti key={confettiTrigger} />}
 

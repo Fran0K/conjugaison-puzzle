@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { PuzzlePiece, XCircle, Heart, DiscordLogo, EnvelopeSimple, Browser, LinkedinLogo, CursorClick, Plus, CheckCircle, ArrowCounterClockwise,Eyes,Coffee, X } from "@phosphor-icons/react";
 import { useLanguage } from '../LanguageContext';
+import { useModalAnimation } from '../hooks/useModalAnimation';
 
 
 interface AboutModalProps {
@@ -12,31 +12,37 @@ interface AboutModalProps {
 
 export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onRestartTutorial }) => {
   const { t } = useLanguage();
-  if (!isOpen) return null;
+  const { shouldRender, closing, handleAnimationEnd } = useModalAnimation(isOpen, onClose);
+
+  if (!shouldRender) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 + pt-[calc(env(safe-area-inset-top)+16px)]  bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90dvh] border border-oat">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 pt-[calc(env(safe-area-inset-top)+16px)] bg-black/50 backdrop-blur-sm ${closing ? 'modal-overlay-exit' : 'modal-overlay-enter'}`}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <div className={`bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90dvh] border border-oat ${closing ? 'modal-content-exit' : 'modal-content-enter'}`}>
         {/* Header - Fixed */}
         <div className="px-4 py-3 md:px-6 md:py-4 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-3xl">
           <h2 className="text-xl font-m text-[#55534e] tracking-tight">
             {t('about')}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
           >
             <X className="w-5 h-5 text-warm-charcoal" />
           </button>
         </div>
-        
+
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4 scrollbar-hide hover:scrollbar-default">
            <div className="flex flex-col items-center text-center mb-8">
               {/* Logo / Icon */}
-              <img 
-                src="/img/logo_about.png" 
-                alt="ConjuPuzzle" 
+              <img
+                src="/img/logo_about.png"
+                alt="ConjuPuzzle"
                 className="w-24 h-24 mb-4 object-contain "/>
               <h1 className="text-2xl font-bold text-black">ConjuPuzzle</h1>
               <p className="text-xs font-mono text-warm-silver mt-1">1.2.0</p>
@@ -53,10 +59,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
               </h3>
 
               {onRestartTutorial && (
-                <button 
+                <button
                   onClick={() => {
-                    onClose();
                     onRestartTutorial();
+                    onClose();
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-oat-light rounded-xl text-xs font-semibold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
                 >
@@ -65,7 +71,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 </button>
               )}
             </div>
-             
+
              <div className="space-y-4">
                {/* Step 1 */}
                <div className="flex gap-4 items-start">
