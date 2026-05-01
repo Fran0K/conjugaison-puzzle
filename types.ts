@@ -38,6 +38,7 @@ export interface PuzzleData {
 
   explanation: string; // The translated explanation
   ruleSummary: string;
+  isEtre?: boolean; // true = verb uses être, frontend shows gender agreement note
 
   // Example sentence (optional, may not exist for all puzzles)
   example?: ExampleData;
@@ -100,7 +101,9 @@ export interface DatabaseVerb {
   id: string;
   infinitive: string;
   // JSONB column: { "en": "to eat", "zh": "吃", "ja": "食べる" }
-  translations: Record<string, string>; 
+  translations: Record<string, string>;
+  verb_group: string; // e.g. '1_er_regular', '3_irregular', '1_er_ger'
+  is_etre: boolean; // true = uses être as auxiliary, frontend generates gender agreement note
   created_at: string;
 }
 
@@ -125,15 +128,37 @@ export interface DatabasePuzzle {
   distractor_aux_endings: string[] | null;
 
   rule_summary: string;
-  
+
   // JSONB column: { "en": "Explanation...", "zh": "解释...", "ja": "解説..." }
   explanation_translations: Record<string, string>;
-  
+
   created_at: string;
-  
-  // Joined fields
+
+  // Joined fields (aliased from v2 tables)
   verbs?: DatabaseVerb;
   examples?: DatabaseExample[];
+}
+
+// --- New Schema Types (rule_templates & puzzle_appendices) ---
+
+export interface DatabaseRuleTemplate {
+  id: string;
+  verb_group: string;
+  tense: string;
+  // JSONB: { "zh": "第一组规则动词现在时" }
+  rule_summary: Record<string, string>;
+  // JSONB: { "zh": "对于以 -er 结尾的动词，去掉词尾，加上 '{ending}'。" }
+  template_content: Record<string, string>;
+}
+
+export interface DatabasePuzzleAppendix {
+  id: string;
+  verb_id: string;
+  tense: string;
+  person: string | null; // null = applies to entire tense
+  rule_summary: string;
+  // JSONB: { "en": "...", "zh": "...", "ja": "...", "fr": "..." }
+  explanation_translations: Record<string, string>;
 }
 
 export interface DatabaseExample {

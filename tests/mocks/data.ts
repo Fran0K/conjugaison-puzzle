@@ -36,7 +36,7 @@ export const mockCompoundPuzzleData: PuzzleData = {
   auxDistractorEndings: ['is'],
 
   // Participle (mangé)
-  correctStem: 'mang',
+  correctStem: 'mang',  
   correctEnding: 'é',
   distractorStems: ['parl'],
   distractorEndings: ['er', 'ez'],

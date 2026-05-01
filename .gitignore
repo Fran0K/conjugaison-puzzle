@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 .env
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+
 scripts/*.csv
 scripts/*.md
 scripts/*.json
