@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, ScanSearch, Volume2, Frown, Armchair, Lasso } from 'lucide-react';
+import { Trophy, ScanSearch, Volume2, Frown, Armchair, Lasso, CheckCircle2 } from 'lucide-react';
 import { PuzzleData, GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -60,13 +60,26 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
         </div>
       )}
 
-      <div className="p-4 sm:p-6 rounded-3xl text-center animate-in zoom-in-95 duration-300 bg-[#ec785d]">
-        <h3 className="text-xl sm:text-lg font-display font-base mb-1 text-[#F8DCD4]">
-          {feedback}
+      <div className="relative">
+        {/* Floating circle icon - overlaps card top edge */}
+        <div
+          className="absolute -top-5 left-1/2 -translate-x-1/2 z-20 w-20 h-20 rounded-full flex items-center justify-center"
+        >
+          <CheckCircle2 className="w-10 h-10 text-white" fill="#358153" />
+        </div>
+        {/* Notch cutout - semicircle matching page background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-[20px] bg-[var(--background,#faf9f7)] rounded-b-full z-10" />
+        <div className="px-4 pt-14 sm:px-6 sm:pt-14 pb-4 sm:pb-6 rounded-3xl text-center animate-in zoom-in-95 duration-300 bg-[#edf1e8]">
+        <h3 className="text-xl sm:text-lg font-display font-base mb-1 text-[#40a661] inline-flex items-center gap-8">
+          <span className="inline-block w-2 h-2 rotate-45 bg-[#5ba8e8] opacity-50" />
+          <span className="inline-block w-1.5 h-1.5 rotate-45 bg-[#f5c542] opacity-70" />
+          <span>{feedback}</span>
+          <span className="inline-block w-1.5 h-1.5 rotate-45 bg-[#f5c542] opacity-70" />
+          <span className="inline-block w-2 h-2 rotate-45 bg-[#5ba8e8] opacity-50" />
         </h3>
         <div className="flex flex-col items-center gap-3">
           {/* Pronoun + verb */}
-          <div className="text-[#fff] text-2xl sm:text-3xl font-bold px-5 py-2.5">
+          <div className="text-black text-2xl sm:text-3xl font-bold px-5 py-2.5">
             {puzzle.pronoun}
             <span className={puzzle.pronoun.endsWith("'") ? "" : "ml-1.5"}>
               {puzzle.auxStem ? `${puzzle.auxStem}${puzzle.auxEnding || ''} ` : ''}
@@ -91,7 +104,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
                 if (voice) utterance.voice = voice;
                 window.speechSynthesis.speak(utterance);
               }}
-              className="text-sm font-medium text-[#4c4c4c] bg-[#ffc154] px-8 py-2.5 rounded-full transition-all duration-300 active:scale-95 hover:shadow-clay-hover flex items-center gap-1.5"
+              className="text-sm font-medium text-[#42865c] bg-white px-8 py-2.5 rounded-full transition-all duration-300 active:scale-95 hover:shadow-clay-hover flex items-center gap-1.5"
               title={t('speak')}
             >
               <Volume2 className="w-4 h-4 mr-2" />
@@ -100,8 +113,8 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           )}
         </div>
 
-        <div className="text-[#4c4c4c] text-base mb-1 text-left mt-4 bg-[#F8A58E] p-4 rounded-xl">
-          <span className="text-[#000]/90 font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
+        <div className="text-[#4c4c4c] bg-[#dce9d4] text-base mb-1 text-left mt-4 p-4 rounded-xl">
+          <span className="text-[#3f7258] font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
             <Armchair className="w-4 h-4 shrink-0" />
             {t('explanation')}
           </span>
@@ -123,10 +136,10 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           )}
         </div>
 
-        <div className="text-[#4c4c4c] text-base text-left mt-4 bg-[#F8A679] p-4 rounded-xl">
+        <div className="text-[#4c4c4c] text-base text-left mt-4 bg-[#f5f9f2] p-4 rounded-xl">
   
   {/* 标题 */}
-  <div className="capitalize font-semibold text-lg flex justify-between">
+  <div className="text-[#42865c] capitalize font-semibold text-lg flex justify-between">
     <div>{puzzle.verb}</div>
     <div>{puzzle.translation}</div>
   </div>
@@ -135,23 +148,24 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   {puzzle.example && (
     <div className="mt-3 pt-3 border-t border-[#4c4c4c]">
 
-      <span className="text-[#000]/90 font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
+      <span className="text-[#3f7258] font-medium block mb-2 text-sm uppercase tracking-tight flex items-center gap-1">
         <Lasso className="w-4 h-4 shrink-0" />
         {t('exampleSentence')}
       </span>
 
-      <p className="text-base font-medium mb-1 leading-relaxed">
+      <p className="text-base font-medium mb-1 leading-relaxed text-[#4c4c4c]">
         {puzzle.example.sentence}
       </p>
 
-      <p className="text-base italic text-[#4c4c4c]/80 leading-relaxed">
-        {puzzle.example.translations[language] || puzzle.example.translations.en}
+      <p className="text-base italic text-[#679b7b] leading-relaxed">
+        {(language !== 'fr' && puzzle.example.translations[language as keyof typeof puzzle.example.translations]) || (language !== 'fr' ? puzzle.example.translations.en : '')}
       </p>
 
     </div>
   )}
 </div>
 
+      </div>
       </div>
     </div>
   );
