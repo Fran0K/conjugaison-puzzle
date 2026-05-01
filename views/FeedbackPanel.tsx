@@ -109,6 +109,18 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           <p className="text-base leading-relaxed">
             {puzzle.explanation}
           </p>
+
+          {/* être gender agreement note — only for compound tenses */}
+          {puzzle.isEtre && puzzle.auxStem && ['je', 'tu', 'Je', 'Tu'].includes(puzzle.person) && (
+            <p className="text-sm mt-2 text-[#4c4c4c]/70 italic">
+              {t('etre_gender_sing').replace('{form}', `${puzzle.correctStem}${puzzle.correctEnding || ''}e`)}
+            </p>
+          )}
+          {puzzle.isEtre && puzzle.auxStem && ['nous', 'vous', 'Nous', 'Vous'].includes(puzzle.person) && (
+            <p className="text-sm mt-2 text-[#4c4c4c]/70 italic">
+              {t('etre_gender_plural').replace('{form}', `${puzzle.correctStem}${puzzle.correctEnding || ''}es`)}
+            </p>
+          )}
         </div>
 
         <div className="text-[#4c4c4c] text-base text-left mt-4 bg-[#F8A679] p-4 rounded-xl">
