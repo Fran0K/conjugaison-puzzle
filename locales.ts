@@ -28,6 +28,7 @@ export const TRANSLATIONS = {
       hint: "Indice",
       stem_zone: "Radical",
       ending_zone: "Terminaison",
+      block_zone: "Bloc",
       stems_tray: "Radical",
       endings_tray: "Terminaison",
       check: "Vérifier",
@@ -96,6 +97,8 @@ export const TRANSLATIONS = {
       start_game: "Commencer",
       restart_tutorial: "Relancer le tutoriel",
       // Zone Labels
+      // lbl_aux: "Aux · Bloc",
+      // lbl_verb: "Verbe · Bloc",
       lbl_aux: "Aux",
       lbl_verb: "Verb",
       lbl_aux_stem: "Aux · Rad",
@@ -103,6 +106,8 @@ export const TRANSLATIONS = {
       lbl_verb_stem: "Verbe · Rad",
       lbl_verb_ending: "Verbe · Term",
 
+      remove_piece: "Retirer",
+      no_explanation: "Oups ! Pas encore d'explication pour celle-ci.",
       speak: "Écouter",
       milestone: "Incroyable ! {n} bonnes réponses !"
     },
@@ -354,6 +359,7 @@ export const TRANSLATIONS = {
       hint: "Hint",
       stem_zone: "Stem",
       ending_zone: "Ending",
+      block_zone: "Block",
       stems_tray: "Stem",
       endings_tray: "Ending",
       check: "Check",
@@ -429,6 +435,8 @@ export const TRANSLATIONS = {
       lbl_verb_stem: "Verb · Stem",
       lbl_verb_ending: "Verb · End",
 
+      remove_piece: "Remove",
+      no_explanation: "Oops! No explanation for this one yet. ",
       speak: "Listen",
       milestone: "Incroyable ! {n} bonnes réponses !"
     },
@@ -690,6 +698,7 @@ export const TRANSLATIONS = {
       hint: "提示",
       stem_zone: "词根",
       ending_zone: "词尾",
+      block_zone: "词块",
       stems_tray: "词根",
       endings_tray: "词尾",
       check: "检查",
@@ -764,6 +773,9 @@ export const TRANSLATIONS = {
       lbl_aux_ending: "助动词 · 词尾",
       lbl_verb_stem: "动词 · 词根",
       lbl_verb_ending: "动词 · 词尾",
+
+      remove_piece: "移除",
+      no_explanation: "哎呀，这条暂时还没有解释哦～ ",
       
       // Milestone
       milestone: "太棒了！已答对 {n} 题！",
@@ -1027,6 +1039,7 @@ export const TRANSLATIONS = {
       hint: "ヒント",
       stem_zone: "語幹",
       ending_zone: "語尾",
+      block_zone: "ブロック",
       stems_tray: "語幹",
       endings_tray: "語尾",
       check: "判定",
@@ -1100,6 +1113,9 @@ export const TRANSLATIONS = {
       lbl_aux_ending: "助動詞 · 語尾",
       lbl_verb_stem: "動詞 · 語幹",
       lbl_verb_ending: "動詞 · 語尾",
+
+      remove_piece: "取り消す",
+      no_explanation: "ごめんね、この説明はまだ準備中だよ ",
       // Milestone
       milestone: "すごい！正解数: {n}！",
       speak: "聴く"

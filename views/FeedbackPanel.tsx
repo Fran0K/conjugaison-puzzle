@@ -120,7 +120,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           </span>
 
           <p className="text-base leading-relaxed">
-            {puzzle.explanation}
+            {!puzzle.explanation || puzzle.explanation.startsWith('No ') ? t('no_explanation') : puzzle.explanation}
           </p>
 
           {/* être gender agreement note — only for compound tenses */}

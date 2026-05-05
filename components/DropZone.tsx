@@ -161,7 +161,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
       {/* Hover to remove indicator (only if filled, not validated, and not dragging) */}
       {content && isCorrect === null && !isOver && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-100/80 opacity-0 group-hover:opacity-100 transition-opacity rounded-[inherit] backdrop-blur-[1px]">
-          <span className="text-[10px] sm:text-xs font-bold text-red-600 uppercase">Retirer</span>
+          <span className="text-[10px] sm:text-xs font-bold text-red-600 uppercase">{t('remove_piece')}</span>
         </div>
       )}
     </div>
