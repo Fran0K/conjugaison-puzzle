@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Self-hosted fonts --- */
+
+/* Nunito */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/nunito-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/nunito-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/nunito-700.woff2') format('woff2');
+}
+
+/* Fredoka */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/fredoka-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/fredoka-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/fredoka-600.woff2') format('woff2');
+}
+
+/* Space Mono */
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-mono-700.woff2') format('woff2');
+}
+
+/* Noto Sans */
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/noto-sans-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/noto-sans-500italic.woff2') format('woff2');
+}
+
+/* --- Custom styles (moved from index.html) --- */
+
+body {
+  background: linear-gradient(160deg, #faf9f7 0%, #f0ebe3 50%, #faf9f7 100%);
+}
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-default {
+  scrollbar-width: thin;
+  scrollbar-color: #dad4c8 transparent;
+  -ms-overflow-style: auto;
+}
+.scrollbar-default::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+.scrollbar-default::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-default::-webkit-scrollbar-thumb {
+  background-color: #dad4c8;
+  border-radius: 3px;
+}
+@keyframes puzzle-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-14px) rotate(-3deg); }
+  50% { transform: translateY(-18px) rotate(0deg); }
+  70% { transform: translateY(-14px) rotate(3deg); }
+}
+.loading-piece {
+  animation: puzzle-bounce 1.4s ease-in-out infinite;
+}
+.loading-piece-delay-1 { animation-delay: 0.15s; }
+.loading-piece-delay-2 { animation-delay: 0.3s; }
+@media (hover: hover) {
+  .hover-skip:hover { background-color: #fc7981 !important; color: white !important; box-shadow: -4px 4px 0px rgb(0,0,0); }
+  .hover-check:hover { background-color: #078a52 !important; box-shadow: -4px 4px 0px rgb(0,0,0); }
+  .hover-next-shadow:hover { box-shadow: -4px 4px 0px rgb(0,0,0); }
+}
+@keyframes modal-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes modal-content-in { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes modal-content-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(10px); } }
+.modal-overlay-enter { animation: modal-overlay-in 0.2s ease-out forwards; }
+.modal-overlay-exit { animation: modal-overlay-out 0.15s ease-in forwards; }
+.modal-content-enter { animation: modal-content-in 0.25s ease-out forwards; }
+.modal-content-exit { animation: modal-content-out 0.15s ease-in forwards; }

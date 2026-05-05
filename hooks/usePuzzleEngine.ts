@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { fetchPuzzleBatch } from '../services/supabase';
+import { fetchPuzzleBatchQuick } from '../services/supabase';
 import { PuzzleData, GameState } from '../types';
 import { Language } from '../locales';
 
@@ -14,24 +14,49 @@ export const usePuzzleEngine = (
 ) => {
   const [puzzle, setPuzzle] = useState<PuzzleData | null>(null);
   const [gameState, setGameState] = useState<GameState>(GameState.LOADING);
-  
+
   // Internal Queue State
   const puzzleQueue = useRef<PuzzleData[]>([]);
   const isFetchingRef = useRef(false);
+
+  // Callback for background explanation resolution
+  const handleExplanationReady = useCallback(
+    (puzzleId: string, data: { explanation: string; ruleSummary: string }) => {
+      // Update the puzzle in the queue if it's still there
+      puzzleQueue.current = puzzleQueue.current.map(p =>
+        p.id === puzzleId
+          ? { ...p, ...data, explanationLoading: false }
+          : p
+      );
+
+      // If this is the currently displayed puzzle, update it directly
+      setPuzzle(prev =>
+        prev && prev.id === puzzleId
+          ? { ...prev, ...data, explanationLoading: false }
+          : prev
+      );
+    },
+    []
+  );
 
   // Background fetch to keep the queue populated
   const fetchMore = useCallback(async () => {
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
     try {
-      const newPuzzles = await fetchPuzzleBatch(REFILL_BATCH_SIZE, selectedTenses, language);
+      const newPuzzles = await fetchPuzzleBatchQuick(
+        REFILL_BATCH_SIZE,
+        selectedTenses,
+        language,
+        handleExplanationReady,
+      );
       puzzleQueue.current = [...puzzleQueue.current, ...newPuzzles];
     } catch (e) {
       console.error("Bg fetch failed", e);
     } finally {
       isFetchingRef.current = false;
     }
-  }, [language, selectedTenses]);
+  }, [language, selectedTenses, handleExplanationReady]);
 
   // Core function to rotate to the next puzzle
   const loadNextPuzzle = useCallback(async () => {
@@ -51,9 +76,14 @@ export const usePuzzleEngine = (
     // 2. Queue is Empty (Cold Start or Network Lag) -> Fetch Directly
     setGameState(GameState.LOADING);
     setPuzzle(null);
-    
+
     try {
-      const newPuzzles = await fetchPuzzleBatch(INITIAL_BATCH_SIZE, selectedTenses, language);
+      const newPuzzles = await fetchPuzzleBatchQuick(
+        INITIAL_BATCH_SIZE,
+        selectedTenses,
+        language,
+        handleExplanationReady,
+      );
       if (newPuzzles && newPuzzles.length > 0) {
         puzzleQueue.current = newPuzzles;
         const first = puzzleQueue.current.shift()!;
@@ -66,7 +96,7 @@ export const usePuzzleEngine = (
       console.error(e);
       setGameState(GameState.ERROR);
     }
-  }, [fetchMore, language, selectedTenses]);
+  }, [fetchMore, language, selectedTenses, handleExplanationReady]);
 
   // Initial Load / Reset when dependencies (Language/Tenses) change
   useEffect(() => {

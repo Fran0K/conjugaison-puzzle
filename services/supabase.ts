@@ -17,13 +17,42 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("Supabase credentials missing! Please check your .env file.");
 }
 
-export const supabase: SupabaseClient | null = (supabaseUrl && supabaseAnonKey) 
-  ? createClient(supabaseUrl, supabaseAnonKey) 
+export const supabase: SupabaseClient | null = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
 // --- Memory Cache for Verb IDs ---
 // Avoids fetching the entire ID list on every single puzzle request
 let cachedVerbIds: string[] | null = null;
+
+// --- Memory Cache for Rule Templates ---
+// This table is small (~100-200 rows) and rarely changes.
+// Fetched once and kept in memory for the session.
+let ruleTemplatesCache: Map<string, Record<string, string> | null> | null = null;
+
+const getTemplateCacheKey = (verbGroup: string, tense: string, person: string | null) =>
+  `${verbGroup}:${tense}:${person ?? 'NULL'}`;
+
+const ensureRuleTemplatesCache = async (): Promise<Map<string, Record<string, string> | null>> => {
+  if (ruleTemplatesCache) return ruleTemplatesCache;
+  if (!supabase) return new Map();
+
+  const { data, error } = await supabase
+    .from('rule_templates')
+    .select('verb_group, tense, person, template_content');
+
+  if (error || !data) {
+    console.error('Failed to fetch rule_templates:', error);
+    return new Map();
+  }
+
+  ruleTemplatesCache = new Map();
+  for (const row of data as any[]) {
+    const key = getTemplateCacheKey(row.verb_group, row.tense, row.person);
+    ruleTemplatesCache.set(key, row.template_content || null);
+  }
+  return ruleTemplatesCache;
+};
 
 /**
  * Mapper: Extracts the correct language from JSONB columns
@@ -83,12 +112,13 @@ export const mapDatabasePuzzleToUI = (
 };
 
 /**
- * Fetch explanation using the 3-level fallback chain:
+ * Fetch explanation using the fallback chain:
  * 1. puzzle_appendices (exact: verb_id + tense + person)
  * 2. puzzle_appendices (tense-level: verb_id + tense + person=null)
- * 3. rule_templates (verb_group + tense) with placeholder replacement
+ * 3. rule_templates cache (verb_group + tense + person) — no network call
+ * 4. rule_templates cache (verb_group + tense + person=null) — no network call
  */
-const fetchExplanation = async (
+export const fetchExplanation = async (
   verbId: string,
   verbGroup: string,
   tense: string,
@@ -134,44 +164,23 @@ const fetchExplanation = async (
     };
   }
 
-  // Level 3: rule_templates with exact person match (verb_group + tense + person)
-  const { data: personTemplate, error: l3err } = await supabase
-    .from('rule_templates')
-    .select('template_content')
-    .eq('verb_group', verbGroup)
-    .eq('tense', tense)
-    .eq('person', person)
-    .maybeSingle();
-  console.log('[L3] rule_templates query:', { verbGroup, tense, person }, '→', personTemplate, 'err:', l3err);
+  // Level 3 & 4: Use rule_templates cache (no network calls)
+  const cache = await ensureRuleTemplatesCache();
 
-  if (personTemplate) {
-    const templateContent = (personTemplate as any).template_content || {};
-    let content = templateContent[languageCode] || templateContent['en'] || "";
+  const l3Key = getTemplateCacheKey(verbGroup, tense, person);
+  const cachedL3 = cache.get(l3Key);
+  if (cachedL3) {
+    let content = cachedL3[languageCode] || cachedL3['en'] || "";
     content = content.replace(/\{ending\}/g, correctEnding || '');
-    return {
-      explanation: content || "No l3 explanation available.",
-      ruleSummary: "",
-    };
+    if (content) return { explanation: content, ruleSummary: "" };
   }
 
-  // Level 4: rule_templates generic (verb_group + tense, person=null)
-  const { data: template, error: l4err } = await supabase
-    .from('rule_templates')
-    .select('template_content')
-    .eq('verb_group', verbGroup)
-    .eq('tense', tense)
-    .is('person', null)
-    .maybeSingle();
-  console.log('[L4] rule_templates query:', { verbGroup, tense, person: null }, '→', template, 'err:', l4err);
-
-  if (template) {
-    const templateContent = (template as any).template_content || {};
-    let content = templateContent[languageCode] || templateContent['en'] || "";
+  const l4Key = getTemplateCacheKey(verbGroup, tense, null);
+  const cachedL4 = cache.get(l4Key);
+  if (cachedL4) {
+    let content = cachedL4[languageCode] || cachedL4['en'] || "";
     content = content.replace(/\{ending\}/g, correctEnding || '');
-    return {
-      explanation: content || "No l4 explanation available.",
-      ruleSummary: "",
-    };
+    if (content) return { explanation: content, ruleSummary: "" };
   }
 
   return { explanation: "No explanation available.", ruleSummary: "" };
@@ -194,19 +203,28 @@ const ensureVerbIds = async (): Promise<string[]> => {
     return [];
   }
 
-  console.log('[ensureVerbIds] count:', verbs?.length, 'table: verbs_v2');
-
   if (verbs) {
     cachedVerbIds = verbs.map(v => v.id);
   }
-  
+
   return cachedVerbIds || [];
 };
 
 /**
- * Fetches a single puzzle for a specific random verb ID
+ * Phase 1: Fetch puzzle data only (fast, 1 query per verb).
+ * Returns puzzle without explanation + metadata needed for background explanation fetch.
  */
-const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData | null> => {
+interface PuzzleCoreResult {
+  puzzle: PuzzleData;
+  verbId: string;
+  verbGroup: string;
+}
+
+const fetchPuzzleCore = async (
+  verbId: string,
+  allowedTenses?: string[],
+  languageCode: string = 'en'
+): Promise<PuzzleCoreResult | null> => {
   if (!supabase) return null;
 
   let query = supabase
@@ -233,44 +251,193 @@ const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], la
 
   const { data: puzzles, error } = await query;
 
-  if (error) {
-    console.error(`Error fetching puzzles for verb ${verbId}:`, error);
+  if (error || !puzzles || puzzles.length === 0) {
     return null;
   }
 
-  console.log('[fetchPuzzle] puzzles count:', puzzles?.length, 'error:', error);
-
-  if (!puzzles || puzzles.length === 0) {
-    return null;
-  }
-
-  // Pick one random puzzle for this verb
   const randomPuzzleIndex = Math.floor(Math.random() * puzzles.length);
   const dbPuzzle = puzzles[randomPuzzleIndex] as any;
 
-  // Debug: check what keys the join returns
-  console.log('[fetchPuzzle] dbPuzzle keys:', Object.keys(dbPuzzle));
-  console.log('[fetchPuzzle] verbs:', dbPuzzle.verbs);
-
-  // Fetch explanation via fallback chain
   const verbGroup = dbPuzzle.verbs?.verb_group || '';
-  const { explanation, ruleSummary } = await fetchExplanation(
-    verbId,
-    verbGroup,
-    dbPuzzle.tense,
-    dbPuzzle.person,
-    dbPuzzle.correct_ending,
-    languageCode,
-  );
-
   const isEtre = dbPuzzle.verbs?.is_etre ?? false;
 
-  return mapDatabasePuzzleToUI(dbPuzzle, languageCode, explanation, ruleSummary, isEtre);
+  const puzzle = mapDatabasePuzzleToUI(dbPuzzle, languageCode, "", "", isEtre);
+  puzzle.explanationLoading = true;
+
+  return { puzzle, verbId, verbGroup };
 };
 
 /**
- * Public API: Fetch a batch of random puzzles
- * Uses Promise.all to fetch concurrently
+ * Batch-fetch appendices for multiple puzzles.
+ * Returns a Map keyed by `${verbId}:${tense}:${person}` or `${verbId}:${tense}:NULL`.
+ */
+const fetchAppendixBatch = async (
+  params: Array<{ verbId: string; tense: string; person: string }>,
+  languageCode: string,
+): Promise<Map<string, { explanation: string; ruleSummary: string }>> => {
+  const result = new Map<string, { explanation: string; ruleSummary: string }>();
+
+  if (!supabase || params.length === 0) return result;
+
+  // Build OR filter combining exact-person and null-person matches
+  const filters = params.flatMap(p => [
+    `and(verb_id.eq.${p.verbId},tense.eq.${p.tense},person.eq.${p.person})`,
+    `and(verb_id.eq.${p.verbId},tense.eq.${p.tense},person.is.null)`,
+  ]);
+
+  const { data, error } = await supabase
+    .from('puzzle_appendices')
+    .select('verb_id, tense, person, rule_summary, explanation_translations')
+    .or(filters.join(','));
+
+  if (error || !data) return result;
+
+  for (const row of data as any[]) {
+    const personKey = row.person ?? 'NULL';
+    const key = `${row.verb_id}:${row.tense}:${personKey}`;
+    // Prefer exact-person match over null-person match
+    if (personKey === 'NULL' && result.has(`${row.verb_id}:${row.tense}:${row.person}`)) {
+      continue; // Don't overwrite exact match with generic match
+    }
+    const translations = row.explanation_translations || {};
+    result.set(key, {
+      explanation: translations[languageCode] || translations['en'] || "",
+      ruleSummary: row.rule_summary || "",
+    });
+  }
+
+  return result;
+};
+
+/**
+ * Public API: Fetch a batch of puzzles WITHOUT waiting for explanations (fast).
+ * Returns puzzles immediately with explanationLoading=true.
+ * Starts background explanation fetches and calls onExplanationReady when each arrives.
+ */
+export const fetchPuzzleBatchQuick = async (
+  count: number = 1,
+  allowedTenses?: string[],
+  languageCode: string = 'en',
+  onExplanationReady?: (
+    puzzleId: string,
+    data: { explanation: string; ruleSummary: string }
+  ) => void,
+): Promise<PuzzleData[]> => {
+  if (useMock) {
+    if (mockMode === 'loading') return new Promise(() => {}); // Stay in LOADING forever
+    if (mockMode === 'error') return []; // Trigger ERROR state
+    return fetchMockPuzzleBatch(count, allowedTenses, languageCode);
+  }
+
+  if (!supabase) return [];
+
+  try {
+    const allVerbIds = await ensureVerbIds();
+
+    if (allVerbIds.length === 0) {
+      console.warn('Database is empty: No verbs found.');
+      return [];
+    }
+
+    // Pick 'count' random verb IDs
+    const selectedIds: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const randomIndex = Math.floor(Math.random() * allVerbIds.length);
+      selectedIds.push(allVerbIds[randomIndex]);
+    }
+
+    // Phase 1: Fetch all puzzle cores in parallel (fast, ~1 query each)
+    const coreResults = await Promise.all(
+      selectedIds.map(id => fetchPuzzleCore(id, allowedTenses, languageCode))
+    );
+
+    // Filter nulls
+    const validResults: PuzzleCoreResult[] = coreResults.filter(
+      (r): r is PuzzleCoreResult => r !== null
+    );
+
+    const puzzles = validResults.map(r => r.puzzle);
+
+    // Phase 2: Fire background explanation resolution (truly non-blocking)
+    if (onExplanationReady) {
+      // Do NOT await — let explanations resolve after puzzles are returned
+      Promise.resolve().then(async () => {
+        try {
+          // Batch-fetch appendices
+          const appendixMap = await fetchAppendixBatch(
+            validResults.map(r => ({
+              verbId: r.verbId,
+              tense: r.puzzle.tense,
+              person: r.puzzle.person,
+            })),
+            languageCode,
+          );
+
+          // Get rule_templates cache (may trigger 1 fetch if not yet loaded)
+          const templateCache = await ensureRuleTemplatesCache();
+
+          // Resolve each puzzle's explanation
+          for (const r of validResults) {
+            const { puzzle, verbId, verbGroup } = r;
+
+            // Try exact-person appendix match
+            const exactKey = `${verbId}:${puzzle.tense}:${puzzle.person}`;
+            let appendixData = appendixMap.get(exactKey);
+
+            // Try null-person appendix match
+            if (!appendixData) {
+              const tenseKey = `${verbId}:${puzzle.tense}:NULL`;
+              appendixData = appendixMap.get(tenseKey);
+            }
+
+            if (appendixData && appendixData.explanation) {
+              onExplanationReady(puzzle.id!, appendixData);
+              continue;
+            }
+
+            // Try rule_templates cache (L3 + L4, no network calls)
+            const l3Key = getTemplateCacheKey(verbGroup, puzzle.tense, puzzle.person);
+            const cachedL3 = templateCache.get(l3Key);
+            if (cachedL3) {
+              let content = cachedL3[languageCode] || cachedL3['en'] || "";
+              content = content.replace(/\{ending\}/g, puzzle.correctEnding || '');
+              if (content) {
+                onExplanationReady(puzzle.id!, { explanation: content, ruleSummary: "" });
+                continue;
+              }
+            }
+
+            const l4Key = getTemplateCacheKey(verbGroup, puzzle.tense, null);
+            const cachedL4 = templateCache.get(l4Key);
+            if (cachedL4) {
+              let content = cachedL4[languageCode] || cachedL4['en'] || "";
+              content = content.replace(/\{ending\}/g, puzzle.correctEnding || '');
+              if (content) {
+                onExplanationReady(puzzle.id!, { explanation: content, ruleSummary: "" });
+                continue;
+              }
+            }
+
+            // No explanation found at any level
+            onExplanationReady(puzzle.id!, { explanation: "No explanation available.", ruleSummary: "" });
+          }
+        } catch (err) {
+          console.error("Background explanation fetch failed:", err);
+        }
+      });
+    }
+
+    return puzzles;
+
+  } catch (err) {
+    console.error("Unexpected error in fetchPuzzleBatchQuick:", err);
+    return [];
+  }
+};
+
+/**
+ * Legacy API: Fetch a batch of random puzzles with explanations (blocking).
+ * Uses Promise.all to fetch concurrently.
  */
 export const fetchPuzzleBatch = async (count: number = 1, allowedTenses?: string[], languageCode: string = 'en'): Promise<PuzzleData[]> => {
   if (useMock) {
@@ -283,14 +450,12 @@ export const fetchPuzzleBatch = async (count: number = 1, allowedTenses?: string
 
   try {
     const allVerbIds = await ensureVerbIds();
-    
+
     if (allVerbIds.length === 0) {
       console.warn('Database is empty: No verbs found.');
       return [];
     }
 
-    // Pick 'count' random verb IDs
-    // It's okay if we pick the same verb twice in a batch, but we try to be random
     const selectedIds: string[] = [];
     for (let i = 0; i < count; i++) {
       const randomIndex = Math.floor(Math.random() * allVerbIds.length);
@@ -298,10 +463,26 @@ export const fetchPuzzleBatch = async (count: number = 1, allowedTenses?: string
     }
 
     // Execute queries in parallel
-    const promises = selectedIds.map(id => fetchPuzzleForVerbId(id, allowedTenses, languageCode));
-    const results = await Promise.all(promises);
+    const promises = selectedIds.map(async (id) => {
+      const core = await fetchPuzzleCore(id, allowedTenses, languageCode);
+      if (!core) return null;
 
-    // Filter out nulls (failed fetches or verbs with no puzzles in selected tenses)
+      const { explanation, ruleSummary } = await fetchExplanation(
+        core.verbId,
+        core.verbGroup,
+        core.puzzle.tense,
+        core.puzzle.person,
+        core.puzzle.correctEnding,
+        languageCode,
+      );
+
+      core.puzzle.explanation = explanation;
+      core.puzzle.ruleSummary = ruleSummary;
+      core.puzzle.explanationLoading = false;
+      return core.puzzle;
+    });
+
+    const results = await Promise.all(promises);
     return results.filter((p): p is PuzzleData => p !== null);
 
   } catch (err) {

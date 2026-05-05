@@ -38,6 +38,7 @@ export interface PuzzleData {
 
   explanation: string; // The translated explanation
   ruleSummary: string;
+  explanationLoading?: boolean; // true while background fetch in progress
   isEtre?: boolean; // true = verb uses être, frontend shows gender agreement note
 
   // Example sentence (optional, may not exist for all puzzles)

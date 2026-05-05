@@ -65,16 +65,19 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
           <div className="flex items-center gap-1 sm:gap-3">
             
             {/* Tense Selector */}
-            <button 
+            <button
             ref={settingRef}
-            onClick={onOpenSettings} 
+            onClick={onOpenSettings}
+            aria-label={t('settings')}
             className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
               <Settings className="w-6 h-6" />
             </button>
             {/* Gammar teaching Selector */}
             <button
-            ref = {grammarRef}
-            onClick={onOpenGrammar} className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
+            ref={grammarRef}
+            onClick={onOpenGrammar}
+            aria-label={t('rules')}
+            className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
               <BookText className="w-6 h-6" />
             </button>
             
@@ -82,6 +85,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             <div className="relative" ref={langBtnRef} >
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                aria-label={currentLangObj.label}
                 className="p-2 rounded-full hover:text-[#55534e] hover:bg-oat-light transition-colors flex items-center justify-center"
                 title={currentLangObj.label}
               >
@@ -107,9 +111,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             </div>
 
             {/* About Page Selector */}
-             <button 
+             <button
              ref={AboutRef}
-             onClick={onOpenAbout} 
+             onClick={onOpenAbout}
+             aria-label={t('about')}
              className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
                <Info className="w-6 h-6" />
              </button>
