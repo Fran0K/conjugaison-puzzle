@@ -4,10 +4,10 @@
 // --- Breakpoints ---
 export const BREAKPOINT = 640; // px, matches Tailwind 'sm'
 
-// --- Connector (puzzle tab/slot) Dimensions ---
+// --- Connector (puzzle mask radius for凸/凹 shapes) ---
 export const CONNECTOR = {
-  mobile: { tabSize: 20, protrusion: 10 },   // w-5 h-5, right-[-10px]
-  desktop: { tabSize: 28, protrusion: 14 },   // w-7 h-7, right-[-14px]
+  mobile: { protrusion: 10 },
+  desktop: { protrusion: 14 },
 };
 
 // --- Font ---

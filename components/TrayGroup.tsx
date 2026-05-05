@@ -15,12 +15,38 @@ interface TrayGroupProps {
   trays: TrayConfig[];
 }
 
+// --- Layout unit: a pair (2 trays side-by-side) or a solo (1 tray) ---
+type LayoutUnit =
+  | { kind: 'pair'; indices: [number, number] }
+  | { kind: 'solo'; index: number };
+
+/**
+ * Group trays into layout units.
+ * Adjacent same-category (both aux or both verb) trays form pairs.
+ */
+function groupIntoUnits(trays: TrayConfig[]): LayoutUnit[] {
+  const units: LayoutUnit[] = [];
+  let i = 0;
+  while (i < trays.length) {
+    if (i + 1 < trays.length) {
+      const curIsAux = trays[i].type.includes('aux');
+      const nextIsAux = trays[i + 1].type.includes('aux');
+      if (curIsAux === nextIsAux) {
+        units.push({ kind: 'pair', indices: [i, i + 1] });
+        i += 2;
+        continue;
+      }
+    }
+    units.push({ kind: 'solo', index: i });
+    i += 1;
+  }
+  return units;
+}
+
 // Tray Group (The Logic Engine)
 export const TrayGroup: React.FC<TrayGroupProps> = ({ trays }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
-
-  // Layout state for each tray in this group
   const [layouts, setLayouts] = useState<TrayLayoutState[]>([]);
 
   // Measure Container
@@ -39,156 +65,95 @@ export const TrayGroup: React.FC<TrayGroupProps> = ({ trays }) => {
   useLayoutEffect(() => {
     if (!containerWidth || trays.length === 0) return;
 
-    // A. Configuration from theme
     const isDesktop = window.matchMedia(`(min-width: ${BREAKPOINT}px)`).matches;
-
-    // Dynamic font sizing based on container width
     const fontBase = isDesktop ? FONT.desktop : FONT.mobile;
     const refWidth = isDesktop ? SCALING.desktop.refWidth : SCALING.mobile.refWidth;
     const fontSize = Math.max(fontBase.min, Math.round(fontBase.base * containerWidth / refWidth));
-
     const font = `${FONT.weight} ${fontSize}px ${FONT.family}`;
     const pieceConfig = isDesktop ? PIECE.desktop : PIECE.mobile;
     const trayConfig = isDesktop ? TRAY.desktop : TRAY.mobile;
     const gap = trayConfig.gap;
-    const tabProtrusion = isDesktop ? CONNECTOR.desktop.protrusion : CONNECTOR.mobile.protrusion;
+    const conn = isDesktop ? CONNECTOR.desktop : CONNECTOR.mobile;
 
-    // B. Calculate max puzzle width for each tray independently
-    const trayMaxPieceWidths = trays.map(tray => {
+    // Calculate max piece width per tray (stem + connector gets extra width for凸)
+    const pieceWidths = trays.map(tray => {
       const maxTextW = tray.items.reduce((max, text) => Math.max(max, measureTextWidth(text, font)), 0);
-      return Math.max(maxTextW + pieceConfig.padding, pieceConfig.minWidth);
+      const contentW = Math.max(maxTextW + pieceConfig.padding, pieceConfig.minWidth);
+      const showConn = tray.showConnectors !== false;
+      const isStem = tray.type.includes('stem');
+      return (isStem && showConn) ? contentW + conn.protrusion : contentW;
     });
 
-    // Helper: Calculate rendered tray width (must match SmartTray exactly)
-    const calcTrayWidth = (cols: number, pWidth: number, trayType: string, showConn?: boolean) => {
-      const conn = showConn !== false; // match PuzzlePiece/SmartTray default
-      const rightBuf = (conn && trayType.includes('stem')) ? tabProtrusion : 0;
-      const colGap = (conn && trayType.includes('stem') && cols >= 2) ? gap + tabProtrusion : gap;
-      return trayConfig.padding + (cols * pWidth) + Math.max(0, cols - 1) * colGap
-        + rightBuf + trayConfig.padding;
-    };
+    // Calculate rendered tray width for a given cols config
+    const calcTrayWidth = (cols: number, pWidth: number) =>
+      trayConfig.padding + (cols * pWidth) + Math.max(0, cols - 1) * gap + trayConfig.padding;
 
-    // Helper: Can a tray fit in 1 row (cols: 4)?
-    const canUseCols4 = (pieceWidth: number, trayType: string, showConn?: boolean) =>
-      calcTrayWidth(4, pieceWidth, trayType, showConn) <= containerWidth;
-
-    const newLayouts: TrayLayoutState[] = [];
-    const trayCount = trays.length;
-
-    // C. Apply Strict Rule Matrix (per TrayDisplay.md)
+    const newLayouts: TrayLayoutState[] = new Array(trays.length);
 
     if (isDesktop) {
-      // --- DESKTOP RULES ---
-      if (trayCount >= 3) {
-        // Rule: 3+ Trays -> cols: 1 (4,1 vertical strips side-by-side)
-        newLayouts.push(...trayMaxPieceWidths.map((w, i) => ({
-          cols: 1, pieceWidth: w, fontSize, isDesktop,
-        })));
-      } else if (trayCount === 2) {
-        // Rule: 2 Trays -> both cols: 2 (2,2), side by side
-        newLayouts.push(...trayMaxPieceWidths.map(w => ({
-          cols: 2, pieceWidth: w, fontSize, isDesktop,
-        })));
-      } else if (trayCount === 1) {
-        // Rule: 1 Tray -> cols: 4 (1,4)
-        newLayouts.push({ cols: 4, pieceWidth: trayMaxPieceWidths[0], fontSize, isDesktop });
-      }
+      // --- DESKTOP ---
+      // 1 tray: cols:4 | 2 trays: cols:2 | 3+ trays: cols:1
+      const cols = trays.length === 1 ? 4 : trays.length === 2 ? 2 : 1;
+      trays.forEach((_, i) => {
+        newLayouts[i] = { cols, pieceWidth: pieceWidths[i], fontSize, isDesktop };
+      });
     } else {
-      // --- MOBILE RULES ---
-      if (trayCount === 4) {
-        // Rule: 4 Trays -> two tray pairs, each tray cols: 2 (2,2)
-        newLayouts.push(...trayMaxPieceWidths.map(w => ({
-          cols: 2, pieceWidth: w, fontSize, isDesktop,
-        })));
-
-      } else if (trayCount === 3) {
-        // Rule: 3 Trays -> Mixed Layout based on Content (Aux vs Verb)
-        const isTray1Aux = trays[1].type.includes('aux');
-
-        let pairIndices: number[];
-        let soloIndex: number;
-
-        if (isTray1Aux) {
-          // Case: [Aux, Aux, Verb] -> Pair is Aux (0,1), Solo is Verb (2)
-          pairIndices = [0, 1];
-          soloIndex = 2;
+      // --- MOBILE: recursive pair/solo ---
+      const units = groupIntoUnits(trays);
+      for (const unit of units) {
+        if (unit.kind === 'pair') {
+          const [a, b] = unit.indices;
+          const pairFitsCols2 = calcTrayWidth(2, pieceWidths[a]) + gap + calcTrayWidth(2, pieceWidths[b]) <= containerWidth;
+          const cols = pairFitsCols2 ? 2 : 1;
+          newLayouts[a] = { cols, pieceWidth: pieceWidths[a], fontSize, isDesktop };
+          newLayouts[b] = { cols, pieceWidth: pieceWidths[b], fontSize, isDesktop };
         } else {
-          // Case: [Aux, Verb, Verb] -> Solo is Aux (0), Pair is Verb (1,2)
-          soloIndex = 0;
-          pairIndices = [1, 2];
-        }
-
-        // 1. Solo Layout: (1,4) horizontal strip preference
-        const soloW = trayMaxPieceWidths[soloIndex];
-        const soloHasConn = trays[soloIndex].showConnectors ?? false;
-        const soloType = trays[soloIndex].type;
-        const soloShowConn = trays[soloIndex].showConnectors;
-        const soloLayout: TrayLayoutState = canUseCols4(soloW, soloType, soloShowConn)
-          ? { cols: 4, pieceWidth: soloW, fontSize, isDesktop }
-          : { cols: 2, pieceWidth: soloW, fontSize, isDesktop };
-
-        // 2. Pair Layout: (2,2) side-by-side preference
-        const wA = trayMaxPieceWidths[pairIndices[0]];
-        const wB = trayMaxPieceWidths[pairIndices[1]];
-
-        const widthIfCols2 = calcTrayWidth(2, wA, trays[pairIndices[0]].type, trays[pairIndices[0]].showConnectors)
-          + calcTrayWidth(2, wB, trays[pairIndices[1]].type, trays[pairIndices[1]].showConnectors) + gap;
-        const pairCols = (widthIfCols2 <= containerWidth) ? 2 : 1;
-
-        const pairLayoutA: TrayLayoutState = { cols: pairCols, pieceWidth: wA, fontSize, isDesktop };
-        const pairLayoutB: TrayLayoutState = { cols: pairCols, pieceWidth: wB, fontSize, isDesktop };
-
-        // 3. Assign layouts preserving order 0, 1, 2
-        if (soloIndex === 0) {
-          newLayouts.push(soloLayout, pairLayoutA, pairLayoutB);
-        } else {
-          newLayouts.push(pairLayoutA, pairLayoutB, soloLayout);
-        }
-
-      } else if (trayCount === 2) {
-        // Rule: 2 Trays -> (4,1) per tray, two trays side by side horizontally
-        newLayouts.push({ cols: 1, pieceWidth: trayMaxPieceWidths[0], fontSize, isDesktop });
-        newLayouts.push({ cols: 1, pieceWidth: trayMaxPieceWidths[1], fontSize, isDesktop });
-
-      } else if (trayCount === 1) {
-        // Rule: 1 Tray -> cols: 4 (1,4) if fits, else cols: 2
-        const w0 = trayMaxPieceWidths[0];
-        if (canUseCols4(w0, trays[0].type, trays[0].showConnectors)) {
-          newLayouts.push({ cols: 4, pieceWidth: w0, fontSize, isDesktop });
-        } else {
-          newLayouts.push({ cols: 2, pieceWidth: w0, fontSize, isDesktop });
+          const idx = unit.index;
+          const cols = calcTrayWidth(4, pieceWidths[idx]) <= containerWidth ? 4 : 2;
+          newLayouts[idx] = { cols, pieceWidth: pieceWidths[idx], fontSize, isDesktop };
         }
       }
     }
 
     setLayouts(newLayouts);
-
   }, [trays, containerWidth]);
 
   if (trays.length === 0) return null;
 
-  // Prevent FOUC: Wait until layouts are calculated before rendering children
   const isReady = layouts.length === trays.length;
+  const isDesktop = window.matchMedia(`(min-width: ${BREAKPOINT}px)`).matches;
+  const gap = isDesktop ? TRAY.desktop.gap : TRAY.mobile.gap;
 
-  const gap = window.matchMedia(`(min-width: ${BREAKPOINT}px)`).matches
-    ? TRAY.desktop.gap : TRAY.mobile.gap;
+  const renderTray = (idx: number) => (
+    <SmartTray key={trays[idx].id} config={trays[idx]} layout={layouts[idx]} />
+  );
 
+  // --- RENDER ---
+  if (!isDesktop && isReady) {
+    const units = groupIntoUnits(trays);
+    return (
+      <div ref={containerRef} className="w-full flex justify-center">
+        <div className="flex flex-row flex-wrap justify-center items-start w-full" style={{ gap: `${gap}px` }}>
+          {units.map((unit, i) =>
+            unit.kind === 'pair' ? (
+              <div key={`p-${i}`} className="flex flex-row flex-wrap justify-center items-start" style={{ gap: `${gap}px` }}>
+                {renderTray(unit.indices[0])}
+                {renderTray(unit.indices[1])}
+              </div>
+            ) : renderTray(unit.index)
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop (or not ready): flat rendering
   return (
     <div ref={containerRef} className="w-full flex justify-center">
-      <div
-        className="flex flex-row flex-wrap justify-center items-start w-full"
-        style={{ gap: `${gap}px` }}
-      >
-        {isReady && trays.map((tray, idx) => {
-          const layout = layouts[idx];
-          return (
-            <SmartTray
-              key={tray.id}
-              config={tray}
-              layout={layout}
-            />
-          );
-        })}
+      <div className="flex flex-row flex-wrap justify-center items-start w-full" style={{ gap: `${gap}px` }}>
+        {isReady && trays.map((tray, idx) => (
+          <SmartTray key={tray.id} config={tray} layout={layouts[idx]} />
+        ))}
       </div>
     </div>
   );

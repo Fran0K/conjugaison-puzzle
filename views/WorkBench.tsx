@@ -54,7 +54,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
           <DropZone 
             type="aux-stem" 
             content={selection.auxStem} 
-            placeholder={t('stem_zone')} 
+            placeholder={puzzle.auxEnding !== null ? t('stem_zone') : t('block_zone')} 
             onClear={() => actions.selectAuxStem(selection.auxStem!)}
             onDrop={(text) => actions.selectAuxStem(text)}
             isCorrect={gameState === GameState.SUCCESS ? true : (validation?.auxStem ?? null)}
@@ -82,7 +82,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
         <DropZone 
           type="stem" 
           content={selection.stem} 
-          placeholder={t('stem_zone')} 
+          placeholder={puzzle.correctEnding !== null ? t('stem_zone') : t('block_zone')}
           onClear={() => actions.selectStem(selection.stem!)}
           onDrop={(text) => actions.selectStem(text)}
           isCorrect={gameState === GameState.SUCCESS ? true : (validation?.stem ?? null)}

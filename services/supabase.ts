@@ -174,7 +174,7 @@ const fetchExplanation = async (
     };
   }
 
-  return { explanation: "No no explanation available.", ruleSummary: "" };
+  return { explanation: "No explanation available.", ruleSummary: "" };
 };
 
 /**
