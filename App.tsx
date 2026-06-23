@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { GameState } from './types';
 import { TutorialStep } from './components/TutorialOverlay';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { ALL_TENSES,DEFAULT_TENSES, STORAGE_KEYS } from './constants';
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
@@ -157,7 +158,13 @@ const App: React.FC = () => {
               {/* <DotLottieReact src="/img/Folders.lottie" loop autoplay className="w-60 h-60" /> */}
               {/* <DotLottieReact src="/img/Catloader.lottie" loop autoplay/> */}
               <Suspense fallback={<div className="w-60 h-60" />}>
-                <DotLottieReact src="/img/Catinarocket.lottie" loop autoplay className="w-60 h-60" />
+                <ErrorBoundary fallback={
+                  <div className="w-60 h-60 flex items-center justify-center">
+                    <div className="loading-piece loading-piece-delay-1 w-10 h-10 rounded-lg bg-french-blue" />
+                  </div>
+                }>
+                  <DotLottieReact src="/img/Catinarocket.lottie" loop autoplay className="w-60 h-60" />
+                </ErrorBoundary>
               </Suspense>
               {/* <DotLottieReact src="/img/catMarkloading.lottie" loop autoplay className="w-50 h-50" /> */}
             </div>
@@ -175,7 +182,9 @@ const App: React.FC = () => {
             <h2 className="text-4xl leading-8 italic font-bold text-black sm:mb-8">{t('error_title')}</h2>
             <div className="flex items-center justify-center mx-auto sm:mb-8">
               <Suspense fallback={<div className="w-60 h-60" />}>
-                <DotLottieReact src="/img/emptybox3.lottie" loop autoplay className="w-60 h-60" />
+                <ErrorBoundary fallback={<div className="w-60 h-60" />}>
+                  <DotLottieReact src="/img/emptybox3.lottie" loop autoplay className="w-60 h-60" />
+                </ErrorBoundary>
               </Suspense>
             </div>
             <p className="text-warm-charcoal mb-8 text-m">{t('error_desc')}</p>
@@ -236,20 +245,22 @@ const App: React.FC = () => {
       </main>
 
       {/* Global Modals (lazy-mounted on first open) */}
-      <Suspense fallback={null}>
-        {modalLoaded.tutorial && (
-          <TutorialOverlay isOpen={showTutorial} steps={tutorialSteps} onComplete={handleTutorialComplete} />
-        )}
-        {modalLoaded.grammar && (
-          <GrammarModal isOpen={showGrammar} onClose={() => setShowGrammar(false)} />
-        )}
-        {modalLoaded.settings && (
-          <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} selectedTenses={selectedTenses} onSave={handleSettingsSave} />
-        )}
-        {modalLoaded.about && (
-          <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} onRestartTutorial={handleRestartTutorial} />
-        )}
-      </Suspense>
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={null}>
+          {modalLoaded.tutorial && (
+            <TutorialOverlay isOpen={showTutorial} steps={tutorialSteps} onComplete={handleTutorialComplete} />
+          )}
+          {modalLoaded.grammar && (
+            <GrammarModal isOpen={showGrammar} onClose={() => setShowGrammar(false)} />
+          )}
+          {modalLoaded.settings && (
+            <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} selectedTenses={selectedTenses} onSave={handleSettingsSave} />
+          )}
+          {modalLoaded.about && (
+            <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} onRestartTutorial={handleRestartTutorial} />
+          )}
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };
