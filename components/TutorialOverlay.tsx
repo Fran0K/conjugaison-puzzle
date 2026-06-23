@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLanguage } from '../LanguageContext';
-import { ChevronRight, ChevronLeft, Check, X } from 'lucide-react';
+import {  XIcon, CaretRightIcon, CaretLeftIcon,CheckIcon } from "@phosphor-icons/react";
 
 export interface TutorialStep {
   targetRef: React.RefObject<HTMLElement | null>;
@@ -200,7 +200,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                   className="p-1 rounded-full text-black-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                   aria-label="Close tutorial"
                 >
-                  <X className="w-4 h-4" />
+                  <XIcon className="w-4 h-4" />
                 </button>
               </div>  
             </div>
@@ -219,7 +219,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                      ${isFirstStep ? 'text-oat cursor-not-allowed' : 'text-warm-charcoal hover:bg-oat-light active:bg-oat'}
                    `}
                 >
-                   <ChevronLeft className="w-4 h-4" />
+                   <CaretLeftIcon className="w-4 h-4" />
                    {/* @ts-ignore */}
                    {t('tour_prev')}
                 </button>
@@ -231,11 +231,11 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ isOpen, steps,
                 >
                     {isLastStep ? (
                         <>
-                           {t('tour_finish')} <Check className="w-4 h-4" />
+                           {t('tour_finish')} <CheckIcon className="w-4 h-4" />
                         </>
                     ) : (
                         <>
-                           {t('tour_next')} <ChevronRight className="w-4 h-4" />
+                           {t('tour_next')} <CaretRightIcon className="w-4 h-4" />
                         </>
                     )}
                 </button>

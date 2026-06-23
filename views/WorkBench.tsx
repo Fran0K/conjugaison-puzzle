@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { PlusIcon } from "@phosphor-icons/react";
 import { DropZone } from '../components/DropZone';
 import { PuzzleData, GameState, ValidationState } from '../types';
 import { useLanguage } from '../LanguageContext';
@@ -75,7 +75,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       )}
 
       {isCompound && (
-         <Plus className={`text-[#55534e] w-4 h-4 sm:w-5 sm:h-5 ${isCompact ? 'rotate-0' : 'rotate-90'} sm:rotate-0 transition-transform`} />
+         <PlusIcon className={`text-[#55534e] w-4 h-4 sm:w-5 sm:h-5 ${isCompact ? 'rotate-0' : 'rotate-90'} sm:rotate-0 transition-transform`} />
       )}
 
       <div className="flex items-center justify-center bg-[#e1f3fe] p-1 sm:p-1.5 rounded-2xl">

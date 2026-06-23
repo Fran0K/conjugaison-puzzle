@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, BookOpen } from 'lucide-react';
+import { LightbulbIcon, BookOpenIcon} from "@phosphor-icons/react";
 import { PuzzleData } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { useModalAnimation } from '../hooks/useModalAnimation';
@@ -48,7 +48,7 @@ export const PuzzleBoard: React.FC<PuzzleBoardProps> = ({
               }`}
               aria-label={t('hint')}
           >
-              <Lightbulb className="w-5 h-5" />
+              <LightbulbIcon className="w-5 h-5" weight='bold'/>
           </button>
         </div>
 
@@ -59,7 +59,7 @@ export const PuzzleBoard: React.FC<PuzzleBoardProps> = ({
            >
               <div className="mx-auto bg-[#12b981] text-[#fff] text-xs px-4 py-3 rounded-2xl border text-center relative z-10">
                 <div className="flex items-center justify-center gap-2 mb-1 opacity-80">
-                  <BookOpen className="w-3 h-3" />
+                  <BookOpenIcon className="w-3 h-3" weight='bold' />
                   <span className="uppercase font-bold tracking-widest text-[10px]">{t('hint')}</span>
                 </div>
                 {translatedRuleFormula}

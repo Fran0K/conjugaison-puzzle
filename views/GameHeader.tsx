@@ -1,5 +1,6 @@
 import React, { useState, useRef, useImperativeHandle } from 'react';
-import { Settings, BookText, Info, ChevronDown, Globe } from 'lucide-react';
+import {  GearIcon, NotebookIcon, InfoIcon, CaretDownIcon ,GlobeHemisphereWestIcon } from "@phosphor-icons/react";
+
 import { useLanguage } from '../LanguageContext';
 import { Language } from '../locales';
 import { SUPPORTED_LANGUAGES } from '../constants';
@@ -69,13 +70,13 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             ref={settingRef}
             onClick={onOpenSettings} 
             className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
-              <Settings className="w-6 h-6" />
+              <GearIcon className="w-6 h-6" weight='bold' />
             </button>
             {/* Gammar teaching Selector */}
             <button
             ref = {grammarRef}
             onClick={onOpenGrammar} className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
-              <BookText className="w-6 h-6" />
+              <NotebookIcon className="w-6 h-6" weight='bold' />
             </button>
             
              {/* Language Selector */}
@@ -85,7 +86,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
                 className="p-2 rounded-full hover:text-[#55534e] hover:bg-oat-light transition-colors flex items-center justify-center"
                 title={currentLangObj.label}
               >
-                <Globe className="w-6 h-6 text-warm-silver hover:text-[#55534e]" />
+                <GlobeHemisphereWestIcon className="w-6 h-6 text-warm-silver hover:text-[#55534e]" weight='bold'/>
               </button>
 
               {isLangMenuOpen && (
@@ -111,7 +112,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
              ref={AboutRef}
              onClick={onOpenAbout} 
              className="p-2 text-warm-silver hover:text-[#55534e] hover:bg-oat-light rounded-full transition-colors">
-               <Info className="w-6 h-6" />
+               <InfoIcon className="w-6 h-6" weight='bold'/>
              </button>
           </div>
         </div>

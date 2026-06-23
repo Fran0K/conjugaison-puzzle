@@ -1,5 +1,6 @@
 import React from 'react';
-import { RefreshCw, Check, ArrowRight } from 'lucide-react';
+import {  ArrowsClockwiseIcon, ArrowRightIcon, CheckIcon } from "@phosphor-icons/react";
+
 import { GameState } from '../types';
 import { useLanguage } from '../LanguageContext';
 
@@ -32,7 +33,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
              className="w-full flex items-center justify-center gap-2 bg-[#55534e] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full sm:rounded-2xl font-bold transition-all duration-300 active:scale-95 hover-next-shadow"
            >
              <span>{t('next')}</span>
-             <ArrowRight className="w-5 h-5" />
+             <ArrowRightIcon className="w-5 h-5" />
            </button>
           ) : (
             <>
@@ -40,7 +41,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
                 onClick={onSkip}
                 className="flex-1 flex items-center justify-center gap-2 text-[#752121] px-4 py-4 sm:px-6 rounded-full font-bold transition-all duration-300 bg-[#ffedee] active:scale-95 hover-skip"
               >
-                <RefreshCw className="w-5 h-5" />
+                <ArrowsClockwiseIcon className="w-5 h-5" />
                 <span>{t('skip')}</span>
               </button>
               <button
@@ -52,7 +53,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
                   : 'bg-oat-light text-warm-silver cursor-not-allowed opacity-60'
                 }`}
               >
-                <Check className="w-5 h-5" />
+                <CheckIcon className="w-5 h-5" />
                 <span>{t('check')}</span>
               </button>
             </>

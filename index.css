@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts (self-hosted via @fontsource, weights mirror original Google Fonts URL) */
+  --font-sans: "Nunito", system-ui, sans-serif;
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  /* Colors — French */
+  --color-french-blue: #0055a4;
+  --color-french-white: #ffffff;
+  --color-french-red: #ef4135;
+  --color-french-dark: #1a202c;
+
+  /* Neutrals */
+  --color-cream: #faf9f7;
+  --color-oat: #dad4c8;
+  --color-oat-light: #eee9df;
+  --color-warm-silver: #9f9b93;
+  --color-warm-charcoal: #55534e;
+
+  /* Accent palettes */
+  --color-matcha-300: #84e7a5;
+  --color-matcha-600: #078a52;
+  --color-matcha-800: #02492a;
+
+  --color-slushie-500: #3bd3fd;
+  --color-slushie-800: #0089ad;
+
+  --color-lemon-400: #f8cc65;
+  --color-lemon-500: #fbbd41;
+  --color-lemon-700: #d08a11;
+
+  --color-ube-300: #c1b0ff;
+  --color-ube-800: #43089f;
+  --color-ube-900: #32037d;
+
+  --color-pomegranate-400: #fc7981;
+
+  --color-blueberry-800: #01418d;
+
+  /* Shadows */
+  --shadow-clay: 0px 1px 1px rgba(0, 0, 0, 0.1),
+    0px -1px 1px rgba(0, 0, 0, 0.04) inset,
+    0px -0.5px 1px rgba(0, 0, 0, 0.05);
+  --shadow-clay-hover: -4px 4px 0px rgb(0, 0, 0);
+}
+
+/* Non-Tailwind global styles previously in index.html */
+body {
+  background: linear-gradient(160deg, #faf9f7 0%, #f0ebe3 50%, #faf9f7 100%);
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-default {
+  scrollbar-width: thin;
+  scrollbar-color: #dad4c8 transparent;
+  -ms-overflow-style: auto;
+}
+.scrollbar-default::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+.scrollbar-default::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-default::-webkit-scrollbar-thumb {
+  background-color: #dad4c8;
+  border-radius: 3px;
+}
+
+@keyframes puzzle-bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-14px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(0deg);
+  }
+  70% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+}
+.loading-piece {
+  animation: puzzle-bounce 1.4s ease-in-out infinite;
+}
+.loading-piece-delay-1 {
+  animation-delay: 0.15s;
+}
+.loading-piece-delay-2 {
+  animation-delay: 0.3s;
+}
+@media (hover: hover) {
+  .hover-skip:hover {
+    background-color: #fc7981 !important;
+    color: white !important;
+    box-shadow: -4px 4px 0px rgb(0, 0, 0);
+  }
+  .hover-check:hover {
+    background-color: #078a52 !important;
+    box-shadow: -4px 4px 0px rgb(0, 0, 0);
+  }
+  .hover-next-shadow:hover {
+    box-shadow: -4px 4px 0px rgb(0, 0, 0);
+  }
+}
+@keyframes modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes modal-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes modal-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modal-content-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+}
+.modal-overlay-enter {
+  animation: modal-overlay-in 0.2s ease-out forwards;
+}
+.modal-overlay-exit {
+  animation: modal-overlay-out 0.15s ease-in forwards;
+}
+.modal-content-enter {
+  animation: modal-content-in 0.25s ease-out forwards;
+}
+.modal-content-exit {
+  animation: modal-content-out 0.15s ease-in forwards;
+}

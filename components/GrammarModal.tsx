@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GRAMMAR_RULES } from '../constants';
 import { CEFRLevel } from '../types';
-import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import {  XIcon, CaretDownIcon, CaretUpIcon } from "@phosphor-icons/react";
 import { useLanguage } from '../LanguageContext';
 import { LEVEL_COLORS } from '../theme';
 import { useModalAnimation } from '../hooks/useModalAnimation';
@@ -38,7 +38,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-warm-charcoal" />
+            <XIcon className="w-5 h-5 text-warm-charcoal" />
           </button>
         </div>
 
@@ -70,7 +70,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
                         </span>
 
                         <div className={`p-1 rounded-full transition-colors ${isExpanded ? 'bg-black/10' : 'bg-transparent'}`}>
-                          {isExpanded ? <ChevronUp className="w-5 h-5 opacity-70" /> : <ChevronDown className="w-5 h-5 opacity-50" />}
+                          {isExpanded ? <CaretUpIcon className="w-5 h-5 opacity-70" /> : <CaretDownIcon className="w-5 h-5 opacity-50" />}
                         </div>
 
                       </div>
