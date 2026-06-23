@@ -69,6 +69,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
           <button
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
+            aria-label={t('close')}
           >
             <XIcon className="w-5 h-5 text-warm-charcoal" />
           </button>

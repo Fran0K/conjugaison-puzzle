@@ -37,6 +37,7 @@ export const GrammarModal: React.FC<GrammarModalProps> = ({ isOpen, onClose }) =
           <button
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
+            aria-label={t('close')}
           >
             <XIcon className="w-5 h-5 text-warm-charcoal" />
           </button>
