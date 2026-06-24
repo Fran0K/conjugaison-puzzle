@@ -17,7 +17,6 @@ export const mockPuzzleData: PuzzleData = {
   auxDistractorStems: [],
   auxDistractorEndings: [],
   explanation: 'Test Explanation',
-  ruleSummary: 'Rule Summary'
 };
 
 export const mockCompoundPuzzleData: PuzzleData = {
@@ -42,5 +41,4 @@ export const mockCompoundPuzzleData: PuzzleData = {
   distractorEndings: ['er', 'ez'],
   
   explanation: 'Compound Explanation',
-  ruleSummary: 'Aux + PP'
 };
