@@ -39,7 +39,7 @@ describe('Supabase Service', () => {
     };
 
     it('should map database fields to UI PuzzleData correctly', () => {
-      const result = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'English Expl', 'Rule...');
+      const result = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'English Expl');
 
       expect(result.id).toBe('123');
       expect(result.verb).toBe('parler');
@@ -48,7 +48,6 @@ describe('Supabase Service', () => {
       expect(result.correctEnding).toBe('e');
       expect(result.pronoun).toBe("J'");
       expect(result.explanation).toBe('English Expl');
-      expect(result.ruleSummary).toBe('Rule...');
     });
 
     it('should fallback to English if requested language is missing', () => {
@@ -77,10 +76,10 @@ describe('Supabase Service', () => {
     });
 
     it('should pass isEtre flag through to UI', () => {
-        const result = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'Expl', 'Rule', true);
+        const result = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'Expl', true);
         expect(result.isEtre).toBe(true);
 
-        const resultFalse = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'Expl', 'Rule', false);
+        const resultFalse = mapDatabasePuzzleToUI(mockDbPuzzle, 'en', 'Expl', false);
         expect(resultFalse.isEtre).toBe(false);
     });
   });

@@ -26,14 +26,13 @@ export const supabase: SupabaseClient | null = (supabaseUrl && supabaseAnonKey)
 let cachedVerbIds: string[] | null = null;
 
 /**
- * Mapper: Extracts the correct language from JSONB columns
- * Now accepts external explanation/ruleSummary from the fallback query chain.
+ * Mapper: Extracts the correct language from JSONB columns.
+ * Accepts the externally-fetched explanation from fetchExplanation.
  */
 export const mapDatabasePuzzleToUI = (
   dbPuzzle: DatabasePuzzle,
   languageCode: string,
   explanation: string = "No explanation available.",
-  ruleSummary: string = "",
   isEtre: boolean = false,
 ): PuzzleData => {
   // 1. Extract Verb Translation
@@ -76,17 +75,18 @@ export const mapDatabasePuzzleToUI = (
     auxDistractorEndings: dbPuzzle.distractor_aux_endings || [],
 
     explanation,
-    ruleSummary,
     isEtre,
     example,
   };
 };
 
 /**
- * Fetch explanation using the 3-level fallback chain:
- * 1. puzzle_appendices (exact: verb_id + tense + person)
- * 2. puzzle_appendices (tense-level: verb_id + tense + person=null)
- * 3. rule_templates (verb_group + tense) with placeholder replacement
+ * Fetch explanation with strict routing based on is_regular:
+ * - is_regular = true  → rule_templates only (L1: exact person, L2: tense-level)
+ * - is_regular = false → puzzle_appendices only (L1: exact person, L2: tense-level)
+ *
+ * Source of truth: puzzles_v2.is_regular (per-puzzle granularity).
+ * Returns the localized explanation string only.
  */
 const fetchExplanation = async (
   verbId: string,
@@ -95,15 +95,54 @@ const fetchExplanation = async (
   person: string,
   correctEnding: string | null,
   languageCode: string,
-): Promise<{ explanation: string; ruleSummary: string }> => {
+  isRegular: boolean,
+): Promise<string> => {
   if (!supabase) {
-    return { explanation: "No supabase explanation available.", ruleSummary: "" };
+    return "No supabase explanation available.";
   }
 
-  // Level 1: Exact person match in puzzle_appendices
+  if (isRegular) {
+    // --- rule_templates path ---
+    // L1: exact person match
+    const { data: personTemplate } = await supabase
+      .from('rule_templates')
+      .select('template_content')
+      .eq('verb_group', verbGroup)
+      .eq('tense', tense)
+      .eq('person', person)
+      .maybeSingle();
+
+    if (personTemplate) {
+      const templateContent = (personTemplate as any).template_content || {};
+      const content = (templateContent[languageCode] || templateContent['en'] || "")
+        .replace(/\{ending\}/g, correctEnding || '');
+      return content || "No explanation available.";
+    }
+
+    // L2: tense-level fallback (person=null)
+    const { data: tenseTemplate } = await supabase
+      .from('rule_templates')
+      .select('template_content')
+      .eq('verb_group', verbGroup)
+      .eq('tense', tense)
+      .is('person', null)
+      .maybeSingle();
+
+    if (tenseTemplate) {
+      const templateContent = (tenseTemplate as any).template_content || {};
+      const content = (templateContent[languageCode] || templateContent['en'] || "")
+        .replace(/\{ending\}/g, correctEnding || '');
+      return content || "No explanation available.";
+    }
+
+    return "No explanation available.";
+  }
+
+  // --- puzzle_appendices path (irregular) ---
+  // L1: exact person match
   const { data: exactAppendix } = await supabase
     .from('puzzle_appendices')
-    .select('rule_summary, explanation_translations')
+    .select('explanation_translations')
     .eq('verb_id', verbId)
     .eq('tense', tense)
     .eq('person', person)
@@ -111,16 +150,13 @@ const fetchExplanation = async (
 
   if (exactAppendix) {
     const translations = (exactAppendix as any).explanation_translations || {};
-    return {
-      explanation: translations[languageCode] || translations['en'] || "No l1 explanation available.",
-      ruleSummary: (exactAppendix as any).rule_summary || "",
-    };
+    return translations[languageCode] || translations['en'] || "No explanation available.";
   }
 
-  // Level 2: Tense-level match in puzzle_appendices (person=null)
+  // L2: tense-level fallback (person=null)
   const { data: tenseAppendix } = await supabase
     .from('puzzle_appendices')
-    .select('rule_summary, explanation_translations')
+    .select('explanation_translations')
     .eq('verb_id', verbId)
     .eq('tense', tense)
     .is('person', null)
@@ -128,53 +164,10 @@ const fetchExplanation = async (
 
   if (tenseAppendix) {
     const translations = (tenseAppendix as any).explanation_translations || {};
-    return {
-      explanation: translations[languageCode] || translations['en'] || "No l2 explanation available.",
-      ruleSummary: (tenseAppendix as any).rule_summary || "",
-    };
+    return translations[languageCode] || translations['en'] || "No explanation available.";
   }
 
-  // Level 3: rule_templates with exact person match (verb_group + tense + person)
-  const { data: personTemplate, error: l3err } = await supabase
-    .from('rule_templates')
-    .select('template_content')
-    .eq('verb_group', verbGroup)
-    .eq('tense', tense)
-    .eq('person', person)
-    .maybeSingle();
-  console.log('[L3] rule_templates query:', { verbGroup, tense, person }, '→', personTemplate, 'err:', l3err);
-
-  if (personTemplate) {
-    const templateContent = (personTemplate as any).template_content || {};
-    let content = templateContent[languageCode] || templateContent['en'] || "";
-    content = content.replace(/\{ending\}/g, correctEnding || '');
-    return {
-      explanation: content || "No l3 explanation available.",
-      ruleSummary: "",
-    };
-  }
-
-  // Level 4: rule_templates generic (verb_group + tense, person=null)
-  const { data: template, error: l4err } = await supabase
-    .from('rule_templates')
-    .select('template_content')
-    .eq('verb_group', verbGroup)
-    .eq('tense', tense)
-    .is('person', null)
-    .maybeSingle();
-  console.log('[L4] rule_templates query:', { verbGroup, tense, person: null }, '→', template, 'err:', l4err);
-
-  if (template) {
-    const templateContent = (template as any).template_content || {};
-    let content = templateContent[languageCode] || templateContent['en'] || "";
-    content = content.replace(/\{ending\}/g, correctEnding || '');
-    return {
-      explanation: content || "No l4 explanation available.",
-      ruleSummary: "",
-    };
-  }
-
-  return { explanation: "No explanation available.", ruleSummary: "" };
+  return "No explanation available.";
 };
 
 /**
@@ -194,12 +187,10 @@ const ensureVerbIds = async (): Promise<string[]> => {
     return [];
   }
 
-  console.log('[ensureVerbIds] count:', verbs?.length, 'table: verbs_v2');
-
   if (verbs) {
     cachedVerbIds = verbs.map(v => v.id);
   }
-  
+
   return cachedVerbIds || [];
 };
 
@@ -238,8 +229,6 @@ const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], la
     return null;
   }
 
-  console.log('[fetchPuzzle] puzzles count:', puzzles?.length, 'error:', error);
-
   if (!puzzles || puzzles.length === 0) {
     return null;
   }
@@ -248,24 +237,21 @@ const fetchPuzzleForVerbId = async (verbId: string, allowedTenses?: string[], la
   const randomPuzzleIndex = Math.floor(Math.random() * puzzles.length);
   const dbPuzzle = puzzles[randomPuzzleIndex] as any;
 
-  // Debug: check what keys the join returns
-  console.log('[fetchPuzzle] dbPuzzle keys:', Object.keys(dbPuzzle));
-  console.log('[fetchPuzzle] verbs:', dbPuzzle.verbs);
-
-  // Fetch explanation via fallback chain
+  // Fetch explanation via is_regular routing
   const verbGroup = dbPuzzle.verbs?.verb_group || '';
-  const { explanation, ruleSummary } = await fetchExplanation(
+  const explanation = await fetchExplanation(
     verbId,
     verbGroup,
     dbPuzzle.tense,
     dbPuzzle.person,
     dbPuzzle.correct_ending,
     languageCode,
+    dbPuzzle.is_regular ?? false,
   );
 
   const isEtre = dbPuzzle.verbs?.is_etre ?? false;
 
-  return mapDatabasePuzzleToUI(dbPuzzle, languageCode, explanation, ruleSummary, isEtre);
+  return mapDatabasePuzzleToUI(dbPuzzle, languageCode, explanation, isEtre);
 };
 
 /**

@@ -17,7 +17,6 @@ const MOCK_PUZZLES: PuzzleData[] = [
     distractorStems: ['choisi', 'choisiss', 'chois'],
     distractorEndings: ['ai', 'ois', 'as'],
     explanation: 'The conditional uses the infinitive "choisir" plus the ending "-ais" for "tu".',
-    ruleSummary: 'Infinitive + conditional endings.',
     example: {
       id: 'ex-1',
       sentence: 'Tu choisirais quel restaurant pour ce soir ?',
@@ -45,7 +44,6 @@ const MOCK_PUZZLES: PuzzleData[] = [
     auxDistractorStems: ['ser', 'av', 'a'],
     auxDistractorEndings: ['ais', 'as', 'a'],
     explanation: 'The futur antérieur uses "avoir" in future + "su".',
-    ruleSummary: 'Compound tense using avoir (future) + "su".',
     example: {
       id: 'ex-2',
       sentence: "D'ici demain, j'aurai su comment résoudre ce problème.",
@@ -69,7 +67,6 @@ const MOCK_PUZZLES: PuzzleData[] = [
     distractorStems: ['parle', 'parlons', 'parl'],
     distractorEndings: ['ez', 'es', 'e'],
     explanation: 'Regular -er verb: stem "parl" + ending "-ons" for "nous".',
-    ruleSummary: 'Stem + -ons.',
     // No example — tests the case where example is undefined
   },
   {
@@ -89,7 +86,6 @@ const MOCK_PUZZLES: PuzzleData[] = [
     auxDistractorStems: ['a', 'ét', 'soy'],
     auxDistractorEndings: ['it', 'es', 'ons'],
     explanation: 'Passé composé with "être" + past participle "parti" for "il".',
-    ruleSummary: 'être (present) + parti.',
     example: {
       id: 'ex-4',
       sentence: 'Il est parti très tôt ce matin.',

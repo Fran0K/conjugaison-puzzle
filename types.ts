@@ -37,7 +37,6 @@ export interface PuzzleData {
   auxDistractorEndings?: string[];
 
   explanation: string; // The translated explanation
-  ruleSummary: string;
   isEtre?: boolean; // true = verb uses être, frontend shows gender agreement note
 
   // Example sentence (optional, may not exist for all puzzles)
