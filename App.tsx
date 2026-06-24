@@ -1,15 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { GameState } from './types';
-import { GrammarModal } from './components/GrammarModal';
-import { SettingsModal } from './components/SettingsModal';
-import { AboutModal } from './components/AboutModal';
-import { TutorialOverlay, TutorialStep } from './components/TutorialOverlay';
+import { TutorialStep } from './components/TutorialOverlay';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { ALL_TENSES,DEFAULT_TENSES, STORAGE_KEYS } from './constants';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useLanguage } from './LanguageContext';
 import { Confetti } from './components/Confetti';
 import { usePuzzleEngine } from './hooks/usePuzzleEngine';
 import { useGameplay } from './hooks/useGameplay';
+
+// Lazy-loaded chunks (kept off the critical path)
+const DotLottieReact = lazy(() =>
+  import('@lottiefiles/dotlottie-react').then(m => ({ default: m.DotLottieReact }))
+);
+const GrammarModal = lazy(() =>
+  import('./components/GrammarModal').then(m => ({ default: m.GrammarModal }))
+);
+const SettingsModal = lazy(() =>
+  import('./components/SettingsModal').then(m => ({ default: m.SettingsModal }))
+);
+const AboutModal = lazy(() =>
+  import('./components/AboutModal').then(m => ({ default: m.AboutModal }))
+);
+const TutorialOverlay = lazy(() =>
+  import('./components/TutorialOverlay').then(m => ({ default: m.TutorialOverlay }))
+);
 
 // Views
 import { GameHeader } from './views/GameHeader';
@@ -60,6 +74,22 @@ const App: React.FC = () => {
   const [showAbout, setShowAbout] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
+  // Track which modals have ever been opened so we can defer their chunk load
+  // (and unmount-on-close animation still works because they stay mounted after first open).
+  const [modalLoaded, setModalLoaded] = useState({
+    settings: false,
+    about: false,
+    tutorial: false,
+    grammar: false,
+  });
+  useEffect(() => {
+    setModalLoaded(prev => ({
+      settings: prev.settings || showSettings,
+      about: prev.about || showAbout,
+      tutorial: prev.tutorial || showTutorial,
+      grammar: prev.grammar || showGrammar,
+    }));
+  }, [showSettings, showAbout, showTutorial, showGrammar]);
 
   // --- Tutorial Logic ---
   // Refs for spotlight targets (passed down to views)
@@ -127,7 +157,15 @@ const App: React.FC = () => {
             <div className="items-center justify-center mx-auto">
               {/* <DotLottieReact src="/img/Folders.lottie" loop autoplay className="w-60 h-60" /> */}
               {/* <DotLottieReact src="/img/Catloader.lottie" loop autoplay/> */}
-              <DotLottieReact src="/img/Catinarocket.lottie" loop autoplay className="w-60 h-60" />
+              <Suspense fallback={<div className="w-60 h-60" />}>
+                <ErrorBoundary fallback={
+                  <div className="w-60 h-60 flex items-center justify-center">
+                    <div className="loading-piece loading-piece-delay-1 w-10 h-10 rounded-lg bg-french-blue" />
+                  </div>
+                }>
+                  <DotLottieReact src="/img/Catinarocket.lottie" loop autoplay className="w-60 h-60" />
+                </ErrorBoundary>
+              </Suspense>
               {/* <DotLottieReact src="/img/catMarkloading.lottie" loop autoplay className="w-50 h-50" /> */}
             </div>
 
@@ -143,7 +181,11 @@ const App: React.FC = () => {
            <div className="w-full flex flex-col items-center justify-center gap-4 min-h-[60vh]">
             <h2 className="text-4xl leading-8 italic font-bold text-black sm:mb-8">{t('error_title')}</h2>
             <div className="flex items-center justify-center mx-auto sm:mb-8">
-              <DotLottieReact src="/img/emptybox3.lottie" loop autoplay className="w-60 h-60" />
+              <Suspense fallback={<div className="w-60 h-60" />}>
+                <ErrorBoundary fallback={<div className="w-60 h-60" />}>
+                  <DotLottieReact src="/img/emptybox3.lottie" loop autoplay className="w-60 h-60" />
+                </ErrorBoundary>
+              </Suspense>
             </div>
             <p className="text-warm-charcoal mb-8 text-m">{t('error_desc')}</p>
             <button onClick={loadNextPuzzle} className="px-12 sm:px-24 py-3 bg-[#856af2] text-white rounded-full font-bold hover:shadow-clay-hover">
@@ -202,11 +244,23 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Global Modals */}
-      <TutorialOverlay isOpen={showTutorial} steps={tutorialSteps} onComplete={handleTutorialComplete} />
-      <GrammarModal isOpen={showGrammar} onClose={() => setShowGrammar(false)} />
-      <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} selectedTenses={selectedTenses} onSave={handleSettingsSave} />
-      <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} onRestartTutorial={handleRestartTutorial} />
+      {/* Global Modals (lazy-mounted on first open) */}
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={null}>
+          {modalLoaded.tutorial && (
+            <TutorialOverlay isOpen={showTutorial} steps={tutorialSteps} onComplete={handleTutorialComplete} />
+          )}
+          {modalLoaded.grammar && (
+            <GrammarModal isOpen={showGrammar} onClose={() => setShowGrammar(false)} />
+          )}
+          {modalLoaded.settings && (
+            <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} selectedTenses={selectedTenses} onSave={handleSettingsSave} />
+          )}
+          {modalLoaded.about && (
+            <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} onRestartTutorial={handleRestartTutorial} />
+          )}
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };

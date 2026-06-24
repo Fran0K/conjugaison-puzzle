@@ -13,14 +13,17 @@
     "test:run": "vitest run"
   },
   "dependencies": {
+    "@fontsource/fredoka": "^5.2.10",
+    "@fontsource/nunito": "^5.2.7",
+    "@fontsource/space-mono": "^5.2.9",
     "@lottiefiles/dotlottie-react": "^0.19.0",
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.39.0",
-    "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.1",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
@@ -29,6 +32,7 @@
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "jsdom": "^24.0.0",
+    "tailwindcss": "^4.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vite": "^5.0.0",

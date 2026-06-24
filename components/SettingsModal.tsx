@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GRAMMAR_RULES } from '../constants';
 import { CEFRLevel } from '../types';
-import { X, Check, Filter } from 'lucide-react';
+import {  XIcon, CheckIcon, FunnelIcon } from "@phosphor-icons/react";
+
 import { useLanguage } from '../LanguageContext';
 import { LEVEL_COLORS } from '../theme';
 import { useModalAnimation } from '../hooks/useModalAnimation';
@@ -68,8 +69,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
           <button
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
+            aria-label={t('close')}
           >
-            <X className="w-5 h-5 text-warm-charcoal" />
+            <XIcon className="w-5 h-5 text-warm-charcoal" />
           </button>
         </div>
 
@@ -124,7 +126,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                       color: '#ffffff',
                     }}
                   >
-                    {isSelected && <Check className="w-3 h-3" />}
+                    {isSelected && <CheckIcon className="w-3 h-3" />}
                   </div>
 
                   <div className="flex-1">

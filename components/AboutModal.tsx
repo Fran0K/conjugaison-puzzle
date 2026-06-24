@@ -1,5 +1,5 @@
 import React from 'react';
-import { PuzzlePiece, XCircle, Heart, DiscordLogo, EnvelopeSimple, Browser, LinkedinLogo, CursorClick, Plus, CheckCircle, ArrowCounterClockwise,Eyes,Coffee, X } from "@phosphor-icons/react";
+import { PuzzlePieceIcon, XCircleIcon, HeartIcon, DiscordLogoIcon, EnvelopeSimpleIcon, LegoIcon, LinkedinLogoIcon, HandPointingIcon, PlusIcon, CheckCircleIcon, ArrowsCounterClockwiseIcon,EyesIcon,CoffeeIcon, XIcon } from "@phosphor-icons/react";
 import { useLanguage } from '../LanguageContext';
 import { useModalAnimation } from '../hooks/useModalAnimation';
 
@@ -31,8 +31,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
           <button
             onClick={onClose}
             className="p-2 hover:bg-oat-light rounded-full transition-colors"
+            aria-label={t('close')}
           >
-            <X className="w-5 h-5 text-warm-charcoal" />
+            <XIcon className="w-5 h-5 text-warm-charcoal" />
           </button>
         </div>
 
@@ -66,7 +67,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-oat-light rounded-xl text-xs font-semibold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
                 >
-                  <ArrowCounterClockwise className="w-4 h-4" />
+                  <ArrowsCounterClockwiseIcon className="w-4 h-4" />
                   {t('restart_tutorial')}
                 </button>
               )}
@@ -76,7 +77,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 1 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-blue-50 text-french-blue flex items-center justify-center shrink-0 mt-0.5">
-                   <Eyes className="w-5 h-5" />
+                   <EyesIcon className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-black text-sm">{t('step_1_title')}</h4>
@@ -87,7 +88,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 2 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <PuzzlePiece className="w-5 h-5" />
+                   <PuzzlePieceIcon className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-black text-sm">{t('step_2_title')}</h4>
@@ -98,7 +99,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 3 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <CursorClick className="w-5 h-5" />
+                   <HandPointingIcon className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-black text-sm">{t('step_3_title')}</h4>
@@ -109,7 +110,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                {/* Step 4 */}
                <div className="flex gap-4 items-start">
                  <div className="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center shrink-0 mt-0.5">
-                   <CheckCircle className="w-5 h-5" />
+                   <CheckCircleIcon className="w-5 h-5" />
                  </div>
                  <div className="text-left">
                    <h4 className="font-bold text-black text-sm">{t('step_4_title')}</h4>
@@ -127,12 +128,12 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFDD00] text-[#000000] rounded-full font-display font-bold transition-all duration-300 active:scale-95 hover:shadow-clay-hover hover:-rotate-z-[2deg]"
               >
-                <Coffee color="#000000ff" weight="bold" className="w-5 h-5" />
+                <CoffeeIcon color="#000000ff" weight="bold" className="w-5 h-5" />
                 <span>Buy me a coffee</span>
              </a>
             <div className="flex justify-center mt-3 gap-2">
              <p className="text-sm text-warm-silver font-semibold flex items-center justify-center gap-1">
-               {t('author')} <Heart  color="#f95d5d" weight="fill" className="w-4 h-4 " />
+               {t('author')} <HeartIcon  color="#f95d5d" weight="fill" className="w-4 h-4 " />
              </p>
              <p className="text-warm-silver font-semibold text-sm">
                Frank Lam
@@ -140,16 +141,16 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onResta
              </div>
              <div className="flex justify-center mt-3 gap-4">
                 <a href = "https://discord.gg/H9NBS3Nu" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
-                  <DiscordLogo className="w-6 h-6" />
+                  <DiscordLogoIcon className="w-6 h-6" />
                 </a>
                 <a href="https://www.hacomata.buzz/" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
-                  <Browser className="w-6 h-6" />
+                  <LegoIcon className="w-6 h-6" />
                 </a>
                 <a href="https://www.linkedin.com/in/haochang-lin-a99606223/" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
-                  <LinkedinLogo className="w-6 h-6" />
+                  <LinkedinLogoIcon className="w-6 h-6" />
                 </a>
                 <a href="mailto:lhc1256744295@hotmail.com" target="_blank" rel="noopener noreferrer" className="text-warm-silver hover:text-french-dark transition-colors">
-                  <EnvelopeSimple className="w-6 h-6" />
+                  <EnvelopeSimpleIcon className="w-6 h-6" />
                 </a>
              </div>
              <div className='flex-row items-center justify-center mt-3'>
